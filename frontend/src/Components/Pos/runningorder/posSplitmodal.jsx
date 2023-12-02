@@ -2,14 +2,16 @@ import React from "react";
 import { useState,useEffect,useRef } from "react";
 import axios from "axios";
 import { redirect, useNavigate,Link } from "react-router-dom";
-
+import { useCookies } from "react-cookie";
 const PosSplitModal =({ splitdata,setSplitData, showSplitModal,setShowSplitModal }) =>{
 
     
+  const [cookies, setCookie, removeCookie] = useCookies();
+  const [selectedCard, setSelectedCard] = useState(null);
 
     const totalGrandTotal = Array.isArray(splitdata)
     ? splitdata.reduce((total, order) => {
-        // Sum up the quantities of each cartItem in the order
+       
         const orderTotal = order.cart.reduce((orderTotal, cartItem) => {
           const itemQuantity = parseFloat(cartItem.quantity);
           return !isNaN(itemQuantity) ? orderTotal + itemQuantity : orderTotal;
@@ -21,7 +23,7 @@ const PosSplitModal =({ splitdata,setSplitData, showSplitModal,setShowSplitModal
   
     const totalGrandTotals = Array.isArray(splitdata)
     ? splitdata.reduce((total, order) => {
-        // Sum up the quantities of each cartItem in the order
+       
         const orderTotal = order.cart.reduce((orderTotal, cartItem) => {
           const itemQuantity = parseFloat(cartItem.quantity);
           return !isNaN(itemQuantity) ? orderTotal + itemQuantity : orderTotal;
@@ -40,37 +42,68 @@ const PosSplitModal =({ splitdata,setSplitData, showSplitModal,setShowSplitModal
       const value = parseInt(event.target.value, 10);
       setSelectedSplitValue(value);
   
-      // Create an array with 'value' number of elements
+    
      const newInputs = Array.from({ length: value }, (_, index) => index + 1);
     setTextInputs(newInputs);
-    //setfoodTextInputs(Array(value).fill(0));
+    
     };
   
     const handleQuantityDecrease = (orderIndex, cartItemIndex) => {
-      if (selectedSplitValue > 0) {
+      console.log('Clicked on:', orderIndex, cartItemIndex);
+    
+      if (selectedCard !== null && selectedSplitValue > 0) {
+      
         const updatedSplitData = [...splitdata];
+     
         const order = updatedSplitData[orderIndex];
-        const cartItem = order.cart[cartItemIndex];
     
-        // Decrease the quantity of the selected food item
-        cartItem.quantity = Math.max(0, cartItem.quantity - 1);
+        if (selectedCard === orderIndex) {
+       
+          const cartItem = order.cart[cartItemIndex];
+         
+          cartItem.quantity = Math.max(0, cartItem.quantity - 1);
     
-        // Update the split data with the modified order
-        setSplitData(updatedSplitData);
+          console.log('Updated Cart Item:', cartItem);
     
-        // Update the quantity in the textInputs array for the selected cartItemIndex
-        const updatedTextInputs = [...textInputs];
-        updatedTextInputs[cartItemIndex] = Math.max(0, updatedTextInputs[cartItemIndex] - 1);
-        setTextInputs(updatedTextInputs);
+         
+          setSplitData(updatedSplitData);
     
-        // Update the quantity in the foodtextInputs array for the selected cartItemIndex
-        const updatedFoodTextInputs = [...foodtextInputs];
-        updatedFoodTextInputs[cartItemIndex] = Math.max(0, updatedFoodTextInputs[cartItemIndex] - 1);
-        setfoodTextInputs(updatedFoodTextInputs);
+        
+          const updatedTextInputs = [...textInputs];
+          updatedTextInputs[cartItemIndex] = Math.max(0, updatedTextInputs[cartItemIndex] - 1);
+       
+          setTextInputs(updatedTextInputs);
+    
+        
+          const updatedFoodTextInputs = [...foodtextInputs];
+          updatedFoodTextInputs[cartItemIndex] = Math.max(0, updatedFoodTextInputs[cartItemIndex] - 1);
+         
+          setfoodTextInputs(updatedFoodTextInputs);
+    
+          console.log('Updated State:', updatedSplitData, updatedTextInputs, updatedFoodTextInputs);
+        }
       }
     };
+    
+    
+    
   
+    const resetFoodInputs = () => {
+      setfoodTextInputs([]);
+      setTextInputs([]);
+    };
 
+    const handleModalClose = () => {
+      
+      setShowSplitModal(false);
+      resetFoodInputs(); 
+     
+    };
+
+    const handleCardClick = (index) => {
+      setSelectedCard(index);
+    };
+console.log(selectedCard);
 
     return (
         <div>
@@ -108,8 +141,9 @@ const PosSplitModal =({ splitdata,setSplitData, showSplitModal,setShowSplitModal
                     {order.cart.map((cartItem,cartItemIndex) => (
                   <tr key={cartItem.foodmenuId}>
                     <td>{cartItemIndex + 1}</td>
-                    <td onClick={(event) => handleQuantityDecrease(orderIndex, cartItemIndex,event)}>
-                      {cartItem.menuItemDetails.foodmenuname} - ({cartItem.quantity})</td>
+                    <td onClick={() => handleQuantityDecrease(orderIndex, cartItemIndex)}>
+  {cartItem.menuItemDetails.foodmenuname} - ({cartItem.quantity})
+</td>
                     
 
                   
@@ -145,9 +179,14 @@ const PosSplitModal =({ splitdata,setSplitData, showSplitModal,setShowSplitModal
           <div className="row">
           {textInputs.map((index) => (
             
-               <div className="col-md-6">
-                  <div key={index}>
-                    <div className="card">
+        
+            <div
+            className={`col-md-6 card-container ${selectedCard === index ? 'selected-card' : ''}`}
+            key={index}
+            onClick={() => handleCardClick(index)}
+          >
+            <div key={index} className="card">
+                    <div className="">
                       <div className="card-header">
 
                       </div>
@@ -188,7 +227,9 @@ const PosSplitModal =({ splitdata,setSplitData, showSplitModal,setShowSplitModal
 
               <div className="modal-footer">
              
-             <button type="button" className="btn btn-outline-secondary" onClick={() => setShowSplitModal(false)}>Close</button>
+              <button type="button" className="btn btn-outline-secondary" onClick={handleModalClose}>
+        Close
+      </button>
            </div>
            
             </div>
