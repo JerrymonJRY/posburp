@@ -28,6 +28,8 @@ const PosRunningOrder = ()=>{
    const [splitdata,setSplitData] =useState(null);
    const [showSplitModal,setShowSplitModal] =useState(false);
 
+   const [editdata,setEditData] =useState(null);
+
 
 
       const componentRef = useRef();
@@ -93,6 +95,21 @@ const handlekot =(id) =>
     console.error('Error fetching data:', error);
   });
 
+}
+
+const handleEdit =(id) =>
+{
+  const url = `${apiConfig.baseURL}/api/pos/getEdit/${id}`;
+  axios.get(url)
+  .then((response) => {
+    setEditData(response.data);
+    console.log(response.data);
+   // setShowKotModal(true);
+  })
+  
+  .catch((error) => {
+    console.error('Error fetching data:', error);
+  });
 }
 
 
@@ -202,7 +219,7 @@ const handlekot =(id) =>
 
              <a class="btn btn-outline-primary" onClick={(e) => handleComplete(order._id)} href="#">Payment</a>
              <a class="btn btn-outline-primary" onClick={(e) => handlekot(order._id)} href="#">KOT</a>
-             <a class="btn btn-outline-primary" href="#">Edit</a>
+             <a class="btn btn-outline-primary" onClick={(e) => handleEdit(order._id)} href="#">Edit</a>
              <a class="btn btn-outline-primary" onClick={(e) => handlesplit(order._id)} href="#">Split</a>
     
          </div>
