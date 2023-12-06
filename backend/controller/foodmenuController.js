@@ -162,5 +162,20 @@ const getallfoods =asyncHandler(async(req,res) =>{
 });
 
 
+const editfoodmenu =asyncHandler(async(req,res) =>{
+  const { id } =req.params;
+   
+  //console.log(id);
+  try
+  {
+       const getcat =await Foodmenu.findById(id);
+       res.json(getcat);
+ 
+  }catch(error)
+  {
+   throw new Error(error);
+  }
+})
 
-module.exports = {getfoodCategory,getingredients,getvat,creatFoodmenu,getallfoods};
+
+module.exports = {getfoodCategory,getingredients,getvat,creatFoodmenu,getallfoods,editfoodmenu};

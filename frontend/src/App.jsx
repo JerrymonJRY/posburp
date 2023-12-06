@@ -58,6 +58,8 @@ import OnlineOrder from './Components/Pos/onlineOrder';
 import OngoingOrder from './Components/Pos/ongoingOrder';
 import SettlementReport from './Components/Pos/settlementReport';
 import DeliverySession from './Components/Pos/deliverySession';
+import EditIngredients from './Components/Ingredient/ingredients/editIngredients';
+import EditFoodMenu from './Components/Foodmenu/editfoodmenu';
 
 
 
@@ -90,6 +92,7 @@ function App() {
       {/* Food Ingredients */}
       <Route path='/viewingredients' element={<ViewIngredients />}></Route>
       <Route path='/addingredients' element={<AddIngredients />}></Route>
+      <Route path='/editingredients/:id' element={<EditIngredients />}></Route>
       {/* Food Vat */}
       <Route path='/addVat' element={<AddVat />}></Route>
       <Route path='/viewVat' element={<ViewVat />}></Route>
@@ -105,6 +108,7 @@ function App() {
       {/* food Menu */}
       <Route path='/addfoodmenu' element={<AddFoodMenu />}></Route>
       <Route path='/viewfoodmenu' element={<ViewFoodMenu />}></Route>
+      <Route path='/editfoodmenu/:id' element={<EditFoodMenu />}></Route>
       {/* Waiter */}
       <Route path='/addWaiter' element={<AddWaiter />}></Route>
       <Route path='/viewWaiter' element={<ViewWaiter />}></Route>

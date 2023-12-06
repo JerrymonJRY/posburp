@@ -10,7 +10,7 @@ const PosNeworderKotModal =({isModalOpen}) =>
 {
    // const [isModalOpen, setModalOpen] = useState(false);
   const [posRunningorder, setPosRunningorder] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchKotTerm, setSearchKotTerm] = useState('');
 
   const [kotdata,setkotData] =useState(null);
   const [showkotModal,setShowKotModal] =useState(false);
@@ -24,13 +24,13 @@ const PosNeworderKotModal =({isModalOpen}) =>
           .catch((error) => console.error(error));
       }, [])
 
-      const handleSearch = (e) => {
-        setSearchTerm(e.target.value);
+      const handleKotSearch = (e) => {
+        setSearchKotTerm(e.target.value);
       };
       
     
       const filteredOrders = posRunningorder.filter((order) => {
-        const searchTermLower = searchTerm.toLowerCase();
+        const searchTermLower = searchKotTerm.toLowerCase();
         const orderNumberIncludes = order.ordernumber.toLowerCase().includes(searchTermLower);
         const tableNameIncludes = order.table && order.table.tablename.toLowerCase().includes(searchTermLower);
         const waiterNameIncludes = order.waiter.waitername.toLowerCase().includes(searchTermLower);
@@ -75,8 +75,8 @@ const PosNeworderKotModal =({isModalOpen}) =>
  <input
    type="text"
    placeholder="Search by OrderID"
-   value={searchTerm}
-   onChange={handleSearch}
+   value={searchKotTerm}
+   onChange={handleKotSearch}
    className="form-control"
  />
  </div>

@@ -79,4 +79,51 @@ const getalling =asyncHandler(async(req,res) =>{
 
 });
 
-module.exports={ createIngredient,getCategory,getingredientUnit,getalling };
+const getingredient =asyncHandler(async(req,res) =>{
+  const { id } =req.params;
+   
+  //console.log(id);
+  try
+  {
+       const getcat =await Ingredients.findById(id);
+       res.json(getcat);
+ 
+  }catch(error)
+  {
+   throw new Error(error);
+  }
+});
+
+const updateingredient =asyncHandler(async(req,res)=>{
+     
+  const { id } =req.params;
+ 
+  try
+  {
+      const updateUser =await Ingredients.findByIdAndUpdate(id,{
+         name:req?.body?.name,
+          categoryId:req?.body.categoryId,
+           unitId:req?.body?.unitId,
+          purchaseprice:req?.body?.purchaseprice,
+          alertquantity:req?.body?.alertquantity,
+          description:req?.body?.description,
+        
+
+      },
+      {
+          new:true,
+      }
+      );
+
+      res.json(updateUser);
+  }
+  catch(error)
+  {
+      throw new Error(error);
+  }
+
+
+});
+
+
+module.exports={ createIngredient,getCategory,getingredientUnit,getalling,getingredient,updateingredient };

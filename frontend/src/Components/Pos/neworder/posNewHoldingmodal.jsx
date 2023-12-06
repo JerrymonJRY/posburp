@@ -17,7 +17,7 @@ const PosNewHoldingModal =({isModalHold,setModalHold}) =>
       }, []);
     
       const filteredOrdershold = posHoldingorder.filter((order) => {
-        const searchTermLower = searchTerm.toLowerCase();
+        const searchTermLower = holdSearchTerm.toLowerCase();
         const orderNumberIncludes = order.ordernumber.toLowerCase().includes(searchTermLower);
         const tableNameIncludes = order.table && order.table.tablename.toLowerCase().includes(searchTermLower);
         const waiterNameIncludes = order.waiter.waitername.toLowerCase().includes(searchTermLower);

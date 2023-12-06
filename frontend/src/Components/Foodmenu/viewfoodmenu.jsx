@@ -85,7 +85,7 @@ const ViewFoodMenu =() =>{
                               
                                
                                 <td>
-                                <Link to={`/editingredientunit/${order._id}`} className="btn btn-primary">Edit</Link>
+                                <Link to={`/editfoodmenu/${order._id}`} className="btn btn-primary">Edit</Link>
                                     <button onClick={  (e)=>handleDelete(order._id)} className="btn btn-danger">Delete</button>
                                 </td>
 
