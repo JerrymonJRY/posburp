@@ -49,42 +49,38 @@ const PosSplitModal =({ splitdata,setSplitData, showSplitModal,setShowSplitModal
     };
   
     const handleQuantityDecrease = (orderIndex, cartItemIndex) => {
-      console.log('Clicked on:', orderIndex, cartItemIndex);
-    
+
+      console.log('selectedCard:', selectedCard);
+  console.log('orderIndex:', orderIndex);
+  console.log('cartItemIndex:', cartItemIndex);
       if (selectedCard !== null && selectedSplitValue > 0) {
-      
         const updatedSplitData = [...splitdata];
-     
         const order = updatedSplitData[orderIndex];
     
-        if (selectedCard === orderIndex) {
-       
+        if (selectedCard === selectedCard) {
           const cartItem = order.cart[cartItemIndex];
-         
           cartItem.quantity = Math.max(0, cartItem.quantity - 1);
     
-          console.log('Updated Cart Item:', cartItem);
-    
-         
+          // Update the state with the modified data
           setSplitData(updatedSplitData);
     
-        
+          // Other logic specific to the selected card
+        //  console.log('Updated Cart Item:', cartItem);
           const updatedTextInputs = [...textInputs];
           updatedTextInputs[cartItemIndex] = Math.max(0, updatedTextInputs[cartItemIndex] - 1);
-       
           setTextInputs(updatedTextInputs);
     
-        
           const updatedFoodTextInputs = [...foodtextInputs];
           updatedFoodTextInputs[cartItemIndex] = Math.max(0, updatedFoodTextInputs[cartItemIndex] - 1);
-         
           setfoodTextInputs(updatedFoodTextInputs);
     
-          console.log('Updated State:', updatedSplitData, updatedTextInputs, updatedFoodTextInputs);
+        //  console.log('Updated State:', updatedSplitData, updatedTextInputs, updatedFoodTextInputs);
         }
       }
     };
     
+
+    console.log(foodtextInputs);
     
     
   
@@ -142,7 +138,7 @@ console.log(selectedCard);
                   <tr key={cartItem.foodmenuId}>
                     <td>{cartItemIndex + 1}</td>
                     <td onClick={() => handleQuantityDecrease(orderIndex, cartItemIndex)}>
-  {cartItem.menuItemDetails.foodmenuname} - ({cartItem.quantity})
+                    {cartItem.menuItemDetails.foodmenuname} - ({cartItem.quantity})
 </td>
                     
 
@@ -198,14 +194,14 @@ console.log(selectedCard);
                               <th>Quantity</th>
                             </thead>
                             <tbody>
-              {foodtextInputs.map((value, foodIndex) => (
-                <tr key={foodIndex}>
-                  <td>{foodIndex + 1}</td>
-                  <td>Food Item</td>
-                  {/* Display the quantity only for the selected split order */}
-                   <td>{value}</td> 
-                </tr>
-              ))}
+                            {foodtextInputs.map((value, foodIndex) => (
+  <tr key={foodIndex}>
+    <td>{foodIndex + 1}</td>
+    <td>{value}</td>
+    {/* Display the quantity only for the selected split order */}
+    <td>{value.quantity}</td>
+  </tr>
+))}
             </tbody>
 
                           </table>

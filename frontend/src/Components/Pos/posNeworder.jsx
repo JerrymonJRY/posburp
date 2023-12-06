@@ -513,8 +513,9 @@ console.info({customers})
      
       if (result.isConfirmed) {
         // Refresh the page
-        setRefresh((prevRefresh) => !prevRefresh);
-      // navigate.push("/pos/runningorder");
+       
+     //  navigate("/pos");
+    // navigate(window.location.href);
       }
     });
   }

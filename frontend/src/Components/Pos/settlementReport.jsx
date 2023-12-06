@@ -9,7 +9,8 @@ import PosNewOrder from "./posNeworder";
 import { FaShoppingCart, FaHistory, FaPause,FaRegCalendarAlt    } from 'react-icons/fa';
 import { MdBookOnline } from "react-icons/md";
 import { IoMdToday } from "react-icons/io";
-const Pos =() =>{
+import PosTodayOrder from "./posTodayorder";
+const SettlementReport =() =>{
 
 
 
@@ -32,14 +33,14 @@ const Pos =() =>{
               <ul className="nav nav-tabs nav-justified" role="tablist">
                 <li className="nav-item ">
                  
-                  <Link className="nav-link active"  data-toggle="tab"
+                  <Link className="nav-link"  data-toggle="tab"
                    to="/pos"
                     role="tab"
                     aria-controls="neworder" ><FaShoppingCart className="mr-1" /> New Order</Link>
                 </li>
                 <li className="nav-item">
 
-                 
+                  
                     <Link className="nav-link "  data-toggle="tab"
                    to="/runningorder"
                     role="tab"
@@ -48,7 +49,7 @@ const Pos =() =>{
                
                 
                 <li className="nav-item">
-              
+                
                     <Link className="nav-link "  data-toggle="tab"
                    to="/onlineorder"
                     role="tab"
@@ -63,7 +64,7 @@ const Pos =() =>{
                 </li>
                 <li className="nav-item">
                
-                   <Link className="nav-link "  data-toggle="tab"
+                   <Link className="nav-link active"  data-toggle="tab"
                    to="/settlementreport"
                     role="tab"
                     aria-controls="neworder" >  <IoMdToday  className="mr-2" /> settlment Report</Link>
@@ -117,7 +118,7 @@ const Pos =() =>{
       <div className="row">
         <div className="tab-content mt-3">
         <div className={`tab-pane ${activeTab === 'neworder' ? 'active' : ''}`} id="neworder" role="tabpanel" aria-labelledby="neworder-tab">
-            <PosNewOrder  />
+        <PosTodayOrder  />
           </div>
           
         </div>
@@ -126,4 +127,4 @@ const Pos =() =>{
   );
 };
 
-export default Pos;
+export default SettlementReport;

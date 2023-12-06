@@ -54,6 +54,11 @@ import CustomerReport from './Components/Report/customerReport';
 import WaiterReport from './Components/Report/waiterReport';
 import PosNewOrder from './Components/Pos/posNeworder';
 
+import OnlineOrder from './Components/Pos/onlineOrder';
+import OngoingOrder from './Components/Pos/ongoingOrder';
+import SettlementReport from './Components/Pos/settlementReport';
+import DeliverySession from './Components/Pos/deliverySession';
+
 
 
 function App() {
@@ -106,6 +111,10 @@ function App() {
       <Route path='/editWaiter/:id' element={<EditWaiter />}></Route>
       {/* Pos */}
       <Route path='/pos' element={<Pos />}></Route>
+      <Route path='/runningorder' element={<OngoingOrder />}></Route>
+      <Route path='/onlineorder' element={<OnlineOrder />}></Route>
+      <Route path='/settlementreport' element={<SettlementReport />}></Route>
+      <Route path='/deliverysession' element={<DeliverySession />}></Route>
 
       
       <Route path='/posorder' element={<ViewPosOrder />}></Route>

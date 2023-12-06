@@ -1,15 +1,22 @@
 import React from "react";
 import { useState,useEffect } from "react";
-
-
+import Header from '../layouts/Header';
+import Sidebar from '../layouts/Sidebar';
+import Footer from '../layouts/Footer';
+import { ToastContainer, toast } from 'react-toastify';
+import axios from "axios";
 import { redirect, useNavigate,Link } from "react-router-dom";
-
+import PosTable from "./posTable";
+import PosRunningOrder from "./posRunningorder";
+import Swal from 'sweetalert2';
 import PosNewOrder from "./posNeworder";
-
+import PosHoldingOrder from "./posHoldingorder";
+import PosTodayOrder from "./posTodayorder";
 import { FaShoppingCart, FaHistory, FaPause,FaRegCalendarAlt    } from 'react-icons/fa';
 import { MdBookOnline } from "react-icons/md";
 import { IoMdToday } from "react-icons/io";
-const Pos =() =>{
+import PosOnlineOrder from "./posOnlneorder";
+const OnlineOrder =() =>{
 
 
 
@@ -32,14 +39,14 @@ const Pos =() =>{
               <ul className="nav nav-tabs nav-justified" role="tablist">
                 <li className="nav-item ">
                  
-                  <Link className="nav-link active"  data-toggle="tab"
+                  <Link className="nav-link "  data-toggle="tab"
                    to="/pos"
                     role="tab"
                     aria-controls="neworder" ><FaShoppingCart className="mr-1" /> New Order</Link>
                 </li>
                 <li className="nav-item">
 
-                 
+                
                     <Link className="nav-link "  data-toggle="tab"
                    to="/runningorder"
                     role="tab"
@@ -48,21 +55,41 @@ const Pos =() =>{
                
                 
                 <li className="nav-item">
-              
-                    <Link className="nav-link "  data-toggle="tab"
+               
+                    <Link className="nav-link active"  data-toggle="tab"
                    to="/onlineorder"
                     role="tab"
                     aria-controls="neworder" ><MdBookOnline  className="mr-1" /> Online Order</Link>
                 </li>
                 <li className="nav-item">
-               
+                {/* <a
+                    className={`nav-link ${activeTab === 'deliverysession' ? 'active' : ''}`}
+                    data-toggle="tab"
+                    href="#deliverysession"
+                    role="tab"
+                    aria-controls="deliverysession"
+                    aria-selected={activeTab === 'deliverysession'}
+                    onClick={() => setActiveTab('deliverysession')}
+                  >
+                  <FaRegCalendarAlt className="mr-2" />  Delivery Session
+                  </a> */}
                    <Link className="nav-link "  data-toggle="tab"
                    to="/deliverysession"
                     role="tab"
                     aria-controls="neworder" >  <FaRegCalendarAlt className="mr-2" />  Delivery Session</Link>
                 </li>
                 <li className="nav-item">
-               
+                {/* <a
+                    className={`nav-link ${activeTab === 'todayorder' ? 'active' : ''}`}
+                    data-toggle="tab"
+                    href="#todayorder"
+                    role="tab"
+                    aria-controls="todayorder"
+                    aria-selected={activeTab === 'todayorder'}
+                    onClick={() => setActiveTab('todayorder')}
+                  >
+                  <IoMdToday  className="mr-2" /> settlment Report
+                  </a> */}
                    <Link className="nav-link "  data-toggle="tab"
                    to="/settlementreport"
                     role="tab"
@@ -117,7 +144,7 @@ const Pos =() =>{
       <div className="row">
         <div className="tab-content mt-3">
         <div className={`tab-pane ${activeTab === 'neworder' ? 'active' : ''}`} id="neworder" role="tabpanel" aria-labelledby="neworder-tab">
-            <PosNewOrder  />
+            <PosOnlineOrder  />
           </div>
           
         </div>
@@ -126,4 +153,4 @@ const Pos =() =>{
   );
 };
 
-export default Pos;
+export default OnlineOrder;
