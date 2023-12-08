@@ -89,73 +89,73 @@ function App() {
     
               <Route path="/dashboard" element={<Dashboard />}  />
 
-              <Route path='/addingredientfoodcategory' element={<AddCategory/>}></Route>
-              <Route path='/viewingredientfoodcategory' element={<ViewCategory />}></Route>
-              <Route path='/editingrdientfoodcategory/:id' element={<EditCategory />}></Route>
+              <Route path='/addingredientfoodcategory' element={<RequireToken><AddCategory/></RequireToken>}></Route>
+              <Route path='/viewingredientfoodcategory' element={<RequireToken><ViewCategory /></RequireToken>}></Route>
+              <Route path='/editingrdientfoodcategory/:id' element={<RequireToken><EditCategory /></RequireToken>}></Route>
           
-              <Route path='/viewingredientunit' element={<ViewIngredientUnit />}></Route>
-              <Route path='/addingredientunit' element={<AddIngredientUnit />}></Route>
-              <Route path='/editingredientunit/:id' element={<EditIngredientUnit />}></Route>
+              <Route path='/viewingredientunit' element={<RequireToken><ViewIngredientUnit /></RequireToken>}></Route>
+              <Route path='/addingredientunit' element={<RequireToken><AddIngredientUnit /></RequireToken>}></Route>
+              <Route path='/editingredientunit/:id' element={<RequireToken><EditIngredientUnit /></RequireToken>}></Route>
         
              
-              <Route path='/viewingredients' element={<ViewIngredients />}></Route>
-              <Route path='/addingredients' element={<AddIngredients />}></Route>
-              <Route path='/editingredients/:id' element={<EditIngredients />}></Route>
+              <Route path='/viewingredients' element={<RequireToken><ViewIngredients /></RequireToken>}></Route>
+              <Route path='/addingredients' element={<RequireToken><AddIngredients /></RequireToken>}></Route>
+              <Route path='/editingredients/:id' element={<RequireToken><EditIngredients /></RequireToken>}></Route>
             
-              <Route path='/addVat' element={<AddVat />}></Route>
-              <Route path='/viewVat' element={<ViewVat />}></Route>
-              <Route path='/editVat/:id' element={<EditVat />}></Route>
+              <Route path='/addVat' element={<RequireToken><AddVat /></RequireToken>}></Route>
+              <Route path='/viewVat' element={<RequireToken><ViewVat /></RequireToken>}></Route>
+              <Route path='/editVat/:id' element={<RequireToken><EditVat /></RequireToken>}></Route>
           
-              <Route path='/addTable' element={<AddTable />}></Route>
-              <Route path='/viewTable' element={<ViewTable />}></Route>
-              <Route path='/editTable/:id' element={<EditTable />} ></Route>
+              <Route path='/addTable' element={<RequireToken><AddTable /></RequireToken>}></Route>
+              <Route path='/viewTable' element={<RequireToken><ViewTable /></RequireToken>}></Route>
+              <Route path='/editTable/:id' element={<RequireToken><EditTable /></RequireToken>} ></Route>
             
-              <Route path='/addfoodcategory' element={<AddFoodCategory />}></Route>
-              <Route path='/editfoodcategory/:id' element={<EditFoodCategory />}></Route>
-              <Route path='/viewfoodcategory' element={<ViewFoodCategory />}></Route>
+              <Route path='/addfoodcategory' element={<RequireToken><AddFoodCategory /></RequireToken>}></Route>
+              <Route path='/editfoodcategory/:id' element={<RequireToken><EditFoodCategory /></RequireToken>}></Route>
+              <Route path='/viewfoodcategory' element={<RequireToken><ViewFoodCategory /></RequireToken>}></Route>
              
-              <Route path='/addfoodmenu' element={<AddFoodMenu />}></Route>
-              <Route path='/viewfoodmenu' element={<ViewFoodMenu />}></Route>
-              <Route path='/editfoodmenu/:id' element={<EditFoodMenu />}></Route>
+              <Route path='/addfoodmenu' element={<RequireToken><AddFoodMenu /></RequireToken>}></Route>
+              <Route path='/viewfoodmenu' element={<RequireToken><ViewFoodMenu /></RequireToken>}></Route>
+              <Route path='/editfoodmenu/:id' element={<RequireToken><EditFoodMenu /></RequireToken>}></Route>
             
-              <Route path='/addWaiter' element={<AddWaiter />}></Route>
-              <Route path='/viewWaiter' element={<ViewWaiter />}></Route>
-              <Route path='/editWaiter/:id' element={<EditWaiter />}></Route>
+              <Route path='/addWaiter' element={<RequireToken><AddWaiter /></RequireToken>}></Route>
+              <Route path='/viewWaiter' element={<RequireToken><ViewWaiter /></RequireToken>}></Route>
+              <Route path='/editWaiter/:id' element={<RequireToken><EditWaiter /></RequireToken>}></Route>
             
-              <Route path='/pos' element={<Pos />}></Route>
-              <Route path='/runningorder' element={<OngoingOrder />}></Route>
-              <Route path='/onlineorder' element={<OnlineOrder />}></Route>
-              <Route path='/settlementreport' element={<SettlementReport />}></Route>
-              <Route path='/deliverysession' element={<DeliverySession />}></Route>
+              <Route path='/pos' element={<RequireToken><Pos /></RequireToken>}></Route>
+              <Route path='/runningorder' element={<RequireToken><OngoingOrder /></RequireToken>}></Route>
+              <Route path='/onlineorder' element={<RequireToken><OnlineOrder /></RequireToken>}></Route>
+              <Route path='/settlementreport' element={<RequireToken><SettlementReport /></RequireToken>}></Route>
+              <Route path='/deliverysession' element={<RequireToken><DeliverySession /></RequireToken>}></Route>
         
               
-              <Route path='/posorder' element={<ViewPosOrder />}></Route>
-              <Route path='/pos/neworder' element={<PosNewOrder />}></Route>
-              <Route path='/posorderdetails/:id' element={<ViewPosOrderdetails />}></Route>
+              <Route path='/posorder' element={<RequireToken><ViewPosOrder /></RequireToken>}></Route>
+              <Route path='/pos/neworder' element={<RequireToken><PosNewOrder /></RequireToken>}></Route>
+              <Route path='/posorderdetails/:id' element={<RequireToken><ViewPosOrderdetails /></RequireToken>}></Route>
         
            
-              <Route path='/viewCustomer' element={<ViewCustomer />}></Route>
-              <Route path='/addCustomer' element={<AddCustomer />}></Route>
-              <Route path='/editCustomer/:id' element={<EditCustomer />}></Route>
+              <Route path='/viewCustomer' element={<RequireToken><ViewCustomer /></RequireToken>}></Route>
+              <Route path='/addCustomer' element={<RequireToken><AddCustomer /></RequireToken>}></Route>
+              <Route path='/editCustomer/:id' element={<RequireToken><EditCustomer /></RequireToken>}></Route>
         
              
-              <Route path='/viewDelivery' element={<ViewDelivery />}></Route>
-              <Route path='/addDelivery' element={<AddDelivery />}></Route>
+              <Route path='/viewDelivery' element={<RequireToken><ViewDelivery /></RequireToken>}></Route>
+              <Route path='/addDelivery' element={<RequireToken><AddDelivery /></RequireToken>}></Route>
         
              
         
-              <Route path='/viewSupplier' element={<ViewSupplier />}></Route>
-              <Route path='/addSupplier' element={<AddSupplier />}></Route>
+              <Route path='/viewSupplier' element={<RequireToken><ViewSupplier /></RequireToken>}></Route>
+              <Route path='/addSupplier' element={<RequireToken><AddSupplier /></RequireToken>}></Route>
         
              
-              <Route path='/viewPurchase' element={<ViewPurchase />}></Route>
-              <Route path='/addPurchase' element={<AddPurchase />}></Route>
-              <Route path='/editPurchase/:id' element={<EditPurchase />}></Route>
+              <Route path='/viewPurchase' element={<RequireToken><ViewPurchase /></RequireToken>}></Route>
+              <Route path='/addPurchase' element={<RequireToken><AddPurchase /></RequireToken>}></Route>
+              <Route path='/editPurchase/:id' element={<RequireToken><EditPurchase /></RequireToken>}></Route>
         
               {/* Reports */}
-              <Route path='/dailveryReport' element={<DeliveryReport />}></Route>
-              <Route path='/customerReport' element={<CustomerReport />}></Route>
-              <Route path='/waiterReport' element={<WaiterReport />}></Route>
+              <Route path='/dailveryReport' element={<RequireToken><DeliveryReport /></RequireToken>}></Route>
+              <Route path='/customerReport' element={<RequireToken><CustomerReport /></RequireToken>}></Route>
+              <Route path='/waiterReport' element={<RequireToken><WaiterReport /></RequireToken>}></Route>
             
           
    
