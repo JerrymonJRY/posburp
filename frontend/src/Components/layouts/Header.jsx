@@ -1,8 +1,15 @@
 import React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 
 const Header =() =>{
+
+  const navigate  = useNavigate();
+  const logOut = () => {
+    window.localStorage.clear();
+    navigate('/')
+   
+  };
 
     return (
         <nav className="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
@@ -137,7 +144,7 @@ const Header =() =>{
               </div>
             </li>
             <li className="nav-item nav-logout d-none d-lg-block">
-              <a className="nav-link" href="#">
+              <a className="nav-link"  onClick={logOut}>
                 <i className="mdi mdi-power"></i>
               </a>
             </li>

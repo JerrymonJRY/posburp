@@ -36,7 +36,8 @@ const PosNewOrder = () => {
   const [tabEnabled, setTabEnabled] = useState({
     dineIn: false,
     takeaway: false,
-    delivery: false
+    delivery: false,
+    
   });
   const [enableDinein, setEnableDinein] = useState(false);
   // const [isEnableTable, setEnableTable] = useState(true);
@@ -975,15 +976,18 @@ const handleTabClick =() =>{
             </li>
 
             {
-              tabEnabled.dineIn && <li className="nav-item">
+              tabEnabled.dineIn && (<li className="nav-item">
                 <a className="nav-link pos " onClick={handleDinein} data-toggle="tab" href="#dinein" role="tab" aria-controls="duck2" aria-selected="true"><FaCcDinersClub className="mr-2" />Dine In</a>
               </li>
-            }
+            )}
             {
-              enableDinein && <li className="nav-item">
-                <a className="nav-link pos " data-toggle="tab" href="#table" role="tab" aria-controls="duck2" aria-selected="true"><SiTablecheck className="mr-2" />Table</a>
+              enableDinein && ( <li className="nav-item">
+                <a className="nav-link pos "  onClick={() => {
+                handleDinein();
+                setSelectTable(''); 
+              }} data-toggle="tab" href="#table" role="tab" aria-controls="duck2" aria-selected="true"><SiTablecheck className="mr-2" />Table</a>
               </li>
-            }
+           ) }
             {
               tabEnabled.delivery && <li className="nav-item">
                 <a className="nav-link pos" onClick={handleDelivery} data-toggle="tab" href="#dinein" role="tab" aria-controls="duck2" aria-selected="true"><CiDeliveryTruck className="mr-2" />Delivery</a>
@@ -1039,7 +1043,7 @@ const handleTabClick =() =>{
               </div>
             {/* } */}
           </div>
-          <div className="tab-pane " id="table" role="tabpanel" aria-labelledby="duck-tab">
+          {/* <div className="tab-pane " id="table" role="tabpanel" aria-labelledby="duck-tab">
 
           <input
         type="text"
@@ -1064,7 +1068,43 @@ const handleTabClick =() =>{
                   </div>
                 ))}
             </div>
+          </div> */}
+          {enableDinein && (
+    <div className="tab-pane" id="table" role="tabpanel" aria-labelledby="duck-tab">
+      <input
+        type="text"
+        placeholder="Search Tables..."
+        value={searchTable}
+        className="form-control"
+        onChange={handleSearchTable}
+      />
+      <br />
+      <div className="row">
+        {filteredTables.map((tables, index) => (
+          <div
+            key={index}
+            className={`col-sm-3 col-md-3 ${selectTable === tables ? 'disabled' : ''}`}
+          >
+            <div
+              className={`menu-box ${
+                selectTable ? 'read-only' : 'selectable'
+              }`}
+              onClick={(e) => {
+                setSelectTable(tables);
+                setShowFoodMenuTab(true);
+              }}
+            >
+              <h6>
+                <SiTablecheck className="mr-2" />
+                <br />
+                {tables.tablename}
+              </h6>
+            </div>
           </div>
+        ))}
+      </div>
+    </div>
+  )}
           <div className="tab-pane " id="customer" role="tabpanel" aria-labelledby="duck-tab">
           <input
         type="text"

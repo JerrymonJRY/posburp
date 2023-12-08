@@ -1,12 +1,23 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import Header from '../layouts/Header';
 import Sidebar from '../layouts/Sidebar';
 import Footer from '../layouts/Footer';
 import axios from 'axios'
 import { redirect, useNavigate,useParams } from "react-router-dom";
 import apiConfig from '../layouts/base_url';
+
+//import jwtDecode from 'jwt-decode';
 const Dashboard =() =>{
+
+  const navigate =useNavigate();
+  const signOut = () => {
+    localStorage.removeItem('token')
+    navigate("/");
+}
+
+
+
 
 
     return (

@@ -1,15 +1,12 @@
 
-import React, { Suspense, lazy,useState  } from 'react';
+import React, { Suspense, lazy,useState,useEffect   } from 'react';
 import { BrowserRouter,Routes,Route,Navigate} from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Swal from 'sweetalert2';
 import "datatables.net-dt/js/dataTables.dataTables"
 import "datatables.net-dt/css/jquery.dataTables.min.css"
 
-import { AuthProvider } from './Components/userPages/Auth';
-import PrivateRoute from './PrivateRoutes';
 const Login =lazy(() => import('./Components/userPages/login'));
-
 const Dashboard =lazy(()=> import('./Components/Dashboard/dashboard'));
 const AddCategory =lazy(() =>import('./Components/Category/AddCategory'));
 const ViewCategory =lazy(() =>import('./Components/Category/ViewCategory'));
@@ -60,100 +57,117 @@ import SettlementReport from './Components/Pos/settlementReport';
 import DeliverySession from './Components/Pos/deliverySession';
 import EditIngredients from './Components/Ingredient/ingredients/editIngredients';
 import EditFoodMenu from './Components/Foodmenu/editfoodmenu';
+import { RequireToken } from './Components/routes/PrivateRoutes';
 
 
 
 function App() {
-  const [count, setCount] = useState(0)
+
+
+
+  const isLoggedIn = window.localStorage.getItem("loggedIn");
+  // const handleLogout = () => {
+  //   localStorage.removeItem('token');
+  //   setLoggedIn(false);
+  // };
 
   return (
     
   <BrowserRouter>
-  <AuthProvider>
+ 
   <Suspense fallback={<Spinner />}>
     <Routes>
    
-      <Route path='/' element={<Dashboard />} ></Route>
-      {/* <Route path="/logout" element={<Logout />}></Route> */}
-      {/* <Route path='/' element={<Dashboard />} ></Route> */}
-      <Route
-        path="/dashboard"
-         element={<Dashboard />}
-      />
-      {/* Food Ingredient Category */}
-      <Route path='/addingredientfoodcategory' element={<AddCategory/>}></Route>
-      <Route path='/viewingredientfoodcategory' element={<ViewCategory />}></Route>
-      <Route path='/editingrdientfoodcategory/:id' element={<EditCategory />}></Route>
-      {/* Food Ingredient Unit */}
-      <Route path='/viewingredientunit' element={<ViewIngredientUnit />}></Route>
-      <Route path='/addingredientunit' element={<AddIngredientUnit />}></Route>
-      <Route path='/editingredientunit/:id' element={<EditIngredientUnit />}></Route>
+                 <Route path='/' element={<Login />} />
 
-      {/* Food Ingredients */}
-      <Route path='/viewingredients' element={<ViewIngredients />}></Route>
-      <Route path='/addingredients' element={<AddIngredients />}></Route>
-      <Route path='/editingredients/:id' element={<EditIngredients />}></Route>
-      {/* Food Vat */}
-      <Route path='/addVat' element={<AddVat />}></Route>
-      <Route path='/viewVat' element={<ViewVat />}></Route>
-      <Route path='/editVat/:id' element={<EditVat />}></Route>
-      {/* Table */}
-      <Route path='/addTable' element={<AddTable />}></Route>
-      <Route path='/viewTable' element={<ViewTable />}></Route>
-      <Route path='/editTable/:id' element={<EditTable />} ></Route>
-      {/* Food Category */}
-      <Route path='/addfoodcategory' element={<AddFoodCategory />}></Route>
-      <Route path='/editfoodcategory/:id' element={<EditFoodCategory />}></Route>
-      <Route path='/viewfoodcategory' element={<ViewFoodCategory />}></Route>
-      {/* food Menu */}
-      <Route path='/addfoodmenu' element={<AddFoodMenu />}></Route>
-      <Route path='/viewfoodmenu' element={<ViewFoodMenu />}></Route>
-      <Route path='/editfoodmenu/:id' element={<EditFoodMenu />}></Route>
-      {/* Waiter */}
-      <Route path='/addWaiter' element={<AddWaiter />}></Route>
-      <Route path='/viewWaiter' element={<ViewWaiter />}></Route>
-      <Route path='/editWaiter/:id' element={<EditWaiter />}></Route>
-      {/* Pos */}
-      <Route path='/pos' element={<Pos />}></Route>
-      <Route path='/runningorder' element={<OngoingOrder />}></Route>
-      <Route path='/onlineorder' element={<OnlineOrder />}></Route>
-      <Route path='/settlementreport' element={<SettlementReport />}></Route>
-      <Route path='/deliverysession' element={<DeliverySession />}></Route>
+                 <Route path='/dashboard' element={
+                  <RequireToken>
+                    <Dashboard />
+                  </RequireToken>
+                  }></Route>
 
-      
-      <Route path='/posorder' element={<ViewPosOrder />}></Route>
-      <Route path='/pos/neworder' element={<PosNewOrder />}></Route>
-      <Route path='/posorderdetails/:id' element={<ViewPosOrderdetails />}></Route>
+    
+              <Route path="/dashboard" element={<Dashboard />}  />
 
-      {/* Customer  */}
-      <Route path='/viewCustomer' element={<ViewCustomer />}></Route>
-      <Route path='/addCustomer' element={<AddCustomer />}></Route>
-      <Route path='/editCustomer/:id' element={<EditCustomer />}></Route>
+              <Route path='/addingredientfoodcategory' element={<AddCategory/>}></Route>
+              <Route path='/viewingredientfoodcategory' element={<ViewCategory />}></Route>
+              <Route path='/editingrdientfoodcategory/:id' element={<EditCategory />}></Route>
+          
+              <Route path='/viewingredientunit' element={<ViewIngredientUnit />}></Route>
+              <Route path='/addingredientunit' element={<AddIngredientUnit />}></Route>
+              <Route path='/editingredientunit/:id' element={<EditIngredientUnit />}></Route>
+        
+             
+              <Route path='/viewingredients' element={<ViewIngredients />}></Route>
+              <Route path='/addingredients' element={<AddIngredients />}></Route>
+              <Route path='/editingredients/:id' element={<EditIngredients />}></Route>
+            
+              <Route path='/addVat' element={<AddVat />}></Route>
+              <Route path='/viewVat' element={<ViewVat />}></Route>
+              <Route path='/editVat/:id' element={<EditVat />}></Route>
+          
+              <Route path='/addTable' element={<AddTable />}></Route>
+              <Route path='/viewTable' element={<ViewTable />}></Route>
+              <Route path='/editTable/:id' element={<EditTable />} ></Route>
+            
+              <Route path='/addfoodcategory' element={<AddFoodCategory />}></Route>
+              <Route path='/editfoodcategory/:id' element={<EditFoodCategory />}></Route>
+              <Route path='/viewfoodcategory' element={<ViewFoodCategory />}></Route>
+             
+              <Route path='/addfoodmenu' element={<AddFoodMenu />}></Route>
+              <Route path='/viewfoodmenu' element={<ViewFoodMenu />}></Route>
+              <Route path='/editfoodmenu/:id' element={<EditFoodMenu />}></Route>
+            
+              <Route path='/addWaiter' element={<AddWaiter />}></Route>
+              <Route path='/viewWaiter' element={<ViewWaiter />}></Route>
+              <Route path='/editWaiter/:id' element={<EditWaiter />}></Route>
+            
+              <Route path='/pos' element={<Pos />}></Route>
+              <Route path='/runningorder' element={<OngoingOrder />}></Route>
+              <Route path='/onlineorder' element={<OnlineOrder />}></Route>
+              <Route path='/settlementreport' element={<SettlementReport />}></Route>
+              <Route path='/deliverysession' element={<DeliverySession />}></Route>
+        
+              
+              <Route path='/posorder' element={<ViewPosOrder />}></Route>
+              <Route path='/pos/neworder' element={<PosNewOrder />}></Route>
+              <Route path='/posorderdetails/:id' element={<ViewPosOrderdetails />}></Route>
+        
+           
+              <Route path='/viewCustomer' element={<ViewCustomer />}></Route>
+              <Route path='/addCustomer' element={<AddCustomer />}></Route>
+              <Route path='/editCustomer/:id' element={<EditCustomer />}></Route>
+        
+             
+              <Route path='/viewDelivery' element={<ViewDelivery />}></Route>
+              <Route path='/addDelivery' element={<AddDelivery />}></Route>
+        
+             
+        
+              <Route path='/viewSupplier' element={<ViewSupplier />}></Route>
+              <Route path='/addSupplier' element={<AddSupplier />}></Route>
+        
+             
+              <Route path='/viewPurchase' element={<ViewPurchase />}></Route>
+              <Route path='/addPurchase' element={<AddPurchase />}></Route>
+              <Route path='/editPurchase/:id' element={<EditPurchase />}></Route>
+        
+              {/* Reports */}
+              <Route path='/dailveryReport' element={<DeliveryReport />}></Route>
+              <Route path='/customerReport' element={<CustomerReport />}></Route>
+              <Route path='/waiterReport' element={<WaiterReport />}></Route>
+            
+          
+   
+  
+ 
+     
 
-      {/* Delivery */}
-      <Route path='/viewDelivery' element={<ViewDelivery />}></Route>
-      <Route path='/addDelivery' element={<AddDelivery />}></Route>
-
-      {/* Supplier */}
-
-      <Route path='/viewSupplier' element={<ViewSupplier />}></Route>
-      <Route path='/addSupplier' element={<AddSupplier />}></Route>
-
-      {/* Purchase */}
-      <Route path='/viewPurchase' element={<ViewPurchase />}></Route>
-      <Route path='/addPurchase' element={<AddPurchase />}></Route>
-      <Route path='/editPurchase/:id' element={<EditPurchase />}></Route>
-
-      {/* Reports */}
-      <Route path='/dailveryReport' element={<DeliveryReport />}></Route>
-      <Route path='/customerReport' element={<CustomerReport />}></Route>
-      <Route path='/waiterReport' element={<WaiterReport />}></Route>
-
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+     
    
     </Routes>
     </Suspense>
-    </AuthProvider>
+  
   </BrowserRouter>
 
 
