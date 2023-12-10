@@ -40,6 +40,7 @@ const PosNewOrder = () => {
     
   });
   const [enableDinein, setEnableDinein] = useState(false);
+  const [enableFoodmenu,setEnableFoodmenu] =useState(false);
   // const [isEnableTable, setEnableTable] = useState(true);
   // const [isEnableTakeway,setEnableTakeway] =useState(true);
   // const [isEnableDelivery,setEnableDelivery] =useState(true);
@@ -167,12 +168,19 @@ console.info({table})
 
   };
 
+
+
+
   console.log("selectWaiter is not empty:", selectWaiter);
 
 
-  // const handleTable = (e) => {
-  //   setEnableTable(false);
-  // }
+  const handleTable = (e) => {
+
+    setSelectTable(tables)
+
+    setEnableFoodmenu(true);
+    
+  }
 
   const handleTakeway = (e) => {
     // setEnableTakeway(false);
@@ -201,6 +209,7 @@ console.info({table})
   }
 
   const handleMenu = (e) => {
+    setEnableFoodmenu(true);
 
   }
 
@@ -977,17 +986,17 @@ const handleTabClick =() =>{
 
             {
               tabEnabled.dineIn && (<li className="nav-item">
-                <a className="nav-link pos " onClick={handleDinein} data-toggle="tab" href="#dinein" role="tab" aria-controls="duck2" aria-selected="true"><FaCcDinersClub className="mr-2" />Dine In</a>
+                <a className="nav-link pos " onClick={handleDinein} data-toggle="tab" href="#table" role="tab" aria-controls="duck2" aria-selected="true"><FaCcDinersClub className="mr-2" />Dine In</a>
               </li>
             )}
-            {
+            {/* {
               enableDinein && ( <li className="nav-item">
                 <a className="nav-link pos "  onClick={() => {
-                handleDinein();
+                // handleDinein();
                 setSelectTable(''); 
               }} data-toggle="tab" href="#table" role="tab" aria-controls="duck2" aria-selected="true"><SiTablecheck className="mr-2" />Table</a>
               </li>
-           ) }
+           ) } */}
             {
               tabEnabled.delivery && <li className="nav-item">
                 <a className="nav-link pos" onClick={handleDelivery} data-toggle="tab" href="#dinein" role="tab" aria-controls="duck2" aria-selected="true"><CiDeliveryTruck className="mr-2" />Delivery</a>
@@ -1092,6 +1101,7 @@ const handleTabClick =() =>{
               onClick={(e) => {
                 setSelectTable(tables);
                 setShowFoodMenuTab(true);
+                handleTable(tables);
               }}
             >
               <h6>
@@ -1154,6 +1164,7 @@ const handleTabClick =() =>{
                 ))}
             </div>
           </div>
+          {enableFoodmenu && (
           <div className="tab-pane " id="foodmenu" role="tabpanel" aria-labelledby="duck-tab">
             <div className="tbl-h">
               <div className="form-group">
@@ -1182,6 +1193,7 @@ const handleTabClick =() =>{
 
               </ul>
             </div>
+
             <div className="tab-content p-3" id="myTabContents">
 
               {isLoading ? 'Loading' : <div className="row">
@@ -1207,7 +1219,7 @@ const handleTabClick =() =>{
               </div>}
             </div>
           </div>
-
+          )}
 
         </div>
       </div>

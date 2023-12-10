@@ -1,7 +1,7 @@
 import React from "react";
 import { useState,useEffect,useRef } from "react";
 import axios from "axios";
-
+import { redirect, useNavigate,Link } from "react-router-dom";
 import Swal from 'sweetalert2';
 
 import apiConfig from '../layouts/base_url';
@@ -219,7 +219,8 @@ const handleEdit =(id) =>
 
              <a class="btn btn-outline-primary" onClick={(e) => handleComplete(order._id)} href="#">Payment</a>
              <a class="btn btn-outline-primary" onClick={(e) => handlekot(order._id)} href="#">KOT</a>
-             <a class="btn btn-outline-primary" onClick={(e) => handleEdit(order._id)} href="#">Edit</a>
+            
+             <Link to={`/posedit/${order._id}`} className="btn btn-outline-primary">Edit</Link>
              <a class="btn btn-outline-primary" onClick={(e) => handlesplit(order._id)} href="#">Split</a>
     
          </div>

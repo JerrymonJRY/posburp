@@ -58,6 +58,7 @@ import DeliverySession from './Components/Pos/deliverySession';
 import EditIngredients from './Components/Ingredient/ingredients/editIngredients';
 import EditFoodMenu from './Components/Foodmenu/editfoodmenu';
 import { RequireToken } from './Components/routes/PrivateRoutes';
+import PosEdit from './Components/Pos/posEdit';
 
 
 
@@ -123,6 +124,7 @@ function App() {
               <Route path='/editWaiter/:id' element={<RequireToken><EditWaiter /></RequireToken>}></Route>
             
               <Route path='/pos' element={<RequireToken><Pos /></RequireToken>}></Route>
+              <Route path='/posedit/:id' element={<RequireToken><PosEdit /></RequireToken>}></Route>
               <Route path='/runningorder' element={<RequireToken><OngoingOrder /></RequireToken>}></Route>
               <Route path='/onlineorder' element={<RequireToken><OnlineOrder /></RequireToken>}></Route>
               <Route path='/settlementreport' element={<RequireToken><SettlementReport /></RequireToken>}></Route>
