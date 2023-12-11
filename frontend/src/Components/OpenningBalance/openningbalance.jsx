@@ -7,7 +7,7 @@ import axios from "axios";
 import { redirect, useNavigate } from "react-router-dom";
 import apiConfig from '../layouts/base_url';
 import Swal from 'sweetalert2';
-const OpenningBalance =() =>{
+const OpenningBalance =({onComplete }) =>{
 
     const [values,setValues] = useState({
 
@@ -54,14 +54,11 @@ const OpenningBalance =() =>{
     const validateForm = (data) => {
       let errors = {};
   
-      if (!data.vatname) {
-        errors.vatname = "Vat Name is required";
+      if (!data.amount) {
+        errors.amount = "Openning Balance is  required";
       }
 
-      if (!data.percentage) {
-        errors.percentage = "Vat Percentage is required";
-      }
-  
+      
      
       return errors;
     };

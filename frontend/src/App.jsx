@@ -5,6 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import Swal from 'sweetalert2';
 import "datatables.net-dt/js/dataTables.dataTables"
 import "datatables.net-dt/css/jquery.dataTables.min.css"
+import axios from 'axios';
+import apiConfig from './Components/layouts/base_url';
 
 const Login =lazy(() => import('./Components/userPages/login'));
 const Dashboard =lazy(()=> import('./Components/Dashboard/dashboard'));
@@ -60,17 +62,41 @@ import EditFoodMenu from './Components/Foodmenu/editfoodmenu';
 import { RequireToken } from './Components/routes/PrivateRoutes';
 import PosEdit from './Components/Pos/posEdit';
 
-
+import NavbarButton from './Components/layouts/navbarButton';
+import OpenningBalance from './Components/OpenningBalance/openningbalance';
 
 function App() {
 
 
 
   const isLoggedIn = window.localStorage.getItem("loggedIn");
-  // const handleLogout = () => {
-  //   localStorage.removeItem('token');
-  //   setLoggedIn(false);
-  // };
+  const [isOpeningBalanceComplete, setIsOpeningBalanceComplete] = useState(false);
+  const [lastOpeningBalanceDate, setOpenningBalanceDate] = useState([]);
+  const [openingBalanceAmount, setOpeningBalanceAmount] = useState(0);
+  useEffect(() => {
+    axios.get(`${apiConfig.baseURL}/api/openningbalance/opennigbalance`)
+    .then((response) => {
+      const { hasOpeningBalance, openingBalance } = response.data;
+
+     
+      const today = new Date().toDateString();
+      const openingBalanceDate = new Date(openingBalance.date).toDateString();
+
+      console.log(openingBalanceDate);
+      setIsOpeningBalanceComplete(hasOpeningBalance && openingBalanceDate === today);
+
+      // Set opening balance amount
+      setOpeningBalanceAmount(openingBalance.amount || 0);
+    })
+    .catch((error) => {
+      console.error('Error checking opening balance:', error);
+      setIsOpeningBalanceComplete(false);
+      setOpeningBalanceAmount(0);
+    });
+  }, []);
+
+  console.log(lastOpeningBalanceDate);
+
 
   return (
     
@@ -122,14 +148,27 @@ function App() {
               <Route path='/addWaiter' element={<RequireToken><AddWaiter /></RequireToken>}></Route>
               <Route path='/viewWaiter' element={<RequireToken><ViewWaiter /></RequireToken>}></Route>
               <Route path='/editWaiter/:id' element={<RequireToken><EditWaiter /></RequireToken>}></Route>
-            
-              <Route path='/pos' element={<RequireToken><Pos /></RequireToken>}></Route>
+              <Route
+  path='/pos'
+  element={
+    !isOpeningBalanceComplete ? (
+      <RequireToken>
+        <OpenningBalance />
+      </RequireToken>
+    ) : (
+      <RequireToken>
+        <Pos />
+      </RequireToken>
+    )
+  }
+/>
+               
               <Route path='/posedit/:id' element={<RequireToken><PosEdit /></RequireToken>}></Route>
               <Route path='/runningorder' element={<RequireToken><OngoingOrder /></RequireToken>}></Route>
               <Route path='/onlineorder' element={<RequireToken><OnlineOrder /></RequireToken>}></Route>
               <Route path='/settlementreport' element={<RequireToken><SettlementReport /></RequireToken>}></Route>
               <Route path='/deliverysession' element={<RequireToken><DeliverySession /></RequireToken>}></Route>
-        
+             
               
               <Route path='/posorder' element={<RequireToken><ViewPosOrder /></RequireToken>}></Route>
               <Route path='/pos/neworder' element={<RequireToken><PosNewOrder /></RequireToken>}></Route>

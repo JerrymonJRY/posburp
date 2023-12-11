@@ -24,6 +24,7 @@ const supplierRouter = require('./routes/supplierRoutes');
 const purchaseRouter = require('./routes/purchaseRoutes');
 const reportsRouter =require('./routes/reportRoutes');
 const balanceRouter =require('./routes/openningbalanceRoutes');
+const cashdropRouter =require('./routes/cashdropRoutes');
 
 const PORT = process.env.PORT || 4000;
 dbConnect();
@@ -61,6 +62,7 @@ app.use('/api/supplier', supplierRouter);
 app.use('/api/purchase', purchaseRouter);
 app.use('/api/reports',reportsRouter);
 app.use('/api/openningbalance',balanceRouter);
+app.use('/api/cashdrop',cashdropRouter);
 
 // app.use('/', (req, res) => {
 //   res.send('Hello From Server Side');

@@ -21,6 +21,7 @@ import { MdDeliveryDining } from "react-icons/md";
 import { MdOutlineTakeoutDining } from "react-icons/md";
 import PosNeworderKotModal from "./neworder/posNeworderkotmodal";
 import PosNewHoldingModal from "./neworder/posNewHoldingmodal";
+import PosCashDrop from "./neworder/cashDropout";
 
 const PosNewOrder = () => {
 
@@ -80,6 +81,7 @@ const PosNewOrder = () => {
 
   const [posHoldingorder, setPosHoldingorder] = useState([]);
   const [isModalHold, setModalHold] = useState(false);
+  const [isModalCashDrop,setModalCashDrop] =useState(false);
 
 
 
@@ -833,6 +835,12 @@ const handleTabClick =() =>{
     setModalHold(true);
   }
 
+  const handleDropoutClick =() =>{
+
+    setModalCashDrop(true);
+
+  } 
+
  
 
 
@@ -947,7 +955,15 @@ const handleTabClick =() =>{
    onClick={handleHoldClick} >
   <BsFillPauseCircleFill className="mr-2" /><br /> Holding Order
   </a>
-  <a class="nav-link text-center navleft" id="v-pills-cash-drop-tab" data-toggle="pill" href="#v-pills-cash-drop" role="tab" aria-controls="v-pills-cash-drop" aria-selected="false">
+  <a class="nav-link text-center navleft" 
+  id="v-pills-cash-drop-tab" 
+  data-toggle="pill" 
+  href="#v-pills-cash-drop" 
+  role="tab" 
+  aria-controls="v-pills-cash-drop" 
+  aria-selected="false"
+  onClick={handleDropoutClick}
+  >
   <FaHandHoldingDroplet className="mr-2" /> <br /> Cash Drop/Out
   </a>
   <a class="nav-link text-center navleft" id="v-pills-drawer-tab" data-toggle="pill" href="#v-pills-drawer" role="tab" aria-controls="v-pills-drawer" aria-selected="false">
@@ -1102,7 +1118,7 @@ const handleTabClick =() =>{
                 setSelectTable(tables);
                 setShowFoodMenuTab(true);
                 handleTable(tables);
-              }}
+              }} 
             >
               <h6>
                 <SiTablecheck className="mr-2" />
@@ -1250,6 +1266,9 @@ const handleTabClick =() =>{
 {/* Holding Order */}
 
 <PosNewHoldingModal isModalHold={isModalHold} setModalHold={setModalHold} />
+
+
+<PosCashDrop isModalCashDrop={isModalCashDrop} setModalCashDrop={setModalCashDrop} />
 
          
     </div>
