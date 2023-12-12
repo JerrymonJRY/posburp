@@ -107,6 +107,7 @@ const Sidebar =() =>{
               <li className="nav-item"> <Link className=" nav-link" to="/viewfoodcategory"> Food Category</Link></li>
               <li className="nav-item"> <Link className=" nav-link" to="/viewfoodmenu"> Food Menu</Link></li>
               <li className="nav-item"> <Link className=" nav-link" to="/viewCustomer"> Customer</Link></li>
+              <li className="nav-item"> <Link className=" nav-link" to="/viewExpense">Expense Category</Link></li>
             </ul>
           </div>
         </li>

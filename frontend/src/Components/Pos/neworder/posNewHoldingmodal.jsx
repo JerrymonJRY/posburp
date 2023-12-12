@@ -75,7 +75,7 @@ const PosNewHoldingModal =({isModalHold,setModalHold}) =>
 
             
              <a class="btn btn-outline-primary" onClick={(e) => handlekot(order._id)} href="#">KOT</a>
-             <a class="btn btn-outline-primary" href="#">Edit</a>
+             <Link to={`/posedit/${order._id}`} className="btn btn-outline-primary">Edit</Link>
    
          </div>
     </div>

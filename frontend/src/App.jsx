@@ -59,11 +59,13 @@ import SettlementReport from './Components/Pos/settlementReport';
 import DeliverySession from './Components/Pos/deliverySession';
 import EditIngredients from './Components/Ingredient/ingredients/editIngredients';
 import EditFoodMenu from './Components/Foodmenu/editfoodmenu';
-import { RequireToken } from './Components/routes/PrivateRoutes';
+import { RequireToken,setlastNames,setfirstNames,setUserId } from './Components/routes/PrivateRoutes';
 import PosEdit from './Components/Pos/posEdit';
 
 import NavbarButton from './Components/layouts/navbarButton';
 import OpenningBalance from './Components/OpenningBalance/openningbalance';
+import ViewExpense from './Components/Expense/viewExpense';
+import AddExpense from './Components/Expense/addExpense';
 
 function App() {
 
@@ -198,9 +200,10 @@ function App() {
               <Route path='/customerReport' element={<RequireToken><CustomerReport /></RequireToken>}></Route>
               <Route path='/waiterReport' element={<RequireToken><WaiterReport /></RequireToken>}></Route>
             
-          
+              {/* Expense */}
    
-  
+              <Route path='/viewExpense' element={<RequireToken><ViewExpense /></RequireToken>}></Route>
+              <Route path='/addExpense' element={<RequireToken><AddExpense /></RequireToken>}></Route>
  
      
 

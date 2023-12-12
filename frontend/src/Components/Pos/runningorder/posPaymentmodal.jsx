@@ -3,7 +3,10 @@ import { useState,useEffect,useRef } from "react";
 import axios from 'axios';
 import apiConfig from '../../layouts/base_url';
 import Swal from 'sweetalert2';
+import { useNavigate, useParams } from "react-router-dom";
 const RunningPaymentModal =({data,showModal,setShowModal}) =>{
+
+  const navigate = useNavigate();
 
     const [payments,setPays] =useState();
     const payment  = [
@@ -48,10 +51,10 @@ const RunningPaymentModal =({data,showModal,setShowModal}) =>{
       if (result.isConfirmed) {
         // Open your print modal here
         console.log(res);
-      setRefresh((prevRefresh) => !prevRefresh);
+        navigate('/runningorder');
        // openPrintModal(res.data);
       } else {
-        navigate('/posorder');
+        navigate('/runningorder');
       }
     });
   })

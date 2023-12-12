@@ -217,11 +217,11 @@ const handleEdit =(id) =>
         
          <div className="d-inline mx-auto ">
 
-             <a class="btn btn-outline-primary" onClick={(e) => handleComplete(order._id)} href="#">Payment</a>
-             <a class="btn btn-outline-primary" onClick={(e) => handlekot(order._id)} href="#">KOT</a>
+             <a class="btn btn-outline-primary" onClick={(e) => handleComplete(order._id)} >Payment</a>
+             <a class="btn btn-outline-primary" onClick={(e) => handlekot(order._id)} >KOT</a>
             
              <Link to={`/posedit/${order._id}`} className="btn btn-outline-primary">Edit</Link>
-             <a class="btn btn-outline-primary" onClick={(e) => handlesplit(order._id)} href="#">Split</a>
+             <a class="btn btn-outline-primary" onClick={(e) => handlesplit(order._id)} >Split</a>
     
          </div>
     </div>

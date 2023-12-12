@@ -23,15 +23,44 @@ const PosOrderEdit = () => {
   useEffect(() => {
     axios.get(`${apiConfig.baseURL}/api/pos/getEdit/${id}`)
       .then((response) => {
-        const orderData = response.data;
+        const data = response.data[0];
 
-       
-        const foodmenuIds = orderData.map(order => (
-          order.cart.map(item => item.menuItemDetails._id)
-        )).flat();
+        if (data && data.cart && Array.isArray(data.cart)) {
+          setCart(data.cart);
 
-      
-        setMenu(foodmenuIds);
+          data.cart.forEach(item => {
+            console.log("Food Item: " + item.menuItemDetails.foodmenuname);
+            console.log("Quantity: " + item.quantity);
+            console.log("Sales Price: " + item.salesprice);
+            console.log("--------------");
+          });
+        } else {
+          console.log("Cart data is not available or is in an unexpected format.");
+        }
+
+        if (data && data.vatAmount) {
+          console.log(data.vatAmount);
+        
+        } else {
+          console.log("VAT amount not found in the data.");
+        }
+
+        if (data && data.total) {
+          console.log(data.total);
+        
+        } else {
+          console.log("Total amount not found in the data.");
+        }
+
+        if (data && data.grandTotal) {
+          console.log(data.grandTotal);
+          
+        } else {
+          console.log("Grand total not found in the data.");
+        }
+        setTotalVat(data.vatAmount);
+        setTotalAmount(data.total);
+        setGrandTotal(data.grandTotal);
       })
       .catch((error) => {
         console.error(error);
@@ -109,12 +138,20 @@ const PosOrderEdit = () => {
 
   useEffect(() => {
     let newTotalAmount = 0;
+    // let newVatAmount = 0;
+
+    // cart.forEach(icart => {
+    //   newTotalAmount = newTotalAmount + icart.quantity * parseInt(icart.totalAmount);
+    //   newVatAmount = parseInt(icart.vat.percentage) !== 0 ? newVatAmount + icart.quantity * parseInt(icart.salesprice) * (parseInt(icart.vat.percentage) / 100) : newVatAmount;
+    // })
     let newVatAmount = 0;
 
-    cart.forEach(icart => {
-      newTotalAmount = newTotalAmount + icart.quantity * parseInt(icart.totalAmount);
-      newVatAmount = parseInt(icart.vat.percentage) !== 0 ? newVatAmount + icart.quantity * parseInt(icart.salesprice) * (parseInt(icart.vat.percentage) / 100) : newVatAmount;
-    })
+cart.forEach(icart => {
+  if (icart.vat && typeof icart.vat.percentage !== 'undefined') {
+    newTotalAmount = newTotalAmount + icart.quantity * parseInt(icart.totalAmount);
+   newVatAmount = parseInt(icart.vat.percentage) !== 0 ? newVatAmount + icart.quantity * parseInt(icart.salesprice) * (parseInt(icart.vat.percentage) / 100) : newVatAmount;
+  }
+});
 
     setTotalAmount(newTotalAmount);
     setTotalVat(newVatAmount.toFixed(2));
@@ -213,9 +250,8 @@ const PosOrderEdit = () => {
 
           <div className="row">
             <div className="col-lg-6"><button type="button" className="btn btn-danger w-100 mb-2 p-2">Cancel</button></div>
-            <div className="col-lg-6 pl-0"><button type="button"  className="btn btn-warning w-100 mb-2 p-2">Place Order</button></div>
-            <div className="col-lg-6"><button type="button"  className="btn btn-danger w-100 mb-2 p-2">Hold</button></div>
-            <div className="col-lg-6 pl-0"><button type="button" className="btn btn-success w-100 mb-2 p-2">Quick Pay</button></div>
+     
+            <div className="col-lg-6 pl-0"><button type="button" className="btn btn-success w-100 mb-2 p-2">Update Order</button></div>
           </div>
         </div>
       </div>

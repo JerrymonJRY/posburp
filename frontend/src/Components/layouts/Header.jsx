@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { Link,useNavigate } from "react-router-dom";
 
 const Header =() =>{
@@ -10,6 +10,21 @@ const Header =() =>{
     navigate('/')
    
   };
+
+
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
+  useEffect(() => {
+
+const storedFirstname = localStorage.getItem('firstname');
+const storedLastname = localStorage.getItem('lastname');
+
+
+setFirstname(storedFirstname);
+setLastname(storedLastname);
+  }, []);
+
+  const fullName = `${firstname} ${lastname}`;
 
     return (
         <nav className="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
@@ -39,7 +54,7 @@ const Header =() =>{
                   <span className="availability-status online"></span>
                 </div>
                 <div className="nav-profile-text">
-                  <p className="mb-1 text-black">David Greymaax</p>
+                  <p className="mb-1 text-black">{fullName}</p>
                 </div>
               </a>
               <div className="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">

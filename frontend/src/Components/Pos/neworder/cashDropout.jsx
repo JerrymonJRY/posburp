@@ -5,11 +5,14 @@ import axios from "axios";
 import { redirect, useNavigate, Link } from "react-router-dom";
 import Swal from 'sweetalert2';
 import apiConfig from '../../layouts/base_url';
+
 const PosCashDrop =({isModalCashDrop,setModalCashDrop}) =>
 {
  
+  const navigate = useNavigate();
+  
       const handleCloseDropout =() =>{
-        isModalCashDrop(false);
+        setModalCashDrop(false);
       }
       const handleHoldSearch = (e) => {
         setholdSearchTerm(e.target.value);
@@ -26,9 +29,10 @@ const PosCashDrop =({isModalCashDrop,setModalCashDrop}) =>
   //  alert({svat});
    }
 
-   const [notes,setNotes] =useState();
-   const [amount,setAmount] =useState();
-   const [dropout,setDropout] =useState();
+   const [notes,setNotes] =useState('');
+   const [amount,setAmount] =useState('');
+   const [dropout,setDropout] =useState('');
+   const [data , setData] =useState([]);
    const handleSubmit =(e) =>{
     e.preventDefault();
 
@@ -39,7 +43,7 @@ const PosCashDrop =({isModalCashDrop,setModalCashDrop}) =>
 
     const config = {
         headers: {
-          "Content-Type": "multipart/form-data"
+          'Content-Type': 'application/json',
         }
       };
 
@@ -47,12 +51,27 @@ const PosCashDrop =({isModalCashDrop,setModalCashDrop}) =>
       .post(`${apiConfig.baseURL}/api/cashdrop/cashcreate`, formData, config)
        .then(res => {
           console.log(res);
-          navigate('/viewfoodmenu');
+          setModalCashDrop(false);
+          navigate("/pos");
         })
         .catch(err => console.log(err));
   
 
    }
+
+   useEffect(() => {
+    axios
+      .get(`${apiConfig.baseURL}/api/cashdrop/getCashdrop`)
+      .then((res) => {
+        setData(res.data);
+
+        // Initialize DataTables after data is loaded
+       
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+
     return (
 <div>
         <div className={`modal ${isModalCashDrop ? 'show' : ''}`} tabIndex="-1" role="dialog" style={{ display: isModalCashDrop ? 'block' : 'none' }}>
@@ -68,7 +87,7 @@ const PosCashDrop =({isModalCashDrop,setModalCashDrop}) =>
                    <div className="row">
 
                 <div className="col-md-12">
-                    <table className="table   table-bordered">
+                    <table className="table table-bordered">
                         <thead>
                             <th>Si No</th>
                             <th>Amount</th>
@@ -76,8 +95,29 @@ const PosCashDrop =({isModalCashDrop,setModalCashDrop}) =>
                             <th>Notes</th>
                         </thead>
                         <tbody>
+                      {
+                        data.map((d,i) =>(
 
-                        </tbody>
+                            <tr key={i}>
+                                <td>
+                                {i + 1}
+                                </td>
+                                <td>
+                                    {d.amount}
+                                </td>
+                                
+                                <td>
+                                {d.dropout}
+                                </td>
+                                <td>
+                                {d.notes}
+                                </td>
+
+                            </tr>
+
+                        ))
+                    }
+                      </tbody>
                     </table>
                 </div>
              </div>

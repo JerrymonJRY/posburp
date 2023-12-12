@@ -24,3 +24,18 @@ export function RequireToken({children}) {
     
     return children;
 }
+
+export const setlastNames = (lastname) =>{
+  // set token in localStorage
+  localStorage.setItem('lastname', lastname)
+}
+
+export const setfirstNames = (firstname) =>{
+  // set token in localStorage
+  localStorage.setItem('firstname', firstname)
+}
+
+export const setUserId = (_id) =>{
+  // set token in localStorage
+  localStorage.setItem('_id', _id)
+}

@@ -8,6 +8,10 @@ import ReactToPrint   from "react-to-print";
 const PosNewKotmodal =({kotdata,showkotModal,setShowKotModal}) =>
 {
     const kotModalRef = useRef();
+
+    const handleCloseHold =() =>{
+      setShowKotModal(false);
+    }
     
     const handlePrint = () => {
       if (kotModalRef.current) {

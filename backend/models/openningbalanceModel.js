@@ -4,7 +4,7 @@ const mongoose = require('mongoose'); // Erase if already required
 var openningBalanceSchema = new mongoose.Schema({
     amount:{
         type:String,
-        required:true,
+      
        
     },
     date: { type: Date, default: Date.now },

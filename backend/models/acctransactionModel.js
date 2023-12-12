@@ -4,13 +4,11 @@ const mongoose = require('mongoose'); // Erase if already required
 var acctransactionSchema = new mongoose.Schema({
     acccode:{
         type:String,
-        required:true,
+      
        
     },
-    transdate:{
+    accountsid:{
         type:String,
-       
-       
     },
     transnumber:{
         type:String,
