@@ -1,17 +1,18 @@
 const asyncHandler =require('express-async-handler');
-const Expense =require('../models/expenseModel');
+const Designation =require('../models/designationModel');
+
 const User =require('../models/userModel');
 
-const createExpense =asyncHandler(async(req,res) =>{
+const createDesignation =asyncHandler(async(req,res) =>{
 
-    const {expensename,addedby} = req.body;
+    const {designationname,addedby} = req.body;
 
     try
     {
-        const newEntry = new Expense({
+        const newEntry = new Designation({
            
            
-            expensename: expensename,
+            designationname: designationname,
             addedby: addedby,
            
           });
@@ -26,13 +27,13 @@ const createExpense =asyncHandler(async(req,res) =>{
 });
 
 
-const getExpense =asyncHandler(async(req,res) =>{
+const getDesignation =asyncHandler(async(req,res) =>{
 
     try {
-        const expenses = await Expense.find().populate('addedby', 'firstname lastname');
+        const designation = await Designation.find().populate('addedby', 'firstname lastname');
     
-        if (!expenses || expenses.length === 0) {
-          return res.status(404).json({ error: 'No expenses found' });
+        if (!designation || designation.length === 0) {
+          return res.status(404).json({ error: 'No designation found' });
         }
     
         // Map expenses to include the user's full name
@@ -43,7 +44,7 @@ const getExpense =asyncHandler(async(req,res) =>{
         //   fullName: expense.addedby.firstname + ' ' + expense.addedby.lastname,
         // }));
     
-        res.json(expenses);
+        res.json(designation);
       } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
@@ -52,14 +53,14 @@ const getExpense =asyncHandler(async(req,res) =>{
 });
 
 
-const editExpense =asyncHandler(async(req,res) =>{
+const editDesignation =asyncHandler(async(req,res) =>{
 
   const { id } =req.params;
  
  //console.log(id);
  try
  {
-      const getcat =await Expense.findById(id);
+      const getcat =await Designation.findById(id);
       res.json(getcat);
 
  }catch(error)
@@ -70,14 +71,14 @@ const editExpense =asyncHandler(async(req,res) =>{
 });
 
 
-const updateExpense =asyncHandler(async(req,res)=>{
+const updateDesignation =asyncHandler(async(req,res)=>{
      
   const { id } =req.params;
  
   try
   {
-      const updateExpense =await Expense.findByIdAndUpdate(id,{
-          expensename:req?.body?.expensename,
+      const updateExpense =await Designation.findByIdAndUpdate(id,{
+          designationname:req?.body?.designationname,
           addedby:req?.body?.addedby,
         
 
@@ -97,12 +98,12 @@ const updateExpense =asyncHandler(async(req,res)=>{
 
 });
 
-const deleteExpense = asyncHandler(async (req, res) => {
+const deleteDesignation = asyncHandler(async (req, res) => {
   const { id } = req.params;
   // validateMongoDbId(id);
 
   try {
-    const deleteExpense = await Expense.findByIdAndDelete(id);
+    const deleteExpense = await Designation.findByIdAndDelete(id);
     res.json({
       deleteExpense,
     });
@@ -112,6 +113,4 @@ const deleteExpense = asyncHandler(async (req, res) => {
 });
 
 
-
-
-module.exports ={createExpense,getExpense,editExpense,updateExpense,deleteExpense}
+module.exports ={createDesignation,getDesignation,editDesignation,updateDesignation,deleteDesignation}

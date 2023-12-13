@@ -7,6 +7,7 @@ const Customer =require('../models/customerModel');
 const Foodmenu =require('../models/foodmenuModel');
 const Pos  =require('../models/posModels');
 const Delivery =require('../models/deliveryModel');
+const OrderTable =require('../models/ordertableModel');
 
 
 //Food Category
@@ -102,7 +103,7 @@ const getposFooditems =asyncHandler(async (req,res) =>{
 
 const insertPos =asyncHandler(async(req,res) =>{
   try {
-    const  {customers,options,grandTotal,cart,vatAmount,total,foodoption,waiterId,tableId,delivery}  = req.body;
+    const  {customers,options,grandTotal,cart,vatAmount,total,foodoption,waiterId,tableId,delivery,numberofperson}  = req.body;
   console.log(req.body);
 
  const sequence = await Pos.findOne({}).sort('-ordernumber'); // Find the latest ID
@@ -137,18 +138,32 @@ const insertPos =asyncHandler(async(req,res) =>{
       tableId:tableId,
       paymentstatus:paymentstatus,
       delivery:delivery,
+});
+   
+    const finaldata = await newEntry.save();
+
+    if (tableId !== null && tableId !== undefined && tableId !== '') {
+
+      let orderstatus ="Pending";
+      const Tableorder = new OrderTable({ 
+        orderId:finaldata._id,
+        ordertableId:tableId,
+        numberofperson:numberofperson,
+        orderstatus:orderstatus
+       
+      });
+      await Tableorder.save();
+
+    }
+  
 
 
-     
-    
-    });
-    await newEntry.save();
 
  
 
   
 
-    res.json(newEntry);
+    res.json(finaldata);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'An error occurred while inserting data' });
@@ -742,10 +757,9 @@ const todayOrder =asyncHandler(async(req,res) =>
 
     ]);
     res.json(todayorder);
-    // Use Mongoose to find orders where paymentstatus is "notpaid"
-   // const notPaidOrders = await Pos.find({ paymentstatus: 'notpaid' });
+   
 
-   // res.json(notPaidOrders);
+   
   } catch (error) {
     console.error('Error fetching "notpaid" orders:', error);
   
@@ -1067,6 +1081,61 @@ const getedit =asyncHandler(async(req,res) =>{
 });
 
 
+
+const tableorder = asyncHandler(async (req, res) => {
+  try {
+    const pendingOrders = await OrderTable.find({ orderstatus: 'Pending' });
+
+    if (pendingOrders.length === 0) {
+      // If there are no pending orders, all tables are available
+      const allTables = await Table.find();
+      res.json(allTables);
+    } else {
+      // If there are pending orders, find available tables with seat capacity calculation
+      const availableTables = await Table.aggregate([
+        {
+          $lookup: {
+            from: 'ordertables',
+            localField: '_id',
+            foreignField: 'ordertableId',
+            as: 'orders',
+          },
+        },
+        {
+          $match: {
+            $or: [
+              { orders: { $exists: false, $eq: [] } },
+              { orders: { $elemMatch: { orderstatus: 'Pending' } } },
+            ],
+          },
+        },
+        {
+          $project: {
+            tablename: 1,
+            Position: 1,
+            seatcapacity: { $toInt: '$seatcapacity' },
+            description: 1,
+            remainingSeatCapacity: {
+              $subtract: [
+                { $toInt: '$seatcapacity' },
+                { $sum: '$orders.numberofperson' },
+              ],
+            },
+          },
+        },
+      ]);
+
+      res.json(availableTables);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
+
+
 module.exports = 
 {getposCategory,
   getPosWaiter,
@@ -1085,5 +1154,6 @@ module.exports =
   todayOrder,
   insertQuickpay,
   getSplit,
-  getMerge,getedit
+  getMerge,getedit,
+  tableorder
 };

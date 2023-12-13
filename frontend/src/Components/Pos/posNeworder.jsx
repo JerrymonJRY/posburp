@@ -82,6 +82,7 @@ const PosNewOrder = () => {
   const [posHoldingorder, setPosHoldingorder] = useState([]);
   const [isModalHold, setModalHold] = useState(false);
   const [isModalCashDrop,setModalCashDrop] =useState(false);
+  const [numberofperson,setNumberofPerson] =useState('')
 
 
 
@@ -176,13 +177,36 @@ console.info({table})
   console.log("selectWaiter is not empty:", selectWaiter);
 
 
-  const handleTable = (e) => {
-
-    setSelectTable(tables)
-
-    setEnableFoodmenu(true);
+  const handleTable = (tables) => {
+    if (numberofperson.trim() === '') {
+    
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please enter the number of persons!',
+      });
+    } else {
+     
+      setSelectTable(tables);
+      setEnableFoodmenu(true);
+      setShowFoodMenuTab(true);
+    }
     
   }
+
+
+  const handleNumberofPersonChange = (e) => {
+    const value = e.target.value;
+  
+    // Validate if the entered value is a valid positive integer
+    if (/^[1-9]\d*$/.test(value) || value === '') {
+      setNumberofPerson(value);
+    }
+  };
+  
+  const isValidNumber = () => {
+    return /^[1-9]\d*$/.test(numberofperson);
+  };
 
   const handleTakeway = (e) => {
     // setEnableTakeway(false);
@@ -429,7 +453,8 @@ console.info({customers})
         total: totalAmount,
         vat: vatAmount,
         grandTotal: grandTotal,
-        delivery:selectDelivery, 
+        delivery:selectDelivery,
+        numberofperson:numberofperson, 
       })
 
       var posData = new FormData();
@@ -469,9 +494,11 @@ console.info({customers})
       posData.append("vatAmount",vatAmount);
       posData.append("total",totalAmount);
      posData.append("foodoption",options);
+
    
     if (selectTable && selectTable._id) {
       posData.append("tableId", selectTable._id);
+      posData.append("numberofperson",numberofperson);
   }
   
   if (selectWaiter && selectWaiter._id) {
@@ -613,7 +640,8 @@ console.info({customers})
         total: totalAmount,
         vat: vatAmount,
         grandTotal: grandTotal ,
-        delivery:selectDelivery, 
+        delivery:selectDelivery,
+        numberofperson:numberofperson,  
       })
 
       var posData = new FormData();
@@ -729,7 +757,8 @@ console.info({customers})
         total: totalAmount,
         vat: vatAmount,
         grandTotal: grandTotal,
-        delivery:selectDelivery,  
+        delivery:selectDelivery,
+        numberofperson:numberofperson,   
       })
       console.log(options);
 
@@ -1114,18 +1143,31 @@ const handleTabClick =() =>{
               className={`menu-box ${
                 selectTable ? 'read-only' : 'selectable'
               }`}
-              onClick={(e) => {
-                setSelectTable(tables);
-                setShowFoodMenuTab(true);
-                handleTable(tables);
-              }} 
+             
             >
               <h6>
                 <SiTablecheck className="mr-2" />
                 <br />
                 {tables.tablename}
               </h6>
+              <p>SeatCapacity:{tables.seatcapacity}</p>
             </div>
+            <div class="flex-row-container">
+
+  <div class="flex-row-item">
+  <input type="text" name="numberofperson" value={numberofperson} onChange={(e) => {setNumberofPerson(e.target.value)
+  handleNumberofPersonChange(e)}} className="form-control" placeholder="No Of Person"  />
+  </div>
+  <div class="flex-row-item">
+  <a  className={`btn btn-outline-primary ${!isValidNumber() ? 'disabled' : ''}`}  onClick={(e) => {
+                setSelectTable(tables);
+                
+                handleTable(tables);
+              }}   >+</a>
+  </div>
+ 
+
+</div>
           </div>
         ))}
       </div>

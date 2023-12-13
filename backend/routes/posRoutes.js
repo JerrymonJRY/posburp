@@ -19,7 +19,8 @@ const {getposCategory,
     insertQuickpay,
     getSplit,
     getMerge,
-    getedit
+    getedit,
+    tableorder
 } =require('../controller/posController');
 
 
@@ -42,6 +43,7 @@ router.post('/createQuickpay',insertQuickpay);
 router.get('/getsplit/:id',getSplit);
 router.post('/getmerge',getMerge);
 router.get('/getEdit/:id',getedit);
+router.get('/tableorder',tableorder);
 
 
 

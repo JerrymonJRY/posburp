@@ -128,7 +128,7 @@
     transition: ease all 0.3s;
     margin-bottom: 25px;
     height: 105px;
-    display: flex;
+    /* display: flex; */
     justify-content: center;
     align-items: center; 
     background: cornsilk;  
@@ -454,3 +454,31 @@ a.nav-link.nav-link-waiter.active img{
 .selected-card {
     border: 2px solid red; /* Change to your desired color */
   }
+
+
+  .flex-row-container {
+    background: #aaa;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-row-container > .flex-row-item {
+    height: 30px;
+}
+
+.flex-row-item {
+    background-color: #fff;
+   
+}
+
+
+.flex-row-container > .flex-row-item:nth-child(1)
+{
+    flex: 1 1 45%; /* Increase width for the first two columns */
+}
+
+.flex-row-container > .flex-row-item:nth-child(2) {
+    flex: 1 1 10%; /* Decrease width for the last column */
+}

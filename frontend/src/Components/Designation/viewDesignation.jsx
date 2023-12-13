@@ -7,14 +7,14 @@ import axios from "axios";
 import { redirect, useNavigate,Link } from "react-router-dom";
 import Swal from 'sweetalert2';
 import apiConfig from '../layouts/base_url';
-const ViewExpense =() =>{
+const ViewDesignation =() =>{
 
 
   const [data , setData] =useState([]);
   const navigate = useNavigate();
   useEffect( ()=>{
 
-      axios.get(`${apiConfig.baseURL}/api/expense/allexpense`)
+      axios.get(`${apiConfig.baseURL}/api/designation/designationView`)
       .then((response) => {
         setData(response.data);
 
@@ -41,7 +41,7 @@ const handleDelete = (id) => {
     confirmButtonText: 'Yes, delete it!'
   }).then((result) => {
     if (result.isConfirmed) {
-      axios.delete(`${apiConfig.baseURL}/api/expense/deleteexpense/${id}`)
+      axios.delete(`${apiConfig.baseURL}/api/designation/designationDelete/${id}`)
         .then((res) => {
           Swal.fire({
             icon: 'success',
@@ -58,7 +58,7 @@ const handleDelete = (id) => {
             }
           });
           // Refresh data after successful delete
-          axios.get(`${apiConfig.baseURL}/api/expense/allexpense`)
+          axios.get(`${apiConfig.baseURL}/api/designation/designationView`)
             .then((response) => {
               setData(response.data);
             })
@@ -83,15 +83,15 @@ const handleDelete = (id) => {
                   <div className="col-lg-12 grid-margin stretch-card">
                 <div className="card">
                   <div className="card-body">
-                    <h4 className="card-title">Expense List</h4>
+                    <h4 className="card-title">Designation List</h4>
                     <div className="d-flex justify-content-end">
-                    <Link to="/addExpense" className="btn btn-success">Add +</Link>
+                    <Link to="/addDesignation" className="btn btn-success">Add +</Link>
                 </div>
                   
                     <table className="table table-hover"  id="example_table" style={{ width: "100%" }}>
                       <thead>
                         <tr>
-                          <th>Expense Name</th>
+                          <th>Designation Name</th>
                           <th>Added By</th>
                         <th>Action</th>
                         </tr>
@@ -100,10 +100,10 @@ const handleDelete = (id) => {
 <tbody>
   {data.map((d, i) => (
     <tr key={i}>
-      <td>{d.expensename}</td>
+      <td>{d.designationname}</td>
       <td>{d.addedby.firstname} {d.addedby.lastname}</td> {/* Corrected access to fullName */}
       <td>
-        <Link to={`/editExpense/${d._id}`} className="btn btn-primary">
+        <Link to={`/editDesignation/${d._id}`} className="btn btn-primary">
           Edit
         </Link>
         <button onClick={  (e)=>handleDelete(d._id)}  className="btn btn-danger">
@@ -124,4 +124,4 @@ const handleDelete = (id) => {
     </div>
     );
 }
-export default ViewExpense;
+export default ViewDesignation;

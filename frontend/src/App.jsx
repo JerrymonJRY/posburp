@@ -64,8 +64,13 @@ import PosEdit from './Components/Pos/posEdit';
 
 import NavbarButton from './Components/layouts/navbarButton';
 import OpenningBalance from './Components/OpenningBalance/openningbalance';
+
 import ViewExpense from './Components/Expense/viewExpense';
-import AddExpense from './Components/Expense/addExpense';
+import AddExpense from './Components/Expense/addExpense'
+import EditExpense from './Components/Expense/editExpense';
+import ViewDesignation from './Components/Designation/viewDesignation';
+import AddDesignation from './Components/Designation/addDesignation';
+import EditDesignation from './Components/Designation/editDesignation';
 
 function App() {
 
@@ -151,16 +156,8 @@ function App() {
               <Route path='/viewWaiter' element={<RequireToken><ViewWaiter /></RequireToken>}></Route>
               <Route path='/editWaiter/:id' element={<RequireToken><EditWaiter /></RequireToken>}></Route>
               <Route
-  path='/pos'
-  element={
-    !isOpeningBalanceComplete ? (
-      <RequireToken>
-        <OpenningBalance />
-      </RequireToken>
-    ) : (
-      <RequireToken>
-        <Pos />
-      </RequireToken>
+  path='/pos' element={ !isOpeningBalanceComplete ? (<RequireToken><OpenningBalance /></RequireToken>
+    ) : (<RequireToken><Pos /></RequireToken>
     )
   }
 />
@@ -204,7 +201,12 @@ function App() {
    
               <Route path='/viewExpense' element={<RequireToken><ViewExpense /></RequireToken>}></Route>
               <Route path='/addExpense' element={<RequireToken><AddExpense /></RequireToken>}></Route>
- 
+              <Route path='/editExpense/:id' element={<RequireToken><EditExpense /></RequireToken>}></Route>
+
+              {/* Designation */}
+              <Route path='/viewDesignation' element={<RequireToken><ViewDesignation /></RequireToken>}></Route>
+              <Route path='/addDesignation' element={<RequireToken><AddDesignation /></RequireToken>}></Route>
+              <Route path='/editDesignation/:id' element={<RequireToken><EditDesignation /></RequireToken>}></Route>
      
 
      
