@@ -1083,55 +1083,240 @@ const getedit =asyncHandler(async(req,res) =>{
 
 
 const tableorder = asyncHandler(async (req, res) => {
-  try {
-    const pendingOrders = await OrderTable.find({ orderstatus: 'Pending' });
 
-    if (pendingOrders.length === 0) {
-      // If there are no pending orders, all tables are available
-      const allTables = await Table.find();
-      res.json(allTables);
-    } else {
-      // If there are pending orders, find available tables with seat capacity calculation
-      const availableTables = await Table.aggregate([
-        {
-          $lookup: {
-            from: 'ordertables',
-            localField: '_id',
-            foreignField: 'ordertableId',
-            as: 'orders',
-          },
+  try {
+    const result = await Table.aggregate([
+      {
+        $lookup: {
+          from: 'ordertables',
+          localField: '_id',
+          foreignField: 'ordertableId',
+          as: 'orderData',
         },
-        {
-          $match: {
-            $or: [
-              { orders: { $exists: false, $eq: [] } },
-              { orders: { $elemMatch: { orderstatus: 'Pending' } } },
-            ],
-          },
+      },
+      {
+        $unwind: {
+          path: '$orderData',
+          preserveNullAndEmptyArrays: true,
         },
-        {
-          $project: {
-            tablename: 1,
-            Position: 1,
-            seatcapacity: { $toInt: '$seatcapacity' },
-            description: 1,
-            remainingSeatCapacity: {
-              $subtract: [
-                { $toInt: '$seatcapacity' },
-                { $sum: '$orders.numberofperson' },
-              ],
+      },
+      {
+        $group: {
+          _id: '$_id',
+          tablename: { $first: '$tablename' },
+          Position: { $first: '$Position' },
+          seatcapacity: { $first: '$seatcapacity' },
+          description: { $first: '$description' },
+          orderstatus: { $first: '$orderData.orderstatus' },
+          subtractedValue: {
+            $sum: {
+              $cond: {
+                if: {
+                  $and: [
+                    { $ne: ['$orderData', null] },
+                    { $eq: ['$orderData.orderstatus', 'Pending'] },
+                  ],
+                },
+                then: {
+                  $cond: {
+                    if: { $gte: [{ $toInt: '$seatcapacity' }, { $toInt: '$orderData.numberofperson' }] },
+                    then: { $toInt: '$orderData.numberofperson' },
+                    else: { $toInt: '$seatcapacity' },
+                  },
+                },
+                else: 0,
+              },
             },
           },
         },
-      ]);
-
-      res.json(availableTables);
-    }
+      },
+      {
+        $project: {
+          tablename: 1,
+          Position: 1,
+          seatcapacity: 1,
+          description: 1,
+          orderstatus: 1,
+          subtractedValue: 1,
+          availableSeat: { $subtract: [{ $toInt: '$seatcapacity' }, '$subtractedValue'] },
+        },
+      },
+    ]);
+  
+    res.json(result);
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).json({ message: error.message });
   }
 });
+
+
+const calculateTable =asyncHandler(async(req,res) =>{
+ 
+
+  // try {
+  //   const result = await Table.aggregate([
+  //     {
+  //       $lookup: {
+  //         from: 'ordertables',
+  //         localField: '_id',
+  //         foreignField: 'ordertableId',
+  //         as: 'orderData',
+  //       },
+  //     },
+  //     {
+  //       $unwind: {
+  //         path: '$orderData',
+  //         preserveNullAndEmptyArrays: true,
+  //       },
+  //     },
+  //     {
+  //       $group: {
+  //         _id: '$_id',
+  //         tablename: { $first: '$tablename' },
+  //         Position: { $first: '$Position' },
+  //         seatcapacity: { $first: '$seatcapacity' },
+  //         description: { $first: '$description' },
+  //         orderstatus: { $first: '$orderData.orderstatus' },
+  //         subtractedValue: {
+  //           $sum: {
+  //             $cond: {
+  //               if: {
+  //                 $and: [
+  //                   { $ne: ['$orderData', null] },
+  //                   { $eq: ['$orderData.orderstatus', 'Pending'] },
+  //                 ],
+  //               },
+  //               then: {
+  //                 $cond: {
+  //                   if: {
+  //                     $gte: [
+  //                       {
+  //                         $subtract: [
+  //                           { $convert: { input: '$seatcapacity', to: 'int' } },
+  //                           { $convert: { input: '$orderData.numberofperson', to: 'int' } },
+  //                         ],
+  //                       },
+  //                       0,
+  //                     ],
+  //                   },
+  //                   then: {
+  //                     $subtract: [
+  //                       { $convert: { input: '$seatcapacity', to: 'int' } },
+  //                       { $convert: { input: '$orderData.numberofperson', to: 'int' } },
+  //                     ],
+  //                   },
+  //                   else: { $convert: { input: '$seatcapacity', to: 'int' } },
+  //                 },
+  //               },
+  //               else: 0,
+  //             },
+  //           },
+  //         },
+  //       },
+  //     },
+  //     {
+  //       $project: {
+  //         tablename: 1,
+  //         Position: 1,
+  //         seatcapacity: 1,
+  //         description: 1,
+  //         orderstatus: 1,
+  //         subtractedValue: 1,
+  //         availableSeat: {
+  //           $cond: {
+  //             if: {
+  //               $eq: [
+  //                 {
+  //                   $subtract: [
+  //                     { $convert: { input: '$seatcapacity', to: 'int' } },
+  //                     { $convert: { input: '$subtractedValue', to: 'int' } },
+  //                   ],
+  //                 },
+  //                 { $convert: { input: '$seatcapacity', to: 'int' } },
+  //               ],
+  //             },
+  //             then: { $convert: { input: '$seatcapacity', to: 'int' } },
+  //             else: { $convert: { input: '$subtractedValue', to: 'int' } },
+  //           },
+  //         },
+  //       },
+  //     },
+  //   ]);
+  
+  //   res.json(result);
+  // } catch (error) {
+  //   res.status(500).json({ message: error.message });
+  // }
+  
+  
+  try {
+    const result = await Table.aggregate([
+      {
+        $lookup: {
+          from: 'ordertables',
+          localField: '_id',
+          foreignField: 'ordertableId',
+          as: 'orderData',
+        },
+      },
+      {
+        $unwind: {
+          path: '$orderData',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $group: {
+          _id: '$_id',
+          tablename: { $first: '$tablename' },
+          Position: { $first: '$Position' },
+          seatcapacity: { $first: '$seatcapacity' },
+          description: { $first: '$description' },
+          orderstatus: { $first: '$orderData.orderstatus' },
+          subtractedValue: {
+            $sum: {
+              $cond: {
+                if: {
+                  $and: [
+                    { $ne: ['$orderData', null] },
+                    { $eq: ['$orderData.orderstatus', 'Pending'] },
+                  ],
+                },
+                then: {
+                  $cond: {
+                    if: { $gte: [{ $toInt: '$seatcapacity' }, { $toInt: '$orderData.numberofperson' }] },
+                    then: { $toInt: '$orderData.numberofperson' },
+                    else: { $toInt: '$seatcapacity' },
+                  },
+                },
+                else: 0,
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          tablename: 1,
+          Position: 1,
+          seatcapacity: 1,
+          description: 1,
+          orderstatus: 1,
+          subtractedValue: 1,
+          availableSeat: { $subtract: [{ $toInt: '$seatcapacity' }, '$subtractedValue'] },
+        },
+      },
+    ]);
+  
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+  
+  
+  
+  
+})
 
 
 
@@ -1155,5 +1340,6 @@ module.exports =
   insertQuickpay,
   getSplit,
   getMerge,getedit,
-  tableorder
+  tableorder,
+  calculateTable
 };

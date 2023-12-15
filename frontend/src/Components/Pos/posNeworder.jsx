@@ -51,6 +51,7 @@ const PosNewOrder = () => {
   const [delivery ,setDelivery] =useState([]);
   const [selectDelivery,setSelectDelivery] =useState();
   const [table, setTable] = useState([]);
+  const [ordertable,setOrderTable] =useState([]);
   const [selectTable, setSelectTable] = useState();
   const [foodCategory, setFoodcategory] = useState([]);
   const distinctCategories = [...new Set(foodCategory.map(item => item.foodcategory.foodcategoryname))];
@@ -127,6 +128,8 @@ const filteredTables = table.filter((tables) =>
 tables.tablename.toLowerCase().includes(searchTable.toLowerCase())
 );
 
+
+
 const handleSearchCustomer =(e) =>
 {
   setSearchCustomer(e.target.value);
@@ -144,6 +147,8 @@ const handleSearchDelivery =(e) =>
 const filteredDelivery = delivery.filter((delivery) =>
 delivery.dliveryname.toLowerCase().includes(searchDeliveryPerson.toLowerCase())
 );
+
+
 
 console.info({table})
   const handleDinein = (e) => {
@@ -272,13 +277,20 @@ console.info({customers})
 
   useEffect(() => {
 
-    axios.get(`${apiConfig.baseURL}/api/pos/posTable`)
-      .then((response) => {
-        setTable(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    // axios.get(`${apiConfig.baseURL}/api/pos/posTable`)
+    //   .then((response) => {
+    //     setTable(response.data);
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
+    axios.get(`${apiConfig.baseURL}/api/pos/tableorder`)
+    .then((response) => {
+      setTable(response.data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 
       axios.get(`${apiConfig.baseURL}/api/pos/posCustomer`)
       .then((response) => {
@@ -287,6 +299,15 @@ console.info({customers})
       .catch((error) => {
         console.error(error);
       });
+
+
+      // axios.get(`${apiConfig.baseURL}/api/pos/calculate`)
+      // .then((response) => {
+      //   setOrderTable(response.data);
+      // })
+      // .catch((error) => {
+      //   console.error(error);
+      // });
   }, []);
 
   useEffect(() => {
@@ -1135,6 +1156,9 @@ const handleTabClick =() =>{
       <br />
       <div className="row">
         {filteredTables.map((tables, index) => (
+
+            
+          
           <div
             key={index}
             className={`col-sm-3 col-md-3 ${selectTable === tables ? 'disabled' : ''}`}
@@ -1151,25 +1175,54 @@ const handleTabClick =() =>{
                 {tables.tablename}
               </h6>
               <p>SeatCapacity:{tables.seatcapacity}</p>
+              <p>Avilable Seat:{tables.availableSeat}</p>
+             
             </div>
             <div class="flex-row-container">
 
   <div class="flex-row-item">
   <input type="text" name="numberofperson" value={numberofperson} onChange={(e) => {setNumberofPerson(e.target.value)
-  handleNumberofPersonChange(e)}} className="form-control" placeholder="No Of Person"  />
+  handleNumberofPersonChange(e)}} className="form-control" placeholder="No Of Person"  readOnly={tables.availableSeat === 0}   />
+  {parseInt(numberofperson) > parseInt(tables.seatcapacity) && (
+  <p className="validation-msg">
+   
+    
+  </p>
+)}
   </div>
   <div class="flex-row-item">
-  <a  className={`btn btn-outline-primary ${!isValidNumber() ? 'disabled' : ''}`}  onClick={(e) => {
-                setSelectTable(tables);
-                
-                handleTable(tables);
-              }}   >+</a>
+  <a  className={`btn btn-outline-primary ${
+            !isValidNumber() ||
+            tables.availableSeat === 0 ||
+            parseInt(numberofperson) > parseInt(tables.seatcapacity)
+              ? 'disabled'
+              : ''
+          }`}
+          
+          onClick={(e) => {
+            if (
+              tables.subtractedValue !== 0 &&
+              parseInt(numberofperson) <= parseInt(tables.availableSeat)
+            ) {
+              setSelectTable(tables);
+              handleTable(tables);
+            }
+            else
+            {
+              Swal.fire({
+                icon: 'warning',
+                title: 'Warning',
+                text: 'Please check your input and try again.',
+                confirmButtonText: 'OK',
+              });
+            }
+          }}   >+</a>
   </div>
  
 
 </div>
           </div>
-        ))}
+          ))}
       </div>
     </div>
   )}

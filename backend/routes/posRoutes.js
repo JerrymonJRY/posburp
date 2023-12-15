@@ -20,7 +20,8 @@ const {getposCategory,
     getSplit,
     getMerge,
     getedit,
-    tableorder
+    tableorder,
+    calculateTable
 } =require('../controller/posController');
 
 
@@ -44,6 +45,7 @@ router.get('/getsplit/:id',getSplit);
 router.post('/getmerge',getMerge);
 router.get('/getEdit/:id',getedit);
 router.get('/tableorder',tableorder);
+router.get('/calculate',calculateTable)
 
 
 
