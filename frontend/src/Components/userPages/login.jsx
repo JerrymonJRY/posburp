@@ -61,10 +61,9 @@ function  Login() {
               <div className="col-lg-4 mx-auto">
                 <div className="auth-form-light text-left p-5">
                   <div className="brand-logo">
-                    <img src="../../assets/images/logo.svg" />
+                    <img src="assets/images/pos/burps.png" />
                   </div>
-                  <h4>Hello! let's get started</h4>
-                  <h6 className="font-weight-light">Sign in to continue.</h6>
+                 
                   <form className="pt-3" >
                     <div className="form-group">
 
