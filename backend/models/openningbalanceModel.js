@@ -1,14 +1,18 @@
-const mongoose = require('mongoose'); // Erase if already required
+const mongoose = require('mongoose');
 
 // Declare the Schema of the Mongo model
 var openningBalanceSchema = new mongoose.Schema({
-    amount: {
-        type: Number,  
-        required: true 
-    },
+    
     date: { type: Date, default: Date.now },
-  
+    amount: {
+        type: Number,
+       
+       
+    },
 });
 
-//Export the model
+// Create a unique index on the "amount" field
+
+
+// Export the model
 module.exports = mongoose.model('Openningbalance', openningBalanceSchema);

@@ -8,6 +8,8 @@ const Foodmenu =require('../models/foodmenuModel');
 const Pos  =require('../models/posModels');
 const Delivery =require('../models/deliveryModel');
 const OrderTable =require('../models/ordertableModel');
+const Payment =require('../models/paymentModel');
+const Transaction =require('../models/acctransactionModel')
 
 
 //Food Category
@@ -108,15 +110,14 @@ const insertPos =asyncHandler(async(req,res) =>{
 
  const sequence = await Pos.findOne({}).sort('-ordernumber'); // Find the latest ID
 
-    let nextIdNumber = 'Burp01001023001';
+ let nextIdNumber = 'ORD10001';
 
-    if (sequence && sequence.ordernumber) {
-      // Extract and increment the numeric part of the latest ID
-      const lastIdNumber = sequence.ordernumber;
-      const numericPart = lastIdNumber.substring(11); // Extract the numeric part
-      const nextNumericValue = parseInt(numericPart, 10) + 1;
-      nextIdNumber = `Burp0100102${nextNumericValue.toString().padStart(3, '0')}`;
-    }
+if (sequence && sequence.ordernumber) {
+  const lastIdNumber = sequence.ordernumber;
+  const numericPart = lastIdNumber.substring(3); // Adjust the starting index
+  const nextNumericValue = parseInt(numericPart, 10) + 1;
+  nextIdNumber = `ORD${nextNumericValue.toString().padStart(5, '0')}`;
+}
 
     // Check if the ID number already exists
     const exists = await Pos.findOne({ ordernumber: nextIdNumber });
@@ -455,26 +456,112 @@ const completePaymeny =asyncHandler(async(req,res) =>{
 const updatePayment =asyncHandler(async(req,res) =>
 {
   try {
-    // Assuming you have a model named "Pos"
-    const { id } = req.params; // Get the document ID from the request parameters
-    const { paymentType } = req.body; // Get updated data from the request body
+  
+    const { id } = req.params; 
+    const { paymentType,total,vatAmount,grandTotal } = req.body;
       let paymentstatus ='paid';
     const updateResult = await Pos.updateOne(
-      { _id: id }, // Match the document by its ID
+      { _id: id }, 
       {
         $set: {
-          paymentstatus:paymentstatus, // Update the "paymentstatus" field
-          paymentType,  // Update the "paymentType" field
+          paymentstatus:paymentstatus, 
+          paymentType,  
         },
       }
     );
   
     if (updateResult.nModified === 0) {
-      // Check if any document was modified (nModified === 0 indicates no changes)
+     
       return res.status(404).json({ error: 'No matching document found' });
     }
+
+    let orderstatus ="Complete";
+
+    const updateorderTable = await OrderTable.updateOne(
+      { orderId: id }, 
+      {
+        $set: {
+          orderstatus:orderstatus
+        },
+      }
+    );
+
+
+    
+    
+
+
+
+
+
+
+    const sequence = await Payment.findOne({}).sort('-bilnumber'); // Find the latest ID
+
+    let nextIdNumber = 'BIL10001';
+   
+   if (sequence && sequence.bilnumber) {
+     const lastIdNumber = sequence.bilnumber;
+     const numericPart = lastIdNumber.substring(3); // Adjust the starting index
+     const nextNumericValue = parseInt(numericPart, 10) + 1;
+     nextIdNumber = `BIL${nextNumericValue.toString().padStart(5, '0')}`;
+   }
+   
+       // Check if the ID number already exists
+    const exists = await Payment.findOne({ bilnumber: nextIdNumber });
+
+    if (exists) {
+      return res.status(400).json({ error: 'ID number already exists' });
+    }
+
+    const cashpayment = new Payment({
+      bilnumber:nextIdNumber,
+      orderId:id,
+      total:total,
+      vatAmount:vatAmount,
+      grandTotal:grandTotal,
+      paymentType:paymentType,
+     
+    
+  });
+
+  const finaldata = await cashpayment.save();
+
+    const trans = await Transaction.findOne({}).sort('-transnumber');
+      
+      let transIdnumber = 'TR10001';
+
+      if (trans && trans.transnumber) {
+        
+        const lastIdNumber = trans.transnumber;
+        const numericPart = lastIdNumber.substring(2); 
+        const nextNumericValue = parseInt(numericPart, 10) + 1; 
+        transIdnumber = `TR${nextNumericValue.toString().padStart(5, '0')}`; 
+      }
+
+      const exist = await Transaction.findOne({ transnumber: transIdnumber });
   
-    // You can also retrieve the updated document if needed
+      if (exist) {
+        return res.status(400).json({ error: 'ID number already exists' });
+      }
+
+      let transtype ="Credit";
+      let transmode ="Food Bill"
+
+      const newEntry = new Transaction({ 
+        accountsid:finaldata._id,
+        transnumber:transIdnumber,
+        transmode:transmode,
+        amount:grandTotal,
+        transtype:transtype
+
+
+  
+  
+       
+      
+      });
+      await newEntry.save();
+ 
     const updatedDocument = await Pos.findById(id);
   
     res.json(updatedDocument);
@@ -610,16 +697,14 @@ const insertPoshold =asyncHandler(async(req,res) =>{
 
  const sequence = await Pos.findOne({}).sort('-ordernumber'); // Find the latest ID
 
-    let nextIdNumber = 'Burp01001023001';
+ let nextIdNumber = 'ORD10001';
 
-    if (sequence && sequence.ordernumber) {
-      // Extract and increment the numeric part of the latest ID
-      const lastIdNumber = sequence.ordernumber;
-      const numericPart = lastIdNumber.substring(11); // Extract the numeric part
-      const nextNumericValue = parseInt(numericPart, 10) + 1;
-      nextIdNumber = `Burp0100102${nextNumericValue.toString().padStart(3, '0')}`;
-    }
-
+if (sequence && sequence.ordernumber) {
+  const lastIdNumber = sequence.ordernumber;
+  const numericPart = lastIdNumber.substring(3); // Adjust the starting index
+  const nextNumericValue = parseInt(numericPart, 10) + 1;
+  nextIdNumber = `ORD${nextNumericValue.toString().padStart(5, '0')}`;
+}
     // Check if the ID number already exists
     const exists = await Pos.findOne({ ordernumber: nextIdNumber });
 
@@ -775,15 +860,14 @@ const insertQuickpay =asyncHandler(async(req,res) =>{
 
  const sequence = await Pos.findOne({}).sort('-ordernumber'); // Find the latest ID
 
-    let nextIdNumber = 'Burp01001023001';
+ let nextIdNumber = 'ORD10001';
 
-    if (sequence && sequence.ordernumber) {
-      // Extract and increment the numeric part of the latest ID
-      const lastIdNumber = sequence.ordernumber;
-      const numericPart = lastIdNumber.substring(11); // Extract the numeric part
-      const nextNumericValue = parseInt(numericPart, 10) + 1;
-      nextIdNumber = `Burp0100102${nextNumericValue.toString().padStart(3, '0')}`;
-    }
+ if (sequence && sequence.ordernumber) {
+   const lastIdNumber = sequence.ordernumber;
+   const numericPart = lastIdNumber.substring(3); // Adjust the starting index
+   const nextNumericValue = parseInt(numericPart, 10) + 1;
+   nextIdNumber = `ORD${nextNumericValue.toString().padStart(5, '0')}`;
+ }
 
     // Check if the ID number already exists
     const exists = await Pos.findOne({ ordernumber: nextIdNumber });
@@ -810,9 +894,76 @@ const insertQuickpay =asyncHandler(async(req,res) =>{
      
     
     });
-    await newEntry.save();
+    const quick = await newEntry.save();
+
+    const orderbill = await Payment.findOne({}).sort('-bilnumber'); // Find the latest ID
+
+    let billIdnumber = 'BIL10001';
+   
+   if (orderbill && orderbill.bilnumber) {
+     const lastIdNumber = orderbill.bilnumber;
+     const numericPart = lastIdNumber.substring(3); // Adjust the starting index
+     const nextNumericValue = parseInt(numericPart, 10) + 1;
+     billIdnumber = `BIL${nextNumericValue.toString().padStart(5, '0')}`;
+   }
+   
+       // Check if the ID number already exists
+    const exist = await Payment.findOne({ bilnumber: billIdnumber });
+
+    if (exist) {
+      return res.status(400).json({ error: 'ID number already exists' });
+    }
+    let paymentType="Cash";
+
+    const cashpayment = new Payment({
+      bilnumber:billIdnumber,
+      orderId:quick._id,
+      total:total,
+      vatAmount:vatAmount,
+      grandTotal:grandTotal,
+      paymentType:paymentType,
+     
+    
+  });
+
+  const finaldata = await cashpayment.save();
 
  
+  const trans = await Transaction.findOne({}).sort('-transnumber');
+      
+      let transIdnumber = 'TR10001';
+
+      if (trans && trans.transnumber) {
+        
+        const lastIdNumber = trans.transnumber;
+        const numericPart = lastIdNumber.substring(2); 
+        const nextNumericValue = parseInt(numericPart, 10) + 1; 
+        transIdnumber = `TR${nextNumericValue.toString().padStart(5, '0')}`; 
+      }
+
+      const transz = await Transaction.findOne({ transnumber: transIdnumber });
+  
+      if (transz) {
+        return res.status(400).json({ error: 'ID number already exists' });
+      }
+
+      let transtype ="Credit";
+      let transmode ="Food Bill"
+
+      const newTransaction = new Transaction({ 
+        accountsid:finaldata._id,
+        transnumber:transIdnumber,
+        transmode:transmode,
+        amount:grandTotal,
+        transtype:transtype
+
+
+  
+  
+       
+      
+      });
+      await newTransaction.save();
 
   
 

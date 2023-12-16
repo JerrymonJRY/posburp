@@ -7,7 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 const RunningPaymentModal =({data,showModal,setShowModal}) =>{
 
   const navigate = useNavigate();
-
+  
     const [payments,setPays] =useState();
     const payment  = [
         { value: 'Cash', label: 'Cash' },
@@ -24,11 +24,21 @@ const RunningPaymentModal =({data,showModal,setShowModal}) =>{
        }
   
 
-    const handleMakePayment =(id) =>
+    const handleMakePayment =(id,order) =>
 {
+
+  if (!order || order?.grandTotal == null) {
+    // Handle the case where order is null or grandTotal is not available
+    console.error("Invalid order data");
+    return;
+  }
   
   var formData = new FormData();
   formData.append("paymentType", payments);
+   formData.append("total", order.total);
+   formData.append("vatAmount", order.vatAmount);
+  formData.append("grandTotal", order.grandTotal);
+
   //formData.append("foodmenuname", foodmenuname);
 
   const config = {
@@ -109,6 +119,8 @@ const RunningPaymentModal =({data,showModal,setShowModal}) =>{
                        <h6>Total :{order.total}</h6>
                        <h6>Vat Amount :{order.vatAmount}</h6>
                        <h6>Grand Total :{order.grandTotal}</h6>
+
+                     
        
                        <div className="form-group row">
                                <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Select Payment</label>
@@ -126,7 +138,7 @@ const RunningPaymentModal =({data,showModal,setShowModal}) =>{
                              </div>
        
                        <div className="modal-footer">
-                       <button type="button" className="btn btn-outline-primary" onClick={(e) => handleMakePayment(order._id)}>Pay Now</button> 
+                       <button type="button" className="btn btn-outline-primary" onClick={(e) => handleMakePayment(order._id,order)}>Pay Now</button> 
                      <button type="button" className="btn btn-outline-secondary" onClick={() => setShowModal(false)}>Close</button>
                    </div>
           

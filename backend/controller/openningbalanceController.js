@@ -5,7 +5,7 @@ const Balance =require('../models/openningbalanceModel')
 const createBalance =asyncHandler(async(req,res) =>{
 
    // const today = new Date().toISOString().split('T')[0];
-    const { amount } =req.body.amount;
+    
   try {
     const result =  Balance.create(req.body);
 

@@ -1183,12 +1183,7 @@ const handleTabClick =() =>{
   <div class="flex-row-item">
   <input type="text" name="numberofperson" value={numberofperson} onChange={(e) => {setNumberofPerson(e.target.value)
   handleNumberofPersonChange(e)}} className="form-control" placeholder="No Of Person"  readOnly={tables.availableSeat === 0}   />
-  {parseInt(numberofperson) > parseInt(tables.seatcapacity) && (
-  <p className="validation-msg">
-   
-    
-  </p>
-)}
+  
   </div>
   <div class="flex-row-item">
   <a  className={`btn btn-outline-primary ${
@@ -1200,22 +1195,11 @@ const handleTabClick =() =>{
           }`}
           
           onClick={(e) => {
-            if (
-              tables.subtractedValue !== 0 &&
-              parseInt(numberofperson) <= parseInt(tables.availableSeat)
-            ) {
+           
               setSelectTable(tables);
               handleTable(tables);
-            }
-            else
-            {
-              Swal.fire({
-                icon: 'warning',
-                title: 'Warning',
-                text: 'Please check your input and try again.',
-                confirmButtonText: 'OK',
-              });
-            }
+          
+          
           }}   >+</a>
   </div>
  
