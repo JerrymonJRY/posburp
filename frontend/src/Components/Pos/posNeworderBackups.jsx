@@ -40,8 +40,11 @@ const PosNewOrder = () => {
     delivery: false,
     
   });
+  const [key, setKey] = useState(0);
   const [enableDinein, setEnableDinein] = useState(false);
   const [enableFoodmenu,setEnableFoodmenu] =useState(false);
+  const [enableWaiter,setEnableWaiter] =useState(true);
+  const [enableWaiters,setEnableWaiters] =useState(true);
   // const [isEnableTable, setEnableTable] = useState(true);
   // const [isEnableTakeway,setEnableTakeway] =useState(true);
   // const [isEnableDelivery,setEnableDelivery] =useState(true);
@@ -83,7 +86,7 @@ const PosNewOrder = () => {
   const [posHoldingorder, setPosHoldingorder] = useState([]);
   const [isModalHold, setModalHold] = useState(false);
   const [isModalCashDrop,setModalCashDrop] =useState(false);
-  const [numberofperson,setNumberofPerson] =useState({})
+  const [numberofperson,setNumberofPerson] =useState('')
 
 
 
@@ -97,6 +100,8 @@ const handleSearchWaiter =(e) =>{
 }
 
 const handleClearClick = () => {
+
+  navigate('/pos');
   setSelectWaiter("");
   setSelectCustomer("");
   setSelectDelivery("");
@@ -112,6 +117,9 @@ const handleClearClick = () => {
   setShowFoodMenuTab(false);
   setShowDeliveryTab(false);
   setCart([]);
+  setEnableFoodmenu(false);
+  setEnableWaiter(true);
+  setEnableWaiters(true);
 
   // navigate("/pos");
 
@@ -161,6 +169,7 @@ console.info({table})
     setOptions("Dine In")
     setEnableDinein(true);
     setactiveTableTab(1);
+    setEnableFoodmenu(true);
 
   };
 
@@ -200,12 +209,12 @@ console.info({table})
   }
 
 
-  const handleNumberofPersonChange = (e, id) => {
+  const handleNumberofPersonChange = (e) => {
     const value = e.target.value;
   
     // Validate if the entered value is a valid positive integer
     if (/^[1-9]\d*$/.test(value) || value === '') {
-      setNumberofPerson({...numberofperson, [id]: value});
+      setNumberofPerson(value);
     }
   };
   
@@ -549,10 +558,27 @@ console.info({customers})
             if (result.isConfirmed) {
               // Open your print modal here
               console.log(posData);
+              setKey((prevKey) => prevKey + 1);
               openPrintModal(res.data);
+              setSelectWaiter("");
+  setSelectCustomer("");
+  setSelectDelivery("");
+  setSelectTable("");
+  setOptions("");
+  setTabEnabled({
+    dineIn: false,
+    takeaway: false,
+    delivery: false,
+  });
+  setEnableDinein(false);
+  setShowCustomerTab(false);
+  setShowFoodMenuTab(false);
+  setShowDeliveryTab(false);
+  setCart([]);
+  setEnableFoodmenu(false);
+  setEnableWaiter(true);
             } else {
-              // navigate('/posorder');
-              setRefresh((prevRefresh) => !prevRefresh);
+              setKey((prevKey) => prevKey + 1);
             }
           });
         })
@@ -634,7 +660,7 @@ console.info({customers})
     return formattedDetails;
   }
 
-console.info({filteredTables})
+
   const handleHold =(event) =>
   {
     event.preventDefault();
@@ -967,7 +993,7 @@ const handleTabClick =() =>{
 
           <div className="row">
             <div className="col-lg-6"><button type="button" className="btn btn-danger w-100 mb-2 p-2">Cancel</button></div>
-            <div className="col-lg-6 pl-0"><button type="button" onClick={handlePlaceorder} className="btn btn-warning w-100 mb-2 p-2">Place Order</button></div>
+            <div className="col-lg-6 pl-0"><button type="button" key={key} onClick={handlePlaceorder} className="btn btn-warning w-100 mb-2 p-2">Place Order</button></div>
             <div className="col-lg-6"><button type="button" onClick={handleHold} className="btn btn-danger w-100 mb-2 p-2">Hold</button></div>
             <div className="col-lg-6 pl-0"><button type="button" onClick={handleQuickPay} className="btn btn-success w-100 mb-2 p-2">Quick Pay</button></div>
           </div>
@@ -1028,6 +1054,7 @@ const handleTabClick =() =>{
       <div className="col-sm-7 col-lg-7">
         <div className="tbl-h">
           <ul className="nav nav-tabs nav-justified" role="tablist">
+            {enableWaiters && (
             <li className="nav-item ">
               {/* <a className="nav-link  active" onClick={handleWaiter} data-toggle="tab" href="#waiter" role="tab" aria-controls="kiwi2" aria-selected="false">Waiter</a> */}
               <a className="nav-link pos active"
@@ -1049,7 +1076,7 @@ const handleTabClick =() =>{
                 }}
                 data-toggle="tab" href="#waiter" role="tab" aria-controls="kiwi2" aria-selected="false"><TbChefHat className="mr-2" />Select Waiter</a>
             </li>
-
+          )}
             {
               tabEnabled.dineIn && (<li className="nav-item">
                 <a className="nav-link pos " onClick={handleDinein} data-toggle="tab" href="#table" role="tab" aria-controls="duck2" aria-selected="true"><FaCcDinersClub className="mr-2" />Dine In</a>
@@ -1092,10 +1119,10 @@ const handleTabClick =() =>{
           </ul>
         </div>
         <div className="tab-content mt-3">
+          { enableWaiter && (
           <div className="tab-pane active" id="waiter" role="tabpanel" aria-labelledby="duck-tab">
 
-            {/* { */}
-              {/* showWaiters && */}
+            
 
               <input
         type="text"
@@ -1116,8 +1143,10 @@ const handleTabClick =() =>{
         </div>
       ))}
               </div>
+            
             {/* } */}
           </div>
+            ) }
           {/* <div className="tab-pane " id="table" role="tabpanel" aria-labelledby="duck-tab">
 
           <input
@@ -1181,12 +1210,12 @@ const handleTabClick =() =>{
             <div class="flex-row-container">
 
   <div class="flex-row-item">
-  <input type="text" name="numberofperson" value={numberofperson[tables._id] || ''} onChange={(e) => {
-  handleNumberofPersonChange(e, tables._id)}} className="form-control" placeholder="No Of Person"  readOnly={tables.availableSeat === 0}   />
+  <input type="text" name="numberofperson" value={numberofperson} onChange={(e) => {setNumberofPerson(e.target.value)
+  handleNumberofPersonChange(e)}} className="form-control" placeholder="No Of Person"  readOnly={tables.availableSeat === 0}   />
   
   </div>
   <div class="flex-row-item">
-  <a  className={`btn btn-outline-primary ${
+  <a href="#foodmenu" className={`btn btn-outline-primary ${
             !isValidNumber() ||
             tables.availableSeat === 0 ||
             parseInt(numberofperson) > parseInt(tables.seatcapacity)
@@ -1200,7 +1229,7 @@ const handleTabClick =() =>{
               handleTable(tables);
           
           
-          }}   >Add</a>
+          }}   >+</a>
   </div>
  
 

@@ -25,6 +25,8 @@ const PosOrderEdit = () => {
       .then((response) => {
         const data = response.data[0];
 
+        console.info({reponsedata: data})
+
         if (data && data.cart && Array.isArray(data.cart)) {
           setCart(data.cart);
 
@@ -58,14 +60,16 @@ const PosOrderEdit = () => {
         } else {
           console.log("Grand total not found in the data.");
         }
-        setTotalVat(data.vatAmount);
-        setTotalAmount(data.total);
-        setGrandTotal(data.grandTotal);
+        // setTotalVat(data.vatAmount);
+        // setTotalAmount(data.total);
+        // setGrandTotal(data.grandTotal);
       })
       .catch((error) => {
         console.error(error);
       });
   }, [id]);
+
+  console.info({grandTotal, totalAmount})
 
   useEffect(() => {
     axios.get(`${apiConfig.baseURL}/api/pos/posfood`)
@@ -81,18 +85,19 @@ const PosOrderEdit = () => {
     setSearchTerm(e.target.value);
   };
 
-  const addProductToCart = async (menu) => {
-    let findProductInCart = cart.find(i => i._id === menu.foodmenuIds);
+  const addProductToCart = (menu) => {
+    console.info({menu})
+    let findProductInCart = cart.find(i => i.foodmenuId === menu._id);
     let newCart = [];
 
     if (findProductInCart) {
       let newItem;
 
       cart.forEach(cartItem => {
-        if (cartItem._id === menu._id) {
+        if (cartItem.foodmenuId === menu._id) {
           newItem = {
             ...cartItem,
-            quantity: cartItem.quantity + 1,
+            quantity: parseInt(cartItem.quantity) + 1,
           }
           newCart.push(newItem);
         } else {
@@ -114,6 +119,7 @@ const PosOrderEdit = () => {
     } else {
       let addingProduct = {
         ...menu,
+        foodmenuId: menu._id,
         'quantity': 1,
         'totalAmount': menu.salesprice,
       }
@@ -132,10 +138,11 @@ const PosOrderEdit = () => {
   }
 
   const removeProduct = async (menu) => {
-    const newCart = cart.filter(cartItem => cartItem._id !== menu._id);
+    console.info({menu})
+    const newCart = cart.filter(cartItem => cartItem.foodmenuId !== menu.foodmenuId);
     setCart(newCart);
   }
-
+console.info({cart})
   useEffect(() => {
     let newTotalAmount = 0;
     // let newVatAmount = 0;
@@ -148,21 +155,24 @@ const PosOrderEdit = () => {
 
 cart.forEach(icart => {
   if (icart.vat && typeof icart.vat.percentage !== 'undefined') {
-    newTotalAmount = newTotalAmount + icart.quantity * parseInt(icart.totalAmount);
-   newVatAmount = parseInt(icart.vat.percentage) !== 0 ? newVatAmount + icart.quantity * parseInt(icart.salesprice) * (parseInt(icart.vat.percentage) / 100) : newVatAmount;
+    newTotalAmount = totalAmount + icart.quantity * parseInt(icart.salesprice);
+    newVatAmount = parseInt(icart.vat.percentage) !== 0 ? newVatAmount + icart.quantity * parseInt(icart.salesprice) * (parseInt(icart.vat.percentage) / 100) : vatAmount;
+  } else {
+    newTotalAmount = newTotalAmount + parseInt(icart.quantity) * parseInt(icart.salesprice);
   }
 });
 
     setTotalAmount(newTotalAmount);
-    setTotalVat(newVatAmount.toFixed(2));
-    setGrandTotal((newTotalAmount + newVatAmount).toFixed());
+    setTotalVat(newVatAmount);
+    setGrandTotal((newTotalAmount + newVatAmount));
   }, [cart])
 
   const handleIncrement = (prod) => {
-    const { _id } = prod;
+    console.info({prod})
+    const { foodmenuId } = prod;
     let addQuantity = cart.map(item => {
-      if (item._id === prod._id) {
-        item.quantity = item.quantity + 1;
+      if (item.foodmenuId === prod.foodmenuId) {
+        item.quantity = parseInt(item.quantity) + 1;
       }
       return item;
     })
@@ -170,10 +180,10 @@ cart.forEach(icart => {
   }
 
   const handleDecrement = (prod) => {
-    const { _id } = prod;
+    const { foodmenuId } = prod;
     let addQuantity = cart.map(item => {
-      if (item._id === _id) {
-        item.quantity = item.quantity > 1 ? item.quantity - 1 : 1;
+      if (item.foodmenuId === foodmenuId) {
+        item.quantity = parseInt(item.quantity) > 1 ? parseInt(item.quantity) - 1 : 1;
       }
       return item;
     })
@@ -316,3 +326,4 @@ cart.forEach(icart => {
 }
 
 export default PosOrderEdit;
+

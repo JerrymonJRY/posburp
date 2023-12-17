@@ -1208,6 +1208,7 @@ const getedit =asyncHandler(async(req,res) =>{
           cart: {
             $push: {
               foodmenuId: "$cart.foodmenuId",
+              foodmenuname: "$cart.foodmenuname",
               salesprice: "$cart.salesprice",
               quantity: "$cart.quantity",
               menuItemDetails: "$menuItemDetails"
