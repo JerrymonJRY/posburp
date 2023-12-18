@@ -158,12 +158,15 @@ const AddPurchase =() =>
           ingredientname: item.label,
           quantity: item.quantity,
           expirydate:item.date,
+          purchaseprice:item.purchaseprice,
+          unit:item.unit,
           total: calculateTotal(item.quantity, item.purchaseprice),
         })),
         paidAmount: paidAmount,
         grandTotal: calculateGrandTotal(),
         dueAmount:calculateDueAmount(),
         supplierId: selectSupplier ? selectSupplier.value : null,
+        suppliername:selectSupplier ? selectSupplier.label : null,
         invoiceDate: invoiceDate, 
       };
       

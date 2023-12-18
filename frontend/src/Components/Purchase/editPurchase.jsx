@@ -23,24 +23,37 @@ const EditPurchase = () => {
         const response = await axios.get(`${apiConfig.baseURL}/api/purchase/edit/${id}`);
         const itemData = response.data;
 
-        // Assuming 'supplierId' and 'ingredients' are fields in itemData
-        setSelectedSupplier({
-          value: itemData.supplierId,
-          label: itemData.suppliername, // Replace with the actual field name
-        });
+        if(itemData && itemData.invoiceDate)
+        {
+          setInvoiceDate(itemData.invoiceDate)
+        }
 
-        setInvoiceDate(itemData.invoiceDate);
+        if (itemData && itemData.cart && Array.isArray(itemData.cart)) {
+          setCart(itemData.cart);
 
-        if (Array.isArray(itemData.cart)) {
-            setCart(
-              itemData.cart.map((selectedIngredient) => ({
-                ...selectedIngredient,
-                quantity: 1,
-              }))
-            );
-          } else {
-            console.error('Invalid data format. Expected an array.');
-          }
+          itemData.cart.forEach(item => {
+            // console.log("Food Item: " + item.ingredientname);
+            // console.log("Quantity: " + item.quantity);
+            // console.log("Sales Price: " + item.expirydate);
+            // console.log("Sales Price: " + item.total);
+            // console.log("--------------");
+          });
+        } else {
+          console.log("Cart data is not available or is in an unexpected format.");
+        }
+
+        if(itemData && itemData.paidAmount)
+        {
+          setPaidAmount(itemData.paidAmount);
+        }
+
+        if (itemData && itemData.supplierId && Array.isArray(itemData.supplierId)) {
+          setSupplier(itemData.supplierId);
+        } else {
+          console.log("Supplier data is not available or is in an unexpected format.");
+        }
+       
+       
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -79,20 +92,24 @@ const EditPurchase = () => {
   const ingredient = ingredients.map(ingredients => ({
     value: ingredients._id,
     label: ingredients.name,
+    ingredientname: ingredients.name,
     purchaseprice: ingredients.purchaseprice,
     unit: ingredients.ingredientunit.unitname
   }));
 
   const addProductToCart = async (ingredient) => {
     console.log(ingredient);
+   // let findProductInCart = cart.find(i => i.ingredientId === ingredient._id);
+   // let newCart = [];
+    //console.log(findProductInCart);
   };
 
   const handleIngredient = (selectedOption) => {
     setSelectIngredient(selectedOption);
 
     if (selectedOption) {
-      // Check if the ingredient is already in the cart
-      const existingIngredient = cart.find((item) => item.value === selectedOption.value);
+     
+      const existingIngredient = cart.find((item) => item.ingredientId === selectedOption.value);
 
       if (existingIngredient) {
         alert('This ingredient is already in the cart!');
@@ -100,7 +117,7 @@ const EditPurchase = () => {
         setCart((prevCart) => [...prevCart, { ...selectedOption, quantity: 1 }]);
       }
 
-      // Reset the selected ingredient after adding to the cart
+    
       setSelectIngredient(null);
     }
   };
@@ -207,6 +224,7 @@ const EditPurchase = () => {
                               isSearchable
                               onChange={handleIngredient}
                               onClick={() => addProductToCart(ingredient)}
+
                             />
                           </div>
                         </div>
@@ -227,7 +245,7 @@ const EditPurchase = () => {
                             {cart.map((selectedIngredient, index) => (
                               <tr key={index}>
                                 <td>{index + 1}</td>
-                                <td>{selectedIngredient.label}</td>
+                                <td>{selectedIngredient.ingredientname}</td>
                                 <td>{selectedIngredient.purchaseprice}</td>
                                 <td>
                                   <input
@@ -242,7 +260,7 @@ const EditPurchase = () => {
                                   <input
                                     type="date"
                                     className="form-control"
-                                    value={selectedIngredient.date}
+                                    value={selectedIngredient.expirydate}
                                     onChange={(e) => handleDateChange(index, e)}
                                   />
                                 </td>

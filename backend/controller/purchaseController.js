@@ -61,7 +61,7 @@ const getIngredient =asyncHandler(async(req,res) =>
 const ctratePurchase =asyncHandler(async(req,res) =>{
 
   try{
-    const {cart,paidAmount,dueAmount,grandTotal,supplierId,invoiceDate}  =req.body;
+    const {cart,paidAmount,dueAmount,grandTotal,supplierId,invoiceDate,suppliername}  =req.body;
 
     const sequence = await Purchase.findOne({}).sort('-invoicenumber');
     let nextIdNumber = 'Inv00001';
@@ -83,6 +83,7 @@ const ctratePurchase =asyncHandler(async(req,res) =>{
         dueAmount:dueAmount,
         grandTotal:grandTotal,
         supplierId:supplierId,
+        suppliername:suppliername,
         invoiceDate:invoiceDate,
 
 
@@ -190,4 +191,29 @@ const editPurchase =asyncHandler(async(req,res) =>
 });
 
 
-module.exports ={getSupplier,getIngredient,ctratePurchase,allInvoice,editPurchase};
+const expiryDate =asyncHandler(async(req,res) =>{
+
+  try
+  {
+    const purchases = await Purchase.find(); // Assuming your model is named 'Purchase'
+
+    const expiredItems = purchases
+      .filter(purchase => purchase.cart.some(item => new Date(item.expirydate) <= new Date()))
+      .map(purchase => ({
+        invoiceNumber: purchase.invoicenumber,
+        expiredItems: purchase.cart.filter(item => new Date(item.expirydate) <= new Date())
+      }));
+
+    res.json({ expiredItems });
+
+  }
+  catch(error)
+  {
+    console.error('Error checking expiry dates:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+
+})
+
+
+module.exports ={getSupplier,getIngredient,ctratePurchase,allInvoice,editPurchase,expiryDate};

@@ -3,13 +3,15 @@ import { useState } from "react";
 import { Link } from 'react-router-dom';
 
 const Sidebar =() =>{
+  const faceimage ="face1.jpg"
     return (
       <nav className="sidebar sidebar-offcanvas" id="sidebar">
       <ul className="nav">
         <li className="nav-item nav-profile">
           <a href="#" className="nav-link">
             <div className="nav-profile-image">
-              <img src="assets/images/faces/face1.jpg" alt="profile" />
+            <img src={`/assets/images/faces/${faceimage}`}  alt="profile" />
+             
               <span className="login-status online"></span>
             
             </div>

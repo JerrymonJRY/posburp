@@ -24,6 +24,7 @@ const {getposCategory,
     calculateTable
 } =require('../controller/posController');
 
+const {updatePosorder} =require('../controller/posUpdateController')
 
 router.get('/poscategory',getposCategory);
 router.get('/posWaiter',getPosWaiter);
@@ -45,7 +46,8 @@ router.get('/getsplit/:id',getSplit);
 router.post('/getmerge',getMerge);
 router.get('/getEdit/:id',getedit);
 router.get('/tableorder',tableorder);
-router.get('/calculate',calculateTable)
+router.get('/calculate',calculateTable);
+router.put('/updatepos/:id',updatePosorder);
 
 
 

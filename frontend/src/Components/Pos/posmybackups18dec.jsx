@@ -83,7 +83,7 @@ const PosNewOrder = () => {
   const [posHoldingorder, setPosHoldingorder] = useState([]);
   const [isModalHold, setModalHold] = useState(false);
   const [isModalCashDrop,setModalCashDrop] =useState(false);
-  const [numberofperson,setNumberofPerson] =useState({})
+  const [numberofperson,setNumberofPerson] =useState('')
 
 
 
@@ -200,12 +200,12 @@ console.info({table})
   }
 
 
-  const handleNumberofPersonChange = (e, id) => {
+  const handleNumberofPersonChange = (e) => {
     const value = e.target.value;
   
     // Validate if the entered value is a valid positive integer
     if (/^[1-9]\d*$/.test(value) || value === '') {
-      setNumberofPerson({ ...numberofperson, [id]: value });
+      setNumberofPerson(value);
     }
   };
   
@@ -634,7 +634,7 @@ console.info({customers})
     return formattedDetails;
   }
 
-console.info({filteredTables})
+
   const handleHold =(event) =>
   {
     event.preventDefault();
@@ -681,10 +681,6 @@ console.info({filteredTables})
          `cart[${i}].foodmenuId`,
         cart[i]._id
        );
-       posData.append(
-        `cart[${i}].foodmenuname`,
-       cart[i].foodmenuname
-      );
        posData.append(
          `cart[${i}].salesprice`,
          cart[i].salesprice
@@ -803,10 +799,6 @@ console.info({filteredTables})
          `cart[${i}].foodmenuId`,
         cart[i]._id
        );
-       posData.append(
-        `cart[${i}].foodmenuname`,
-       cart[i].foodmenuname
-      );
        posData.append(
          `cart[${i}].salesprice`,
          cart[i].salesprice
@@ -1152,72 +1144,72 @@ const handleTabClick =() =>{
                 ))}
             </div>
           </div> */}
-{enableDinein && (
-        <div className="tab-pane" id="table" role="tabpanel" aria-labelledby="duck-tab">
-          <input
-            type="text"
-            placeholder="Search Tables..."
-            value={searchTable}
-            className="form-control"
-            onChange={handleSearchTable}
-          />
-          <br />
-          <div className="row">
-            {filteredTables.map((tables, index) => (
-              <div
-                key={index}
-                className={`col-sm-3 col-md-3 ${selectTable === tables ? 'disabled' : ''}`}
-              >
-                <div
-                  className={`menu-box ${selectTable ? 'read-only' : 'selectable'}`}
-                >
-                  <h6>
-                    <SiTablecheck className="mr-2" />
-                    <br />
-                    {tables.tablename}
-                  </h6>
-                  <p>SeatCapacity:{tables.seatcapacity}</p>
-                  <p>Available Seat:{tables.availableSeat}</p>
-                </div>
-                <div className="flex-row-container">
-                  <div className="flex-row-item">
-                    <input
-                      type="text"
-                      name="numberofperson"
-                      value={numberofperson[tables._id] || ''}
-                      onChange={(e) => {
-                        handleNumberofPersonChange(e, tables._id);
-                      }}
-                      className="form-control"
-                      placeholder="No Of Person"
-                      readOnly={tables.availableSeat === 0}
-                    />
-                  </div>
-                  <div className="flex-row-item">
-                    <a
-                      className={`btn btn-outline-primary ${
-                        !isValidNumber() ||
-                        tables.availableSeat === 0 ||
-                        parseInt(numberofperson[tables._id] || 0) > parseInt(tables.seatcapacity)
-                          ? 'disabled'
-                          : ''
-                      }`}
-                      onClick={() => {
-                        console.log('Add button clicked');
-                        setSelectTable(tables);
-                        handleTable(tables);
-                      }}
-                    >
-                      Add
-                    </a>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+          {enableDinein && (
+    <div className="tab-pane" id="table" role="tabpanel" aria-labelledby="duck-tab">
+      <input
+        type="text"
+        placeholder="Search Tables..."
+        value={searchTable}
+        className="form-control"
+        onChange={handleSearchTable}
+      />
+      <br />
+      <div className="row">
+        {filteredTables.map((tables, index) => (
 
+            
+          
+          <div
+            key={index}
+            className={`col-sm-3 col-md-3 ${selectTable === tables ? 'disabled' : ''}`}
+          >
+            <div
+              className={`menu-box ${
+                selectTable ? 'read-only' : 'selectable'
+              }`}
+             
+            >
+              <h6>
+                <SiTablecheck className="mr-2" />
+                <br />
+                {tables.tablename}
+              </h6>
+              <p>SeatCapacity:{tables.seatcapacity}</p>
+              <p>Avilable Seat:{tables.availableSeat}</p>
+             
+            </div>
+            <div class="flex-row-container">
+
+  <div class="flex-row-item">
+  <input type="text" name="numberofperson" value={numberofperson} onChange={(e) => {setNumberofPerson(e.target.value)
+  handleNumberofPersonChange(e)}} className="form-control" placeholder="No Of Person"  readOnly={tables.availableSeat === 0}   />
+  
+  </div>
+  <div class="flex-row-item">
+  <a  className={`btn btn-outline-primary ${
+            !isValidNumber() ||
+            tables.availableSeat === 0 ||
+            parseInt(numberofperson) > parseInt(tables.seatcapacity)
+              ? 'disabled'
+              : ''
+          }`}
+          
+          onClick={(e) => {
+           
+              setSelectTable(tables);
+              handleTable(tables);
+          
+          
+          }}   >+</a>
+  </div>
+ 
+
+</div>
+          </div>
+          ))}
+      </div>
+    </div>
+  )}
           <div className="tab-pane " id="customer" role="tabpanel" aria-labelledby="duck-tab">
           <input
         type="text"
@@ -1347,7 +1339,7 @@ const handleTabClick =() =>{
   </div>
 </div>
 {/* KOTMODAl */}
-<PosNeworderKotModal isModalOpen={isModalOpen} setModalOpen={setModalOpen} />
+<PosNeworderKotModal isModalOpen={isModalOpen} />
 
 
 {/* Holding Order */}

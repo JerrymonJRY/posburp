@@ -46,9 +46,9 @@ const EditCategory =() =>{
     return (
         <div className="container-scroller">
         <Header />
-        <div class="container-fluid page-body-wrapper">
+        <div className="container-fluid page-body-wrapper">
             <Sidebar />
-            <div class="main-panel">
+            <div className="main-panel">
             <div className="content-wrapper">
             <div className="page-header">
               <h3 className="page-title"> Food Category </h3>

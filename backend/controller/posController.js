@@ -1211,7 +1211,7 @@ const getedit =asyncHandler(async(req,res) =>{
               foodmenuname: "$cart.foodmenuname",
               salesprice: "$cart.salesprice",
               quantity: "$cart.quantity",
-              menuItemDetails: "$menuItemDetails"
+             // menuItemDetails: "$menuItemDetails"
             }
           },
           customerDetails: { $first: "$customerDetails" },
@@ -1473,6 +1473,7 @@ const calculateTable =asyncHandler(async(req,res) =>{
 
 
 
+
 module.exports = 
 {getposCategory,
   getPosWaiter,
@@ -1493,5 +1494,6 @@ module.exports =
   getSplit,
   getMerge,getedit,
   tableorder,
-  calculateTable
+  calculateTable,
+  
 };

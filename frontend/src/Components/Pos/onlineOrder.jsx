@@ -76,7 +76,7 @@ const OnlineOrder =() =>{
                    <Link className="nav-link "  data-toggle="tab"
                    to="/deliverysession"
                     role="tab"
-                    aria-controls="neworder" >  <FaRegCalendarAlt className="mr-2" />  Delivery Session</Link>
+                    aria-controls="neworder" >  <FaRegCalendarAlt className="mr-2" />  Delivery Settlement</Link>
                 </li>
                 <li className="nav-item">
                 {/* <a
@@ -93,7 +93,7 @@ const OnlineOrder =() =>{
                    <Link className="nav-link "  data-toggle="tab"
                    to="/settlementreport"
                     role="tab"
-                    aria-controls="neworder" >  <IoMdToday  className="mr-2" /> settlment Report</Link>
+                    aria-controls="neworder" >  <IoMdToday  className="mr-2" /> Settlement Report</Link>
                 </li>
                 {/* <li className="nav-item">
                 <a

@@ -6,7 +6,7 @@ import { redirect, useNavigate, Link } from "react-router-dom";
 import Swal from 'sweetalert2';
 import apiConfig from '../../layouts/base_url';
 import PosNewKotmodal from "./posNeworderkotlist";
-const PosNeworderKotModal =({isModalOpen}) =>
+const PosNeworderKotModal =({isModalOpen,setModalOpen}) =>
 {
    // const [isModalOpen, setModalOpen] = useState(false);
   const [posRunningorder, setPosRunningorder] = useState([]);

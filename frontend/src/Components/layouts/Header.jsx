@@ -25,11 +25,13 @@ setLastname(storedLastname);
   }, []);
 
   const fullName = `${firstname} ${lastname}`;
+  const imageName = "burps.png";
+  const faceimage ="face1.jpg"
 
     return (
         <nav className="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div className="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-          <Link className="navbar-brand brand-logo" to="/dashboard"><img src="assets/images/pos/burps.png" className="img-fluid" alt="logo" /></Link>
+          <Link className="navbar-brand brand-logo" to="/dashboard"><img src={`/assets/images/pos/${imageName}`} className="img-fluid" alt="Burps Logo" /></Link>
           <Link className="navbar-brand brand-logo-mini" to="/dashboard"><img src="assets/images/logo-mini.svg" alt="logo" /></Link>
         </div>
         <div className="navbar-menu-wrapper d-flex align-items-stretch">
@@ -50,7 +52,8 @@ setLastname(storedLastname);
             <li className="nav-item nav-profile dropdown">
               <a className="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                 <div className="nav-profile-img">
-                  <img src="assets/images/faces/face1.jpg" alt="image" />
+                <img src={`/assets/images/faces/${faceimage}`}  alt="inage" />
+                  
                   <span className="availability-status online"></span>
                 </div>
                 <div className="nav-profile-text">

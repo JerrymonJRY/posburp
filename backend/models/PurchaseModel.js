@@ -8,9 +8,11 @@ var invpurchaseSchema = new mongoose.Schema({
     ingredientId: { type: mongoose.Schema.ObjectId,
       ref: "Ingredient"},
     ingredientname:String,
-    quantity: String,
+    purchaseprice:Number,
+    quantity: Number,
     expirydate: String,
-    total:String,
+    total:Number,
+    unit:String,
 
   }],
   paidAmount:{
@@ -27,6 +29,7 @@ var invpurchaseSchema = new mongoose.Schema({
        
         ref: "Supplier",
     },
+    suppliername:{type:String},
     invoiceDate:{type:String},
 });
 

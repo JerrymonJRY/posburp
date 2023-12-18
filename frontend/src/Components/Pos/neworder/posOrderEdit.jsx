@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { IoFastFoodSharp } from "react-icons/io5";
 import 'react-toastify/dist/ReactToastify.css'; // Import the styles for react-toastify
 import apiConfig from '../../layouts/base_url';
-
+import Swal from 'sweetalert2';
 const PosOrderEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const PosOrderEdit = () => {
   const [grandTotal, setGrandTotal] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [menu, setMenu] = useState([]);
-
+  const [placeorder, setPlaceOrder] = useState({});
   useEffect(() => {
     axios.get(`${apiConfig.baseURL}/api/pos/getEdit/${id}`)
       .then((response) => {
@@ -31,7 +31,7 @@ const PosOrderEdit = () => {
           setCart(data.cart);
 
           data.cart.forEach(item => {
-            console.log("Food Item: " + item.menuItemDetails.foodmenuname);
+            console.log("Food Item: " + item.foodmenuname);
             console.log("Quantity: " + item.quantity);
             console.log("Sales Price: " + item.salesprice);
             console.log("--------------");
@@ -190,6 +190,72 @@ cart.forEach(icart => {
     setCart(addQuantity);
   }
 
+  const handlePlaceorder =() =>
+  {
+    setPlaceOrder({
+    
+      cart: cart,
+      total: totalAmount,
+      vat: vatAmount,
+      grandTotal: grandTotal,
+    
+    
+    })
+
+    
+    var posData = new FormData();
+    for (let i = 0; i < cart.length; i++) {
+    //  posData.append(`cart[${i}].foodmenuId`, cart[i]._id);
+      posData.append(`cart[${i}].salesprice`, cart[i].salesprice);
+      posData.append(`cart[${i}].quantity`, cart[i].quantity);
+      posData.append(
+        `cart[${i}].foodmenuname`,
+       cart[i].foodmenuname
+      );
+    
+      if ('foodmenuId' in cart[i]) {
+        posData.append(`cart[${i}].foodmenuId`, cart[i].foodmenuId);
+      }
+ 
+    }
+ posData.append("vatAmount",vatAmount);
+ posData.append("total",totalAmount);
+ posData.append("grandTotal",grandTotal);
+  
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      };
+
+      axios
+       .put(`${apiConfig.baseURL}/api/pos/updatepos/${id}`, posData, config)
+        // .then(res => {
+        //    console.log(res);
+        //    navigate('/posorder');
+        //  })
+        //  .catch(err => console.log(err));
+        .then(res => {
+          Swal.fire({
+            title: 'Success!',
+            text: 'Do you want to print the order?',
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, print',
+            cancelButtonText: 'No',
+          }).then((result) => {
+            navigate('/pos');
+          });
+        })
+        .catch(err => console.log(err));
+    }
+
+     // console.log(posData);
+  
+  
+
+
+
   return (
     <div className="row">
            <div className="col-sm-4 col-lg-auto">
@@ -261,7 +327,7 @@ cart.forEach(icart => {
           <div className="row">
             <div className="col-lg-6"><button type="button" className="btn btn-danger w-100 mb-2 p-2">Cancel</button></div>
      
-            <div className="col-lg-6 pl-0"><button type="button" className="btn btn-success w-100 mb-2 p-2">Update Order</button></div>
+            <div className="col-lg-6 pl-0"><button type="button" onClick={handlePlaceorder} className="btn btn-success w-100 mb-2 p-2">Update Order</button></div>
           </div>
         </div>
       </div>
