@@ -8,23 +8,19 @@ const {getposCategory,
     getDelivery,
     getposFooditems,
     insertPos,
-    getAllPos,
-    runningOrder,
-    completePaymeny,
     updatePayment,
-    getKot,
     insertPoshold,
     getHold,
     todayOrder,
     insertQuickpay,
-    getSplit,
-    getMerge,
-    getedit,
     tableorder,
     calculateTable
 } =require('../controller/posController');
 
 const {updatePosorder} =require('../controller/posUpdateController')
+const {getAllPos,completePaymeny} =require('../controller/posneworderController')
+const {runningOrder,getKot,getedit,getSplit,getMerge} =require('../controller/posrunningorderController')
+const {todayDelivery} =require('../controller/posdeliveryController')
 
 router.get('/poscategory',getposCategory);
 router.get('/posWaiter',getPosWaiter);
@@ -48,6 +44,7 @@ router.get('/getEdit/:id',getedit);
 router.get('/tableorder',tableorder);
 router.get('/calculate',calculateTable);
 router.put('/updatepos/:id',updatePosorder);
+router.get('/gettodaydelivery',todayDelivery);
 
 
 

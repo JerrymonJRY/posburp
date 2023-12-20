@@ -83,6 +83,8 @@ const PosTodayOrder =() =>{
                             <th>Waiter</th>
                             <th>Total</th>
                             <th>Vat Amount</th>
+                            
+                            <th>Added By</th>
                             <th>Grand Total</th>
                             <th>Action</th>
                         </tr>
@@ -96,9 +98,11 @@ const PosTodayOrder =() =>{
      <td>{key + 1}</td>
       <td>{order.options}</td>
 
-      <td>{order.waiterDetails ? order.waiterDetails.waitername : 'N/A'}</td>
+      <td>{order.waiter ? order.waiter.waitername : 'N/A'}</td>
       <td>{order.total}</td>
       <td>{order.vatAmount}</td>
+    
+      <td>{order.user ? `${order.user.firstname} ${order.user.lastname || ''}` : 'N/A'}</td>
       <td>{order.grandTotal}</td>
 
       <td>
@@ -120,7 +124,7 @@ const PosTodayOrder =() =>{
                     </tbody>
                     <tfoot>
         <tr>
-          <td colSpan="4"></td>
+          <td colSpan="5"></td>
           <td>Total Grand Total:</td>
           <td>{totalGrandTotal}</td>
         </tr>

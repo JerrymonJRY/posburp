@@ -34,11 +34,7 @@ const updatePosorder =asyncHandler(async(req,res) =>{
         }
 
  
-      
-    // console.log(updatePos);
-
-   //  await Pos.findOneAndUpdate({ ordernumber: updateordernumber }, req.body, { new: true, upsert: true });
- 
+   
     }
     catch(error)
     {

@@ -54,7 +54,11 @@ ordernumber:{type:String},
   {
     type:String,
     default:null,
-  }
+  },
+  addedby: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
 
 
 

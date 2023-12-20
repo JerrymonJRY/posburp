@@ -40,6 +40,25 @@ const PosNewOrder = () => {
     delivery: false,
     
   });
+
+  const [addedby, setuserid] = useState('');
+
+  useEffect(() => {
+
+      const storeid = localStorage.getItem('_id');
+ 
+      //console.log('Stored ID:', storeid);
+      setuserid(storeid);
+        }, []);
+
+        const [designationname,setDesignationName] =useState('');
+        
+      // console.log(addedby);
+     // console.log("selectUser is not empty:", addedby);
+
+
+
+
   const [enableDinein, setEnableDinein] = useState(false);
   const [enableFoodmenu,setEnableFoodmenu] =useState(false);
   // const [isEnableTable, setEnableTable] = useState(true);
@@ -515,6 +534,7 @@ console.info({customers})
       posData.append("vatAmount",vatAmount);
       posData.append("total",totalAmount);
      posData.append("foodoption",options);
+     posData.append('addedby',addedby);
 
    
     if (selectTable && selectTable._id) {
@@ -710,6 +730,7 @@ console.info({filteredTables})
   if (selectWaiter && selectWaiter._id) {
       posData.append("waiterId", selectWaiter._id);
   }
+  posData.append('addedby',addedby);
      //console.log(posData);
      
    
@@ -832,7 +853,7 @@ console.info({filteredTables})
       posData.append("waiterId", selectWaiter._id);
   }
      //console.log(posData);
-     
+     posData.append('addedby',addedby);  
    
        const config = {
          headers: {

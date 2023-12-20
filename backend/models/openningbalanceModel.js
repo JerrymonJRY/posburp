@@ -2,17 +2,15 @@ const mongoose = require('mongoose');
 
 // Declare the Schema of the Mongo model
 var openningBalanceSchema = new mongoose.Schema({
-    
-    date: { type: Date, default: Date.now },
+    openningbalancenumber: { type: String },
     amount: {
-        type: Number,
-       
-       
+        type: String,
+        required: true,
+     
+        collation: { locale: 'en', strength: 2 },
     },
+    date: { type: Date, default: Date.now },
 });
-
-// Create a unique index on the "amount" field
-
 
 // Export the model
 module.exports = mongoose.model('Openningbalance', openningBalanceSchema);

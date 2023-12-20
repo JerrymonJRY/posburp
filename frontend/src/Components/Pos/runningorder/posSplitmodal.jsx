@@ -8,6 +8,9 @@ const PosSplitModal =({ splitdata,setSplitData, showSplitModal,setShowSplitModal
     
   const [cookies, setCookie, removeCookie] = useCookies();
   const [selectedCard, setSelectedCard] = useState(null);
+  const [selectedSplitValue, setSelectedSplitValue] = useState('');
+  const [textInputs, setTextInputs] = useState([]);
+  const [foodtextInputs, setFoodTextInputs] = useState([]);
 
     const totalGrandTotal = Array.isArray(splitdata)
     ? splitdata.reduce((total, order) => {
@@ -34,51 +37,42 @@ const PosSplitModal =({ splitdata,setSplitData, showSplitModal,setShowSplitModal
     : 0;
     const optionValues = Array.from({ length: totalGrandTotals - 1 }, (_, index) => index + 2);
   
-    const [selectedSplitValue, setSelectedSplitValue] = useState('');
-    const [textInputs, setTextInputs] = useState([]);
-    const [foodtextInputs, setfoodTextInputs] = useState([]);
-  
+   
     const handleSplitChange = (event) => {
       const value = parseInt(event.target.value, 10);
       setSelectedSplitValue(value);
   
-    
-     const newInputs = Array.from({ length: value }, (_, index) => index + 1);
-    setTextInputs(newInputs);
-    
+      const newInputs = Array.from({ length: value }, (_, index) => index + 1);
+      setTextInputs(newInputs);
+      setFoodTextInputs([]);
+    };
+  
+    const handleCardClick = (index) => {
+      setSelectedCard(index);
     };
   
     const handleQuantityDecrease = (orderIndex, cartItemIndex) => {
-
-      console.log('selectedCard:', selectedCard);
-  console.log('orderIndex:', orderIndex);
-  console.log('cartItemIndex:', cartItemIndex);
       if (selectedCard !== null && selectedSplitValue > 0) {
         const updatedSplitData = [...splitdata];
         const order = updatedSplitData[orderIndex];
-    
+  
         if (selectedCard === selectedCard) {
           const cartItem = order.cart[cartItemIndex];
           cartItem.quantity = Math.max(0, cartItem.quantity - 1);
-    
-          // Update the state with the modified data
-          setSplitData(updatedSplitData);
-    
-          // Other logic specific to the selected card
-        //  console.log('Updated Cart Item:', cartItem);
+  
           const updatedTextInputs = [...textInputs];
           updatedTextInputs[cartItemIndex] = Math.max(0, updatedTextInputs[cartItemIndex] - 1);
           setTextInputs(updatedTextInputs);
-    
+  
           const updatedFoodTextInputs = [...foodtextInputs];
           updatedFoodTextInputs[cartItemIndex] = Math.max(0, updatedFoodTextInputs[cartItemIndex] - 1);
-          setfoodTextInputs(updatedFoodTextInputs);
-    
-        //  console.log('Updated State:', updatedSplitData, updatedTextInputs, updatedFoodTextInputs);
+          setFoodTextInputs(updatedFoodTextInputs);
+  
+          setSplitData(updatedSplitData);
         }
       }
     };
-    
+  
 
     console.log(foodtextInputs);
     
@@ -96,9 +90,7 @@ const PosSplitModal =({ splitdata,setSplitData, showSplitModal,setShowSplitModal
      
     };
 
-    const handleCardClick = (index) => {
-      setSelectedCard(index);
-    };
+   
 console.log(selectedCard);
 
     return (
@@ -171,49 +163,43 @@ console.log(selectedCard);
               </option>
             ))}
           </select>
-
           <div className="row">
-          {textInputs.map((index) => (
-            
-        
-            <div
-            className={`col-md-6 card-container ${selectedCard === index ? 'selected-card' : ''}`}
-            key={index}
-            onClick={() => handleCardClick(index)}
-          >
-            <div key={index} className="card">
-                    <div className="">
-                      <div className="card-header">
-
-                      </div>
-                      <div className="card-body">
-                          <table className="table table-bordered">
-                            <thead>
-                              <th>Si No</th>
-                              <th>Food Name</th>
-                              <th>Quantity</th>
-                            </thead>
-                            <tbody>
-                            {foodtextInputs.map((value, foodIndex) => (
-  <tr key={foodIndex}>
-    <td>{foodIndex + 1}</td>
-    <td>{value}</td>
-    {/* Display the quantity only for the selected split order */}
-    <td>{value.quantity}</td>
-  </tr>
-))}
-            </tbody>
-
-                          </table>
-                      </div>
-                    </div>
-                 </div>
-               </div>
-
-          
-      
-      ))}
+    {textInputs.map((index) => (
+      <div
+        className={`col-md-6 card-container ${selectedCard === index ? 'selected-card' : ''}`}
+        key={index}
+        onClick={() => handleCardClick(index)}
+      >
+        <div key={index} className="card">
+          <div className="">
+            <div className="card-header">
+              {/* ... (Header content) */}
+            </div>
+            <div className="card-body">
+              <table className="table table-bordered">
+                <thead>
+                  <th>Si No</th>
+                  <th>Food Name</th>
+                  <th>Quantity</th>
+                </thead>
+                <tbody>
+                  {selectedCard === index && // Render only if selectedCard matches the current index
+                    foodtextInputs.map((value, foodIndex) => (
+                      <tr key={foodIndex}>
+                        <td>{foodIndex + 1}</td>
+                        <td>{value}</td>
+                        {/* Display the quantity only for the selected split order */}
+                        <td>{value.quantity}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
+      </div>
+    ))}
+  </div>
                 </div>
                 </div>
     

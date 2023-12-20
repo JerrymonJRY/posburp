@@ -16,7 +16,7 @@ const EditPurchase = () => {
   const [selectSupplier, setSelectedSupplier] = useState(null);
   const [invoiceDate, setInvoiceDate] = useState('');
   const { id } = useParams();
-
+  const [supplierOptions, setSupplierOptions] = useState([]);
   useEffect(() => {
     const fetchPurchaseData = async () => {
       try {
@@ -49,6 +49,11 @@ const EditPurchase = () => {
 
         if (itemData && itemData.supplierId && Array.isArray(itemData.supplierId)) {
           setSupplier(itemData.supplierId);
+
+          const options = response.data.map(supplier => ({
+            value: supplier._id,
+            label: supplier.suppliername,
+          }));
         } else {
           console.log("Supplier data is not available or is in an unexpected format.");
         }
@@ -67,6 +72,15 @@ const EditPurchase = () => {
     axios.get(`${apiConfig.baseURL}/api/purchase/getSupplier`)
       .then((response) => {
         setSupplier(response.data);
+
+
+        const supplierOptions = response.data.map(supplier => ({
+          value: supplier._id,
+          label: supplier.suppliername,
+        }));
+
+        // Set the supplier options
+        setSupplierOptions(supplierOptions);
       })
       .catch((error) => {
         console.error(error);
@@ -89,6 +103,7 @@ const EditPurchase = () => {
     label: supplier.suppliername,
   }));
 
+
   const ingredient = ingredients.map(ingredients => ({
     value: ingredients._id,
     label: ingredients.name,
@@ -109,7 +124,7 @@ const EditPurchase = () => {
 
     if (selectedOption) {
      
-      const existingIngredient = cart.find((item) => item.ingredientId === selectedOption.value);
+      const existingIngredient = cart.find((item) => item.ingredientId === selectedOption.value || item.value === selectedOption.value);
 
       if (existingIngredient) {
         alert('This ingredient is already in the cart!');
@@ -193,7 +208,7 @@ const EditPurchase = () => {
                           <div className="form-group">
                             <label htmlFor="exampleInputUsername1">Supplier Name</label>
                             <Select
-                              options={options}
+                              options={supplierOptions}
                               value={selectSupplier}
                               onChange={handleSupplierChange}
                               placeholder="Select a supplier"

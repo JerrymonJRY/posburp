@@ -105,7 +105,7 @@ const getposFooditems =asyncHandler(async (req,res) =>{
 
 const insertPos =asyncHandler(async(req,res) =>{
   try {
-    const  {customers,options,grandTotal,cart,vatAmount,total,foodoption,waiterId,tableId,delivery,numberofperson}  = req.body;
+    const  {customers,options,grandTotal,cart,vatAmount,total,foodoption,waiterId,tableId,delivery,numberofperson,addedby}  = req.body;
   console.log(req.body);
 
  const sequence = await Pos.findOne({}).sort('-ordernumber'); // Find the latest ID
@@ -139,6 +139,7 @@ if (sequence && sequence.ordernumber) {
       tableId:tableId,
       paymentstatus:paymentstatus,
       delivery:delivery,
+      addedby:addedby,
 });
    
     const finaldata = await newEntry.save();
@@ -172,285 +173,10 @@ if (sequence && sequence.ordernumber) {
 })
 
 
-const getAllPos =asyncHandler(async(req,res) =>{
-  try {
-    // const getAllPos = await Pos.find();
-    // res.json(getAllPos);
-    const pos = await Pos.aggregate([
-      {
-        $unwind: "$cart" // Flatten the cart array
-      },
-      {
-        $lookup: {
-          from: "foodmenus",
-          localField: "cart.foodmenuId",
-          foreignField: "_id",
-          as: "menuItemDetails"
-        }
-      },
-      {
-        $unwind: "$menuItemDetails" // Unwind the menuItemDetails array
-      },
 
-      {
-        $lookup: {
-          from: "customers",
-          localField: "customers",
-          foreignField: "_id",
-          as: "customerDetails"
-        }
-      },
-      {
-        $unwind: {
-          path: "$customerDetails",
-          preserveNullAndEmptyArrays: true // Keep customerDetails even if it's null
-        }
-      },
-      {
-        $lookup: {
-          from: "waiters",
-          localField: "waiterId",
-          foreignField: "_id",
-          as: "waiterDetails"
-        }
-      },
-      {
-        $unwind: "$waiterDetails"
-      },
-      {
-        $lookup: {
-          from: "tables",
-          localField: "tableId",
-          foreignField: "_id",
-          as: "tableDetails"
-        }
-      },
-      {
-        // $unwind: "$tableDetails"
-        $unwind: {
-          path: "$tableDetails",
-          preserveNullAndEmptyArrays: true // Keep customerDetails even if it's null
-        }
-      },
-      {
-        $lookup: {
-          from: "delivery",
-          localField: "delivery",
-          foreignField: "_id",
-          as: "deliveryDetails"
-        }
-      },
-      {
-        $unwind: {
-          path: "$deliveryDetails",
-          preserveNullAndEmptyArrays: true // Keep customerDetails even if it's null
-        }
-      },
-      {
-        $group: {
-          _id: "$_id",
-          ordernumber:{$first: "$ordernumber"},
-          options: { $first: "$options" },
-          total: { $first: "$total" },
-          grandTotal: { $first: "$grandTotal" },
-          vatAmount: { $first: "$vatAmount" },
-          createdAt: { $first: "$createdAt" },
-          updatedAt: { $first: "$updatedAt" },
-          cart: {
-            $push: {
-              foodmenuId: "$cart.foodmenuId",
-              salesprice: "$cart.salesprice",
-              quantity: "$cart.quantity",
-              menuItemDetails: "$menuItemDetails"
-            }
-          },
-          customerDetails: { $first: "$customerDetails" },
 
-          waiterDetails: { $first: "$waiterDetails" },
 
-          deliveryDetails:{
-            $first:"$deliveryDetails"
-          },
 
-        }
-      }
-      
-    ]);
-  
-    res.json(pos);
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-
-const runningOrder =asyncHandler(async(req,res) =>{
-
-  try {
-    const runningorder = await Pos.aggregate([
-      {
-        $match: {
-          paymentstatus: "notpaid"
-        }
-      },
-
-      {
-        $lookup: {
-          from: 'tables',
-          localField: 'tableId',
-          foreignField: '_id',
-          as: 'table',
-        },
-      },
-      {
-        //$unwind: '$table',
-        $unwind: {
-          path: "$table",
-          preserveNullAndEmptyArrays: true // Keep customerDetails even if it's null
-        }
-      },
-      {
-        $lookup: {
-          from: 'waiters',
-          localField: 'waiterId',
-          foreignField: '_id',
-          as: 'waiter',
-        },
-      },
-      {
-        $unwind: '$waiter',
-      },
-      
-
-    ]);
-    res.json(runningorder);
-    // Use Mongoose to find orders where paymentstatus is "notpaid"
-   // const notPaidOrders = await Pos.find({ paymentstatus: 'notpaid' });
-
-   // res.json(notPaidOrders);
-  } catch (error) {
-    console.error('Error fetching "notpaid" orders:', error);
-  
-  }
-
-})
-
-const completePaymeny =asyncHandler(async(req,res) =>{
-  const { id } = req.params;
-
-  try {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid ObjectId' });
-    }
-    const pos = await Pos.aggregate([
-      {
-        $match: {
-          _id: new mongoose.Types.ObjectId(id), // Match documents with the specified _id
-        },
-      },
-      {
-        $unwind: "$cart" // Flatten the cart array
-      },
-      {
-        $lookup: {
-          from: "foodmenus",
-          localField: "cart.foodmenuId",
-          foreignField: "_id",
-          as: "menuItemDetails"
-        },
-      },
-      {
-        $unwind: "$menuItemDetails" // Unwind the menuItemDetails array
-      },
-      {
-        $lookup: {
-          from: "customers",
-          localField: "customers",
-          foreignField: "_id",
-          as: "customerDetails"
-        },
-      },
-      {
-        $unwind: {
-          path: "$customerDetails",
-          preserveNullAndEmptyArrays: true // Keep customerDetails even if it's null
-        },
-      },
-      {
-        $lookup: {
-          from: "waiters",
-          localField: "waiterId",
-          foreignField: "_id",
-          as: "waiterDetails"
-        },
-      },
-      {
-        $unwind: "$waiterDetails"
-      },
-      {
-        $lookup: {
-          from: "tables",
-          localField: "tableId",
-          foreignField: "_id",
-          as: "tableDetails"
-        },
-      },
-      {
-        // $unwind: "$tableDetails"
-        $unwind: {
-          path: "$tableDetails",
-          preserveNullAndEmptyArrays: true // Keep customerDetails even if it's null
-        },
-      },
-      {
-        $lookup: {
-          from: "delivery",
-          localField: "delivery",
-          foreignField: "_id",
-          as: "deliveryDetails"
-        }
-      },
-      {
-        $unwind: {
-          path: "$deliveryDetails",
-          preserveNullAndEmptyArrays: true // Keep customerDetails even if it's null
-        }
-      },
-      {
-        $group: {
-          _id: "$_id",
-          ordernumber: { $first: "$ordernumber" },
-          options: { $first: "$options" },
-          total: { $first: "$total" },
-          grandTotal: { $first: "$grandTotal" },
-          vatAmount: { $first: "$vatAmount" },
-          createdAt: { $first: "$createdAt" },
-          updatedAt: { $first: "$updatedAt" },
-          cart: {
-            $push: {
-              foodmenuId: "$cart.foodmenuId",
-              salesprice: "$cart.salesprice",
-              quantity: "$cart.quantity",
-              menuItemDetails: "$menuItemDetails"
-            }
-          },
-          customerDetails: { $first: "$customerDetails" },
-  
-          waiterDetails: { $first: "$waiterDetails" },
-
-          deliveryDetails:{ $first :"$deliveryDetails" }
-        }
-      },
-    ]);
-  
-    res.json(pos);
-  } catch (error) {
-    console.error(error);
-    throw new Error(error);
-  }
-  
- 
-
-});
 
 
 const updatePayment =asyncHandler(async(req,res) =>
@@ -573,122 +299,7 @@ const updatePayment =asyncHandler(async(req,res) =>
 });
 
 
-const getKot =asyncHandler(async(req,res) =>
-{
-  const { id } = req.params;
 
-  try {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid ObjectId' });
-    }
-    const pos = await Pos.aggregate([
-      {
-        $match: {
-          _id: new mongoose.Types.ObjectId(id), // Match documents with the specified _id
-        },
-      },
-      {
-        $unwind: "$cart" // Flatten the cart array
-      },
-      {
-        $lookup: {
-          from: "foodmenus",
-          localField: "cart.foodmenuId",
-          foreignField: "_id",
-          as: "menuItemDetails"
-        },
-      },
-      {
-        $unwind: "$menuItemDetails" // Unwind the menuItemDetails array
-      },
-      {
-        $lookup: {
-          from: "customers",
-          localField: "customers",
-          foreignField: "_id",
-          as: "customerDetails"
-        },
-      },
-      {
-        $unwind: {
-          path: "$customerDetails",
-          preserveNullAndEmptyArrays: true // Keep customerDetails even if it's null
-        },
-      },
-      {
-        $lookup: {
-          from: "waiters",
-          localField: "waiterId",
-          foreignField: "_id",
-          as: "waiterDetails"
-        },
-      },
-      {
-        $unwind: "$waiterDetails"
-      },
-      {
-        $lookup: {
-          from: "tables",
-          localField: "tableId",
-          foreignField: "_id",
-          as: "tableDetails"
-        },
-      },
-      {
-        // $unwind: "$tableDetails"
-        $unwind: {
-          path: "$tableDetails",
-          preserveNullAndEmptyArrays: true // Keep customerDetails even if it's null
-        },
-      },
-      {
-        $lookup: {
-          from: "delivery",
-          localField: "delivery",
-          foreignField: "_id",
-          as: "deliveryDetails"
-        }
-      },
-      {
-        $unwind: {
-          path: "$deliveryDetails",
-          preserveNullAndEmptyArrays: true // Keep customerDetails even if it's null
-        }
-      },
-      {
-        $group: {
-          _id: "$_id",
-          ordernumber: { $first: "$ordernumber" },
-          options: { $first: "$options" },
-          total: { $first: "$total" },
-          grandTotal: { $first: "$grandTotal" },
-          vatAmount: { $first: "$vatAmount" },
-          createdAt: { $first: "$createdAt" },
-          updatedAt: { $first: "$updatedAt" },
-          cart: {
-            $push: {
-              foodmenuId: "$cart.foodmenuId",
-              salesprice: "$cart.salesprice",
-              quantity: "$cart.quantity",
-              menuItemDetails: "$menuItemDetails"
-            }
-          },
-          customerDetails: { $first: "$customerDetails" },
-  
-          waiterDetails: { $first: "$waiterDetails" },
-          deliveryDetails :{ $first : "$deliveryDetails" }
-        }
-      },
-    ]);
-  
-    res.json(pos);
-  } catch (error) {
-    console.error(error);
-    throw new Error(error);
-  }
-
-
-});
 
 const insertPoshold =asyncHandler(async(req,res) =>{
   try {
@@ -838,6 +449,18 @@ const todayOrder =asyncHandler(async(req,res) =>
       {
         $unwind: '$waiter',
       },
+
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'addedby',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      {
+        $unwind: '$user',
+      },
       
 
     ]);
@@ -976,261 +599,11 @@ const insertQuickpay =asyncHandler(async(req,res) =>{
 });
 
 
-const getSplit =asyncHandler(async(req,res) =>
-{
-  const { id } = req.params;
-
-  try {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid ObjectId' });
-    }
-    const pos = await Pos.aggregate([
-      {
-        $match: {
-          _id: new mongoose.Types.ObjectId(id), // Match documents with the specified _id
-        },
-      },
-      {
-        $unwind: "$cart" // Flatten the cart array
-      },
-      {
-        $lookup: {
-          from: "foodmenus",
-          localField: "cart.foodmenuId",
-          foreignField: "_id",
-          as: "menuItemDetails"
-        },
-      },
-      {
-        $unwind: "$menuItemDetails" // Unwind the menuItemDetails array
-      },
-      {
-        $lookup: {
-          from: "customers",
-          localField: "customers",
-          foreignField: "_id",
-          as: "customerDetails"
-        },
-      },
-      {
-        $unwind: {
-          path: "$customerDetails",
-          preserveNullAndEmptyArrays: true // Keep customerDetails even if it's null
-        },
-      },
-      {
-        $lookup: {
-          from: "waiters",
-          localField: "waiterId",
-          foreignField: "_id",
-          as: "waiterDetails"
-        },
-      },
-      {
-        $unwind: "$waiterDetails"
-      },
-      {
-        $lookup: {
-          from: "tables",
-          localField: "tableId",
-          foreignField: "_id",
-          as: "tableDetails"
-        },
-      },
-      {
-        // $unwind: "$tableDetails"
-        $unwind: {
-          path: "$tableDetails",
-          preserveNullAndEmptyArrays: true // Keep customerDetails even if it's null
-        },
-      },
-      {
-        $lookup: {
-          from: "delivery",
-          localField: "delivery",
-          foreignField: "_id",
-          as: "deliveryDetails"
-        }
-      },
-      {
-        $unwind: {
-          path: "$deliveryDetails",
-          preserveNullAndEmptyArrays: true // Keep customerDetails even if it's null
-        }
-      },
-      {
-        $group: {
-          _id: "$_id",
-          ordernumber: { $first: "$ordernumber" },
-          options: { $first: "$options" },
-          total: { $first: "$total" },
-          grandTotal: { $first: "$grandTotal" },
-          vatAmount: { $first: "$vatAmount" },
-          createdAt: { $first: "$createdAt" },
-          updatedAt: { $first: "$updatedAt" },
-          cart: {
-            $push: {
-              foodmenuId: "$cart.foodmenuId",
-              salesprice: "$cart.salesprice",
-              quantity: "$cart.quantity",
-              menuItemDetails: "$menuItemDetails"
-            }
-          },
-          customerDetails: { $first: "$customerDetails" },
-  
-          waiterDetails: { $first: "$waiterDetails" },
-          deliveryDetails :{ $first : "$deliveryDetails" }
-        }
-      },
-    ]);
-  
-    res.json(pos);
-  } catch (error) {
-    console.error(error);
-    throw new Error(error);
-  }
-
-
-});
-
-
-const getMerge =asyncHandler(async(req,res) =>{
-  const selectedIds = req.body.ids;
-
-  console.log(selectedIds);
-
-  try {
-   
-    const responseData = await Pos.find({ _id: { $in: selectedIds } });
-
-    // Respond with the result
-    res.json(responseData);
-    console.log(responseData);
-  } catch (error) {
-    // Handle errors
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-const getedit =asyncHandler(async(req,res) =>{
-
-  const { id } = req.params;
-
-  try {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid ObjectId' });
-    }
-    const pos = await Pos.aggregate([
-      {
-        $match: {
-          _id: new mongoose.Types.ObjectId(id), 
-        },
-      },
-      {
-        $unwind: "$cart" 
-      },
-      {
-        $lookup: {
-          from: "foodmenus",
-          localField: "cart.foodmenuId",
-          foreignField: "_id",
-          as: "menuItemDetails"
-        },
-      },
-      {
-        $unwind: "$menuItemDetails" 
-      },
-      {
-        $lookup: {
-          from: "customers",
-          localField: "customers",
-          foreignField: "_id",
-          as: "customerDetails"
-        },
-      },
-      {
-        $unwind: {
-          path: "$customerDetails",
-          preserveNullAndEmptyArrays: true 
-        },
-      },
-      {
-        $lookup: {
-          from: "waiters",
-          localField: "waiterId",
-          foreignField: "_id",
-          as: "waiterDetails"
-        },
-      },
-      {
-        $unwind: "$waiterDetails"
-      },
-      {
-        $lookup: {
-          from: "tables",
-          localField: "tableId",
-          foreignField: "_id",
-          as: "tableDetails"
-        },
-      },
-      {
-        // $unwind: "$tableDetails"
-        $unwind: {
-          path: "$tableDetails",
-          preserveNullAndEmptyArrays: true 
-        },
-      },
-      {
-        $lookup: {
-          from: "delivery",
-          localField: "delivery",
-          foreignField: "_id",
-          as: "deliveryDetails"
-        }
-      },
-      {
-        $unwind: {
-          path: "$deliveryDetails",
-          preserveNullAndEmptyArrays: true // Keep customerDetails even if it's null
-        }
-      },
-      {
-        $group: {
-          _id: "$_id",
-          ordernumber: { $first: "$ordernumber" },
-          options: { $first: "$options" },
-          total: { $first: "$total" },
-          grandTotal: { $first: "$grandTotal" },
-          vatAmount: { $first: "$vatAmount" },
-          createdAt: { $first: "$createdAt" },
-          updatedAt: { $first: "$updatedAt" },
-          cart: {
-            $push: {
-              foodmenuId: "$cart.foodmenuId",
-              foodmenuname: "$cart.foodmenuname",
-              salesprice: "$cart.salesprice",
-              quantity: "$cart.quantity",
-             // menuItemDetails: "$menuItemDetails"
-            }
-          },
-          customerDetails: { $first: "$customerDetails" },
-  
-          waiterDetails: { $first: "$waiterDetails" },
-          deliveryDetails :{ $first : "$deliveryDetails" }
-        }
-      },
-    ]);
-  
-    res.json(pos);
-  } catch (error) {
-    console.error(error);
-    throw new Error(error);
-  }
 
 
 
-});
+
+
 
 
 
@@ -1305,100 +678,6 @@ const tableorder = asyncHandler(async (req, res) => {
 const calculateTable =asyncHandler(async(req,res) =>{
  
 
-  // try {
-  //   const result = await Table.aggregate([
-  //     {
-  //       $lookup: {
-  //         from: 'ordertables',
-  //         localField: '_id',
-  //         foreignField: 'ordertableId',
-  //         as: 'orderData',
-  //       },
-  //     },
-  //     {
-  //       $unwind: {
-  //         path: '$orderData',
-  //         preserveNullAndEmptyArrays: true,
-  //       },
-  //     },
-  //     {
-  //       $group: {
-  //         _id: '$_id',
-  //         tablename: { $first: '$tablename' },
-  //         Position: { $first: '$Position' },
-  //         seatcapacity: { $first: '$seatcapacity' },
-  //         description: { $first: '$description' },
-  //         orderstatus: { $first: '$orderData.orderstatus' },
-  //         subtractedValue: {
-  //           $sum: {
-  //             $cond: {
-  //               if: {
-  //                 $and: [
-  //                   { $ne: ['$orderData', null] },
-  //                   { $eq: ['$orderData.orderstatus', 'Pending'] },
-  //                 ],
-  //               },
-  //               then: {
-  //                 $cond: {
-  //                   if: {
-  //                     $gte: [
-  //                       {
-  //                         $subtract: [
-  //                           { $convert: { input: '$seatcapacity', to: 'int' } },
-  //                           { $convert: { input: '$orderData.numberofperson', to: 'int' } },
-  //                         ],
-  //                       },
-  //                       0,
-  //                     ],
-  //                   },
-  //                   then: {
-  //                     $subtract: [
-  //                       { $convert: { input: '$seatcapacity', to: 'int' } },
-  //                       { $convert: { input: '$orderData.numberofperson', to: 'int' } },
-  //                     ],
-  //                   },
-  //                   else: { $convert: { input: '$seatcapacity', to: 'int' } },
-  //                 },
-  //               },
-  //               else: 0,
-  //             },
-  //           },
-  //         },
-  //       },
-  //     },
-  //     {
-  //       $project: {
-  //         tablename: 1,
-  //         Position: 1,
-  //         seatcapacity: 1,
-  //         description: 1,
-  //         orderstatus: 1,
-  //         subtractedValue: 1,
-  //         availableSeat: {
-  //           $cond: {
-  //             if: {
-  //               $eq: [
-  //                 {
-  //                   $subtract: [
-  //                     { $convert: { input: '$seatcapacity', to: 'int' } },
-  //                     { $convert: { input: '$subtractedValue', to: 'int' } },
-  //                   ],
-  //                 },
-  //                 { $convert: { input: '$seatcapacity', to: 'int' } },
-  //               ],
-  //             },
-  //             then: { $convert: { input: '$seatcapacity', to: 'int' } },
-  //             else: { $convert: { input: '$subtractedValue', to: 'int' } },
-  //           },
-  //         },
-  //       },
-  //     },
-  //   ]);
-  
-  //   res.json(result);
-  // } catch (error) {
-  //   res.status(500).json({ message: error.message });
-  // }
   
   
   try {
@@ -1482,17 +761,11 @@ module.exports =
   getDelivery,
   getposFooditems,
   insertPos,
-  getAllPos,
-  runningOrder,
-  completePaymeny,
   updatePayment,
-  getKot,
   insertPoshold,
   getHold,
   todayOrder,
   insertQuickpay,
-  getSplit,
-  getMerge,getedit,
   tableorder,
   calculateTable,
   
