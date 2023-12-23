@@ -1,6 +1,6 @@
 
 import React, { Suspense, lazy,useState,useEffect   } from 'react';
-import { BrowserRouter,Routes,Route,Navigate} from 'react-router-dom'
+import { BrowserRouter,Routes,Route,useNavigate} from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Swal from 'sweetalert2';
 import "datatables.net-dt/js/dataTables.dataTables"
@@ -75,35 +75,38 @@ import EditDesignation from './Components/Designation/editDesignation';
 function App() {
 
 
-
+  
   const isLoggedIn = window.localStorage.getItem("loggedIn");
-  const [isOpeningBalanceComplete, setIsOpeningBalanceComplete] = useState(false);
-  const [lastOpeningBalanceDate, setOpenningBalanceDate] = useState([]);
+  const [isOpeningBalanceComplete, setIsOpeningBalanceComplete] = useState();
   const [openingBalanceAmount, setOpeningBalanceAmount] = useState(0);
+  const [lastOpeningBalanceDate, setLastOpeningBalanceDate] = useState(null);
+
   useEffect(() => {
     axios.get(`${apiConfig.baseURL}/api/openningbalance/opennigbalance`)
-    .then((response) => {
-      const { hasOpeningBalance, openingBalance } = response.data;
+      .then((response) => {
+        const { hasOpeningBalance, openingBalance } = response.data;
 
-     
-      const today = new Date().toDateString();
-      const openingBalanceDate = new Date(openingBalance.date).toDateString();
+        const today = new Date().toDateString();
+        const openingBalanceDate = new Date(openingBalance.date).toDateString();
 
-      console.log(openingBalanceDate);
-      setIsOpeningBalanceComplete(hasOpeningBalance && openingBalanceDate === today);
+        console.log(openingBalanceDate);
 
-      // Set opening balance amount
-      setOpeningBalanceAmount(openingBalance.amount || 0);
-    })
-    .catch((error) => {
-      console.error('Error checking opening balance:', error);
-      setIsOpeningBalanceComplete(false);
-      setOpeningBalanceAmount(0);
-    });
+        setIsOpeningBalanceComplete(hasOpeningBalance && openingBalanceDate === today);
+        setOpeningBalanceAmount(openingBalance.amount || 0);
+        setLastOpeningBalanceDate(new Date(openingBalance.date));
+      })
+      .catch((error) => {
+        console.error('Error checking opening balance:', error);
+        setIsOpeningBalanceComplete(false);
+        setOpeningBalanceAmount(0);
+        setLastOpeningBalanceDate(null);
+      });
   }, []);
 
   console.log(lastOpeningBalanceDate);
-
+  const Spinner = () => {
+    return <div>Loading...</div>;
+  };
 
   return (
     
@@ -121,7 +124,7 @@ function App() {
                   }></Route>
 
     
-              <Route path="/dashboard" element={<Dashboard />}  />
+              <Route exact path="/dashboard" element={<Dashboard />} />
 
               <Route path='/addingredientfoodcategory' element={<RequireToken><AddCategory/></RequireToken>}></Route>
               <Route path='/viewingredientfoodcategory' element={<RequireToken><ViewCategory /></RequireToken>}></Route>
@@ -156,11 +159,19 @@ function App() {
               <Route path='/viewWaiter' element={<RequireToken><ViewWaiter /></RequireToken>}></Route>
               <Route path='/editWaiter/:id' element={<RequireToken><EditWaiter /></RequireToken>}></Route>
               <Route
-  path='/pos' element={ !isOpeningBalanceComplete ? (<RequireToken><OpenningBalance /></RequireToken>
-    ) : (<RequireToken><Pos /></RequireToken>
-    )
-  }
-/>
+      path="/pos"
+      element={
+        isOpeningBalanceComplete ? (
+          <RequireToken>
+            <Pos />
+          </RequireToken>
+        ) : (
+          <RequireToken>
+            <OpenningBalance />
+          </RequireToken>
+        )
+      }
+    />
                
               <Route path='/posedit/:id' element={<RequireToken><PosEdit /></RequireToken>}></Route>
               <Route path='/runningorder' element={<RequireToken><OngoingOrder /></RequireToken>}></Route>

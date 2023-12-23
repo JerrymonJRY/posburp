@@ -32,10 +32,13 @@ const Pos =() =>{
               <ul className="nav nav-tabs nav-justified" role="tablist">
                 <li className="nav-item ">
                  
-                  <Link className="nav-link active"  data-toggle="tab"
-                   to="/pos"
+                <Link
+                    className={`nav-link ${activeTab === 'neworder' ? 'active' : ''}`}
+                    to="/pos"
                     role="tab"
-                    aria-controls="neworder" ><FaShoppingCart className="mr-1" /> New Order</Link>
+                    aria-controls="neworder"
+                    onClick={() => handleTabClick('neworder')}
+                  ><FaShoppingCart className="mr-1" /> New Order</Link>
                 </li>
                 <li className="nav-item">
 

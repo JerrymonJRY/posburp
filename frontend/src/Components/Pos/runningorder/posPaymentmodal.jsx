@@ -9,6 +9,7 @@ const RunningPaymentModal =({data,showModal,setShowModal}) =>{
   const navigate = useNavigate();
   
     const [payments,setPays] =useState();
+    const [processedIds, setProcessedIds] = useState([]);
     const payment  = [
         { value: 'Cash', label: 'Cash' },
         { value: 'Card', label: 'Card' },
@@ -64,12 +65,17 @@ const RunningPaymentModal =({data,showModal,setShowModal}) =>{
         navigate('/runningorder');
        // openPrintModal(res.data);
       } else {
-        navigate('/runningorder');
+       // setProcessedIds([...processedIds, id]);
+        closeModal();
       }
     });
   })
   .catch(err => console.log(err));
 }
+
+const closeModal = () => {
+  setShowModal(false);
+};
     return (
         <div>
         <div className={`modal ${showModal ? 'show' : ''}`} tabIndex="-1" role="dialog" style={{ display: showModal ? 'block' : 'none' }}>

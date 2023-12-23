@@ -65,6 +65,10 @@ const PosRunningOrder = ()=>{
             console.log(response.data);
             setShowModal(true);
           })
+          .then(() => {
+           
+            setPosRunningorder((prevOrders) => prevOrders.filter(order => order._id !== id));
+          })
           .catch((error) => {
             console.error('Error fetching data:', error);
           });

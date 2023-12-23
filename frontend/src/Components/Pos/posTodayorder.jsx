@@ -12,7 +12,7 @@ const PosTodayOrder =() =>{
     const [data, setData] = useState(null);
     const [kotdata,setkotData] =useState(null);
     const [showkotModal,setShowKotModal] =useState(false);
- 
+    const [printOrderId, setPrintOrderId] = useState(null);
 
     const totalGrandTotal = Array.isArray(posTodayorder)
     ? posTodayorder.reduce((total, order) => {
@@ -24,10 +24,14 @@ const PosTodayOrder =() =>{
 
     const componentRef = useRef();
     
-    const handlePrint = () => {
-      if (componentRef.current) {
-        componentRef.current.handlePrint();
-      }
+    const handlePrint = (orderId) => {
+      const selectedOrder = posTodayorder.find((order) => order._id === orderId);
+      setPrintOrderId(orderId);
+      setData(selectedOrder);
+      setShowModal(true);
+      // Open a new window for printing
+      
+     
     };
 
     useEffect(() => {
@@ -44,6 +48,8 @@ const PosTodayOrder =() =>{
             setData(response.data);
             console.log(response.data);
             setShowModal(true);
+
+          
           })
           .catch((error) => {
             console.error('Error fetching data:', error);
@@ -69,6 +75,18 @@ const PosTodayOrder =() =>{
   });
 
 }
+
+const handlePrints = () => {
+  if (componentRef.current) {
+    // Assuming your modal content has a handlePrint method
+    if (componentRef.current.handlePrint) {
+      componentRef.current.handlePrint();
+    } else {
+      // If handlePrint is not defined, you can use window.print() for a simple print
+      window.print();
+    }
+  }
+};
 
 
     return (
@@ -132,7 +150,7 @@ const PosTodayOrder =() =>{
                 </table>
             </div>
             <div>
- <div className={`modal ${showModal ? 'show' : ''}`} tabIndex="-1" role="dialog" style={{ display: showModal ? 'block' : 'none' }}>
+ <div className={`modal ${showModal ? 'show' : ''}`} tabIndex="-1" role="dialog" ref={componentRef} style={{ display: showModal ? 'block' : 'none' }}>
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-header">

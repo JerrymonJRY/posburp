@@ -52,13 +52,7 @@ const PosNewOrder = () => {
         }, []);
 
         const [designationname,setDesignationName] =useState('');
-        
-      // console.log(addedby);
-     // console.log("selectUser is not empty:", addedby);
-
-
-
-
+   
   const [enableDinein, setEnableDinein] = useState(false);
   const [enableFoodmenu,setEnableFoodmenu] =useState(false);
   // const [isEnableTable, setEnableTable] = useState(true);
@@ -102,18 +96,13 @@ const PosNewOrder = () => {
   const [posHoldingorder, setPosHoldingorder] = useState([]);
   const [isModalHold, setModalHold] = useState(false);
   const [isModalCashDrop,setModalCashDrop] =useState(false);
-  const [numberofperson,setNumberofPerson] =useState({})
+  const [numberofperson,setNumberofPerson] =useState('')
 
 
 
   const [activeTabletab,setactiveTableTab]=useState(0);
-const handleSearch = (e) => {
-  setSearchTerm(e.target.value);
-};
-
-const handleSearchWaiter =(e) =>{
-  setSearchWaiter(e.target.value);
-}
+const handleSearch = (e) => { setSearchTerm(e.target.value); };
+const handleSearchWaiter =(e) =>{  setSearchWaiter(e.target.value);}
 
 const handleClearClick = () => {
   setSelectWaiter("");
@@ -138,10 +127,7 @@ const handleClearClick = () => {
 const filteredWaiters = waiter.filter((wait) =>
   wait.waitername.toLowerCase().includes(searchWaiter.toLowerCase())
 );
-const handleSearchTable =(e) =>
-{
-  setSearchTable(e.target.value);
-}
+const handleSearchTable =(e) =>{ setSearchTable(e.target.value); }
 
 const filteredTables = table.filter((tables) =>
 tables.tablename.toLowerCase().includes(searchTable.toLowerCase())
@@ -149,19 +135,13 @@ tables.tablename.toLowerCase().includes(searchTable.toLowerCase())
 
 
 
-const handleSearchCustomer =(e) =>
-{
-  setSearchCustomer(e.target.value);
-}
+const handleSearchCustomer =(e) =>{ setSearchCustomer(e.target.value); }
 
 const filteredCustomers = customers.filter((customer) =>
 customer.customername.toLowerCase().includes(searchCustomer.toLowerCase())
 );
 
-const handleSearchDelivery =(e) =>
-{
-  setSearchDeliveryPerson(e.target.value);
-}
+const handleSearchDelivery =(e) =>{ setSearchDeliveryPerson(e.target.value);}
 
 const filteredDelivery = delivery.filter((delivery) =>
 delivery.dliveryname.toLowerCase().includes(searchDeliveryPerson.toLowerCase())
@@ -194,13 +174,7 @@ console.info({table})
     })
 
   };
-
-
-
-
   console.log("selectWaiter is not empty:", selectWaiter);
-
-
   const handleTable = (tables) => {
     if (numberofperson.trim() === '') {
     
@@ -217,16 +191,24 @@ console.info({table})
     }
     
   }
+  // const trimmedValue = typeof numberofperson === 'string' ? numberofperson.trim() : '';
 
+  // const handleNumberofPersonChange = (e, tableId) => {
+  //   setNumberofPerson((prevNumberofperson) => ({
+  //     ...prevNumberofperson,
+  //     [tableId]: e.target.value,
+  //   }));
+  // };
 
-  const handleNumberofPersonChange = (e, id) => {
+  const handleNumberofPersonChange = (e) => {
     const value = e.target.value;
   
     // Validate if the entered value is a valid positive integer
     if (/^[1-9]\d*$/.test(value) || value === '') {
-      setNumberofPerson({ ...numberofperson, [id]: value });
+      setNumberofPerson(value);
     }
   };
+  
   
   const isValidNumber = () => {
     return /^[1-9]\d*$/.test(numberofperson);
@@ -254,25 +236,12 @@ console.info({table})
     setShowDeliveryTab(true);
   }
 
-  const handleCustomer = (e) => {
-    setShowDeliveryTab(false);
-  }
+  const handleCustomer = (e) => { setShowDeliveryTab(false); }
+ const handleMenu = (e) => { setEnableFoodmenu(true); }
+ const handleDeliveryPerson =(e) =>{ setShowCustomerTab(false); }
+ console.info({customers})
 
-  const handleMenu = (e) => {
-    setEnableFoodmenu(true);
-
-  }
-
-  const handleDeliveryPerson =(e) =>{
-    setShowCustomerTab(false);
-  }
-
-
-
-
-console.info({customers})
-  //Get The Waiter data
-  useEffect(() => {
+useEffect(() => {
 
     axios.get(`${apiConfig.baseURL}/api/pos/posWaiter`)
       .then((response) => {
@@ -319,14 +288,6 @@ console.info({customers})
         console.error(error);
       });
 
-
-      // axios.get(`${apiConfig.baseURL}/api/pos/calculate`)
-      // .then((response) => {
-      //   setOrderTable(response.data);
-      // })
-      // .catch((error) => {
-      //   console.error(error);
-      // });
   }, []);
 
   useEffect(() => {
@@ -355,12 +316,9 @@ console.info({customers})
           newItem = {
             ...cartItem,
             quantity: cartItem.quantity + 1,
-            // totalAmount: cartItem.salesprice * (cartItem.quantity + 1),
-            // vatAmount:(cartItem.salesprice * (cartItem.quantity + 1) * cartItem.vat.percentage) / 100,
-
-
-          }
-          //console.log(vatAmount);
+           
+}
+        
           newCart.push(newItem);
         } else {
           newCart.push(cartItem);
@@ -369,40 +327,17 @@ console.info({customers})
       });
       console.info({ newCart })
       setCart(newCart);
-      const toastOptions = {
-        position: 'top-right',
-        autoClose: 3000, // Close the toast after 3 seconds
-        hideProgressBar: false, // Show a progress bar
-        closeOnClick: true, // Close the toast when clicked
-        pauseOnHover: true, // Pause on hover
-      };
-      <ToastContainer />
-      // toast(`Added ${menu.foodmenuname} to the cart`, toastOptions);
-      //  toast(`Added ${newItem.foodmenuname} to cart`,toastOptions)
-
-    } else {
+     } else {
       let addingProduct = {
         ...menu,
         'quantity': 1,
         'totalAmount': menu.salesprice,
       }
       setCart([...cart, addingProduct]);
-      const toastOptions = {
-        position: 'top-right',
-        autoClose: 3000, // Close the toast after 3 seconds
-        hideProgressBar: false, // Show a progress bar
-        closeOnClick: true, // Close the toast when clicked
-        pauseOnHover: true, // Pause on hover
-      };
-
-      //toast(`Added ${newItem.foodmenuname} to the cart`, toastOptions);
-      <ToastContainer />
+     
     }
-
-
-  }
-
-  const removeProduct = async (menu) => {
+ }
+ const removeProduct = async (menu) => {
     const newCart = cart.filter(cartItem => cartItem._id !== menu._id);
     setCart(newCart);
   }
@@ -410,14 +345,11 @@ console.info({customers})
   useEffect(() => {
     let newTotalAmount = 0;
     let newVatAmount = 0;
-
-    cart.forEach(icart => {
-
+     cart.forEach(icart => {
       newTotalAmount = newTotalAmount + icart.quantity * parseInt(icart.totalAmount);
       newVatAmount = parseInt(icart.vat.percentage) != 0 ? newVatAmount + icart.quantity * parseInt(icart.salesprice) * (parseInt(icart.vat.percentage) / 100) : newVatAmount;
     })
-
-    console.log({ newVatAmount });
+     console.log({ newVatAmount });
     setTotalAmount(newTotalAmount);
     setTotalVat(newVatAmount.toFixed(2));
     setGrandTotal((newTotalAmount + newVatAmount).toFixed())
@@ -435,10 +367,7 @@ console.info({customers})
       }
       return item;
     })
-    console.log({ addQuantity });
-    console.log({ totalAmount });
-    // setTotalAmount(parseInt(totalAmount) + parseInt(salesprice))
-    setCart(addQuantity)
+   setCart(addQuantity)
   }
 
   //console.log({totalAmount});
@@ -498,7 +427,7 @@ console.info({customers})
       })
 
       var posData = new FormData();
-     // posData.append("customers",selectCustomer._id);
+    
      if (selectCustomer && selectCustomer._id) {
       posData.append("customers", selectCustomer._id);
   }
@@ -510,49 +439,23 @@ console.info({customers})
       posData.append("grandTotal",grandTotal);
  
       for (let i = 0; i < cart.length; i++) {
-       posData.append(
-         `cart[${i}].foodmenuId`,
-        cart[i]._id
-       );
-       posData.append(
-        `cart[${i}].foodmenuname`,
-       cart[i].foodmenuname
-      );
-       posData.append(
-         `cart[${i}].salesprice`,
-         cart[i].salesprice
-       );
-       posData.append(
-         `cart[${i}].quantity`,
-         cart[i].quantity
-       );
-     
-    
+       posData.append(`cart[${i}].foodmenuId`, cart[i]._id);
+       posData.append(`cart[${i}].foodmenuname`,cart[i].foodmenuname);
+       posData.append(`cart[${i}].salesprice`,cart[i].salesprice);
+       posData.append(`cart[${i}].quantity`,cart[i].quantity);
      }
- 
-
-      posData.append("vatAmount",vatAmount);
+     posData.append("vatAmount",vatAmount);
       posData.append("total",totalAmount);
-     posData.append("foodoption",options);
-     posData.append('addedby',addedby);
-
-   
-    if (selectTable && selectTable._id) {
+      posData.append("foodoption",options);
+      posData.append('addedby',addedby);
+if (selectTable && selectTable._id) {
       posData.append("tableId", selectTable._id);
       posData.append("numberofperson",numberofperson);
   }
-  
-  if (selectWaiter && selectWaiter._id) {
+if (selectWaiter && selectWaiter._id) {
       posData.append("waiterId", selectWaiter._id);
   }
-     //console.log(posData);
-     
-   
-       const config = {
-         headers: {
-           'Content-Type': 'application/json',
-         }
-       };
+   const config = { headers: {'Content-Type': 'application/json',}};
    
         axios
        .post(`${apiConfig.baseURL}/api/pos/createpos`, posData, config)
@@ -572,7 +475,13 @@ console.info({customers})
               openPrintModal(res.data);
             } else {
               // navigate('/posorder');
-              setRefresh((prevRefresh) => !prevRefresh);
+              // setRefresh((prevRefresh) => !prevRefresh);
+              setCart([]);
+              setTabEnabled({
+                dineIn: true,
+               
+              });
+             
             }
           });
         })
@@ -592,10 +501,7 @@ console.info({customers})
     }).then((result) => {
      
       if (result.isConfirmed) {
-        // Refresh the page
        
-     //  navigate("/pos");
-    // navigate(window.location.href);
       }
     });
   }
@@ -640,21 +546,12 @@ console.info({customers})
     formattedDetails += `<p><strong>Total Amount:</strong> ${data.total}</p>`;
     formattedDetails += `<p><strong>Grand Total:</strong> ${data.grandTotal}</p>`;
 
-    
-    // if (data.tableId) {
-    //   formattedDetails += `<p><strong>Table ID:</strong> ${data.tableId}</p>`;
-    // }
-    
-    // if (data.waiterId) {
-    //   formattedDetails += `<p><strong>Waiter ID:</strong> ${data.waiterId}</p>`;
-    // }
-    
     formattedDetails += '</div>';
     
     return formattedDetails;
   }
 
-console.info({filteredTables})
+// console.info({filteredTables})
   const handleHold =(event) =>
   {
     event.preventDefault();
@@ -695,58 +592,25 @@ console.info({filteredTables})
 }
       posData.append("options",options);
       posData.append("grandTotal",grandTotal);
- 
       for (let i = 0; i < cart.length; i++) {
-       posData.append(
-         `cart[${i}].foodmenuId`,
-        cart[i]._id
-       );
-       posData.append(
-        `cart[${i}].foodmenuname`,
-       cart[i].foodmenuname
-      );
-       posData.append(
-         `cart[${i}].salesprice`,
-         cart[i].salesprice
-       );
-       posData.append(
-         `cart[${i}].quantity`,
-         cart[i].quantity
-       );
-     
-    
-     }
- 
-
-      posData.append("vatAmount",vatAmount);
-      posData.append("total",totalAmount);
+        posData.append(`cart[${i}].foodmenuId`, cart[i]._id);
+        posData.append(`cart[${i}].foodmenuname`,cart[i].foodmenuname);
+        posData.append(`cart[${i}].salesprice`,cart[i].salesprice);
+        posData.append(`cart[${i}].quantity`,cart[i].quantity);
+      }
+     posData.append("vatAmount",vatAmount);
+     posData.append("total",totalAmount);
      posData.append("foodoption",options);
-    //  posData.append("tableId",selectTable._id);
-    //  posData.append("waiterId",selectWaiter._id);
     if (selectTable && selectTable._id) {
       posData.append("tableId", selectTable._id);
   }
-  
-  if (selectWaiter && selectWaiter._id) {
+   if (selectWaiter && selectWaiter._id) {
       posData.append("waiterId", selectWaiter._id);
   }
   posData.append('addedby',addedby);
-     //console.log(posData);
-     
-   
-       const config = {
-         headers: {
-           'Content-Type': 'application/json',
-         }
-       };
-   
-        axios
-       .post(`${apiConfig.baseURL}/api/pos/createHold`, posData, config)
-        // .then(res => {
-        //    console.log(res);
-        //    navigate('/posorder');
-        //  })
-        //  .catch(err => console.log(err));
+ const config = { headers: { 'Content-Type': 'application/json', }};
+   axios.post(`${apiConfig.baseURL}/api/pos/createHold`, posData, config)
+        
         .then(res => {
           Swal.fire({
             title: 'Success!',
@@ -809,7 +673,7 @@ console.info({filteredTables})
       console.log(options);
 
       var posData = new FormData();
-     // posData.append("customers",selectCustomer._id);
+     
      if (selectCustomer && selectCustomer._id) {
       posData.append("customers", selectCustomer._id);
   }
@@ -818,52 +682,24 @@ console.info({filteredTables})
 }
       posData.append("options",options);
       posData.append("grandTotal",grandTotal);
- 
       for (let i = 0; i < cart.length; i++) {
-       posData.append(
-         `cart[${i}].foodmenuId`,
-        cart[i]._id
-       );
-       posData.append(
-        `cart[${i}].foodmenuname`,
-       cart[i].foodmenuname
-      );
-       posData.append(
-         `cart[${i}].salesprice`,
-         cart[i].salesprice
-       );
-       posData.append(
-         `cart[${i}].quantity`,
-         cart[i].quantity
-       );
-     
-    
-     }
- 
-
-      posData.append("vatAmount",vatAmount);
-      posData.append("total",totalAmount);
+        posData.append(`cart[${i}].foodmenuId`, cart[i]._id);
+        posData.append(`cart[${i}].foodmenuname`,cart[i].foodmenuname);
+        posData.append(`cart[${i}].salesprice`,cart[i].salesprice);
+        posData.append(`cart[${i}].quantity`,cart[i].quantity);
+      }
+     posData.append("vatAmount",vatAmount);
+     posData.append("total",totalAmount);
      posData.append("foodoption",options);
-   
     if (selectTable && selectTable._id) {
       posData.append("tableId", selectTable._id);
   }
-  
   if (selectWaiter && selectWaiter._id) {
       posData.append("waiterId", selectWaiter._id);
   }
-     //console.log(posData);
-     posData.append('addedby',addedby);  
-   
-       const config = {
-         headers: {
-           'Content-Type': 'application/json',
-         }
-       };
-   
-        axios
-       .post(`${apiConfig.baseURL}/api/pos/createQuickpay`, posData, config)
-       
+  posData.append('addedby',addedby);  
+   const config = { headers: {'Content-Type': 'application/json', } };
+   axios.post(`${apiConfig.baseURL}/api/pos/createQuickpay`, posData, config)
         .then(res => {
           Swal.fire({
             title: 'Success!',
@@ -886,46 +722,12 @@ console.info({filteredTables})
     }
 
   }
+const handleTabClick =() =>{ setModalOpen(true);}
+ const handleCloseTable = () => { setShowModal(false);};
+const handleCloseModal = () => {  setModalOpen(false);};
+const handleHoldClick =() => {setModalHold(true); }
+const handleDropoutClick =() =>{ setModalCashDrop(true);} 
 
-
-
-const handleTabClick =() =>{
-  setModalOpen(true);
-}
- 
-  
-  
-  
-  
-  
-
-  const handleCloseTable = () => {
-    setShowModal(false);
-  };
-
-    const handleCloseModal = () => {
-    setModalOpen(false);
-  };
-
-
-
-  const handleHoldClick =() =>
-  {
-    setModalHold(true);
-  }
-
-  const handleDropoutClick =() =>{
-
-    setModalCashDrop(true);
-
-  } 
-
- 
-
-
-
-
-  console.info({ placeorder })
   return (
     <div className="row">
       <div className="col-sm-4 col-lg-auto">
@@ -1173,7 +975,7 @@ const handleTabClick =() =>{
                 ))}
             </div>
           </div> */}
-{enableDinein && (
+{/* {enableDinein && (
         <div className="tab-pane" id="table" role="tabpanel" aria-labelledby="duck-tab">
           <input
             type="text"
@@ -1220,7 +1022,7 @@ const handleTabClick =() =>{
                         !isValidNumber() ||
                         tables.availableSeat === 0 ||
                         parseInt(numberofperson[tables._id] || 0) > parseInt(tables.seatcapacity)
-                          ? 'disabled'
+                          ? 'enabled'
                           : ''
                       }`}
                       onClick={() => {
@@ -1237,7 +1039,73 @@ const handleTabClick =() =>{
             ))}
           </div>
         </div>
-      )}
+      )} */}
+                {enableDinein && (
+    <div className="tab-pane" id="table" role="tabpanel" aria-labelledby="duck-tab">
+      <input
+        type="text"
+        placeholder="Search Tables..."
+        value={searchTable}
+        className="form-control"
+        onChange={handleSearchTable}
+      />
+      <br />
+      <div className="row">
+        {filteredTables.map((tables, index) => (
+
+            
+          
+          <div
+            key={index}
+            className={`col-sm-3 col-md-3 ${selectTable === tables ? 'disabled' : ''}`}
+          >
+            <div
+              className={`menu-box ${
+                selectTable ? 'read-only' : 'selectable'
+              }`}
+             
+            >
+              <h6>
+                <SiTablecheck className="mr-2" />
+                <br />
+                {tables.tablename}
+              </h6>
+              <p>SeatCapacity:{tables.seatcapacity}</p>
+              <p>Avilable Seat:{tables.availableSeat}</p>
+             
+            </div>
+            <div class="flex-row-container">
+
+  <div class="flex-row-item">
+  <input type="text" name="numberofperson" value={numberofperson} onChange={(e) => {setNumberofPerson(e.target.value)
+  handleNumberofPersonChange(e)}} className="form-control" placeholder="No Of Person"  readOnly={tables.availableSeat === 0}   />
+  
+  </div>
+  <div class="flex-row-item">
+  <a  className={`btn btn-outline-primary ${
+            !isValidNumber() ||
+            tables.availableSeat === 0 ||
+            parseInt(numberofperson) > parseInt(tables.seatcapacity)
+              ? 'disabled'
+              : ''
+          }`}
+          
+          onClick={(e) => {
+           
+              setSelectTable(tables);
+              handleTable(tables);
+          
+          
+          }}   >+</a>
+  </div>
+ 
+
+</div>
+          </div>
+          ))}
+      </div>
+    </div>
+  )}
 
           <div className="tab-pane " id="customer" role="tabpanel" aria-labelledby="duck-tab">
           <input
