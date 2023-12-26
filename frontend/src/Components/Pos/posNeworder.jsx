@@ -22,6 +22,7 @@ import { MdOutlineTakeoutDining } from "react-icons/md";
 import PosNeworderKotModal from "./neworder/posNeworderkotmodal";
 import PosNewHoldingModal from "./neworder/posNewHoldingmodal";
 import PosCashDrop from "./neworder/cashDropout";
+import PosInvoiceReport from "./neworder/posinvoiceReport";
 
 const PosNewOrder = () => {
 
@@ -97,6 +98,7 @@ const PosNewOrder = () => {
   const [isModalHold, setModalHold] = useState(false);
   const [isModalCashDrop,setModalCashDrop] =useState(false);
   const [numberofperson,setNumberofPerson] =useState('')
+  const [isModalInvoiceReport,setModalInvoiceReport] =useState(false);
 
 
 
@@ -473,6 +475,11 @@ if (selectWaiter && selectWaiter._id) {
               // Open your print modal here
               console.log(posData);
               openPrintModal(res.data);
+              setCart([]);
+              setTabEnabled({
+                dineIn: true,
+               
+              });
             } else {
               // navigate('/posorder');
               // setRefresh((prevRefresh) => !prevRefresh);
@@ -727,6 +734,8 @@ const handleTabClick =() =>{ setModalOpen(true);}
 const handleCloseModal = () => {  setModalOpen(false);};
 const handleHoldClick =() => {setModalHold(true); }
 const handleDropoutClick =() =>{ setModalCashDrop(true);} 
+const handleInvoiceClick =() =>{ setModalInvoiceReport(true)};
+
 
   return (
     <div className="row">
@@ -851,7 +860,7 @@ const handleDropoutClick =() =>{ setModalCashDrop(true);}
   <RiArchiveDrawerLine className="mr-2" /><br />
  Open Drawer
   </a>
-  <a class="nav-link text-center navleft" id="v-pills-invoice-tab" data-toggle="pill" href="#v-pills-invoice" role="tab" aria-controls="v-pills-invoice" aria-selected="false">
+  <a onClick={handleInvoiceClick} class="nav-link text-center navleft" id="v-pills-invoice-tab" data-toggle="pill" href="#v-pills-invoice" role="tab" aria-controls="v-pills-invoice" aria-selected="false">
   <LiaFileInvoiceSolid className="mr-2" /><br /> Invoice Report
   </a>
 </div>
@@ -1096,7 +1105,7 @@ const handleDropoutClick =() =>{ setModalCashDrop(true);}
               handleTable(tables);
           
           
-          }}   >+</a>
+          }}   >Add</a>
   </div>
  
 
@@ -1245,6 +1254,8 @@ const handleDropoutClick =() =>{ setModalCashDrop(true);}
 
 
 <PosCashDrop isModalCashDrop={isModalCashDrop} setModalCashDrop={setModalCashDrop} />
+
+<PosInvoiceReport isModalInvoiceReport={isModalInvoiceReport} setModalInvoiceReport={setModalInvoiceReport} />
 
          
     </div>

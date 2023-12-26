@@ -147,12 +147,7 @@ const handleEdit =(id) =>
       });
       setMergedata(response.data);
       setMergeModal(true);
-     // console.log(mergdata);
-
-     
-    //  const { price, ordernumber } = response.data;
-      // setModalContent(`Order Number: ${ordernumber}, Price: ${price}`);
-      // setShowModal(true);
+    
     } catch (error) {
      
       console.error('Error:', error);
@@ -248,7 +243,7 @@ const handleEdit =(id) =>
 
       {/* Merge Modal */}
 
-      <PosMergemodal mergdata={mergdata} mergeModal={mergeModal} setMergeModal={setMergeModal} />
+      <PosMergemodal mergdata={mergdata}  mergeModal={mergeModal} setMergeModal={setMergeModal} />
   
     </div>
         </>

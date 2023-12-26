@@ -1,11 +1,49 @@
 import React from "react";
+import { useState,useEffect,useRef } from "react";
 import axios from 'axios';
 import apiConfig from '../../layouts/base_url';
 
 const PosMergemodal = ({ mergdata, mergeModal,setMergeModal }) =>{
 
+
+  const calculateTotals = () => {
+    if (mergdata && mergdata.length > 0) {
+      const totalAmount = mergdata.reduce((acc, order) => acc + parseInt(order.total, 10), 0);
+      const totalVat = mergdata.reduce((acc, order) => acc + parseFloat(order.vatAmount), 0);
+      const totalGrandTotal = mergdata.reduce((acc, order) => acc + parseInt(order.grandTotal, 10), 0);
+  
+      return { totalAmount, totalVat, totalGrandTotal };
+    }
+  
+    return { totalAmount: 0, totalVat: 0, totalGrandTotal: 0 };
+  };
+
+  const { totalAmount, totalVat, totalGrandTotal } = calculateTotals();
   
 
+  const [payments,setPayments] =useState();
+  const [validationMsg, setValidationMsg] = useState("");
+  const payment  = [
+    { value: 'Cash', label: 'Cash' },
+    { value: 'Card', label: 'Card' },
+   
+  ];
+
+  const handlePaymentChange = (event) => {
+    setPayments(event.target.value);
+    setValidationMsg(""); // Clear validation message when the payment option changes
+  };
+
+
+  const handlePayNowClick = () => {
+    if (!payments || payments === "Select Payment") {
+      setValidationMsg("Please select a valid payment option.");
+    } else {
+      // Perform the payment logic here
+      // ...
+      setValidationMsg("Payment successful!"); // You can replace this with your actual logic
+    }
+  };
 
 
 
@@ -31,8 +69,7 @@ const PosMergemodal = ({ mergdata, mergeModal,setMergeModal }) =>{
                              <th>Grand Total</th>
                            </thead>
                            <tbody>
-                           { mergdata ? (
-     mergdata.map((order,key) => (
+      { mergdata ? (mergdata.map((order,key) => (
        <tr key={order._id}>
              <td>{key + 1}</td>
              <td>{order.ordernumber}</td>
@@ -48,9 +85,36 @@ const PosMergemodal = ({ mergdata, mergeModal,setMergeModal }) =>{
                    )
                  }
                            </tbody>
+                           <tfoot>
+                  <tr>
+                    <td colSpan="2">Totals:</td>
+                    <td>{totalAmount}</td>
+                    <td>{totalVat}</td>
+                    <td>{totalGrandTotal}</td>
+                  </tr>
+                </tfoot>
                        </table>
+                       <div className="row">
+                        
+                        
+                        <div className="form-group row">
+                                <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Select Payment</label>
+                                <div className="col-sm-9">
+                                <select className="form-control"  value={payments} onChange={handlePaymentChange}>
+                                  <option>Select Payment</option>
+                                  {payment.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+                                </select>
+                                {validationMsg && <p className="text-danger">{validationMsg}</p>}
+                                </div>
+                              </div>
+                        </div>
                    </div>
                    <div className="modal-footer">
+                   <button type="button" className="btn btn-outline-primary"  onClick={handlePayNowClick} >Pay Now</button> 
                    <button type="button" className="btn btn-outline-secondary" onClick={() => setMergeModal(false)}>Close</button>
                    </div>
        

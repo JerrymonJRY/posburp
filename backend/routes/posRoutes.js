@@ -21,6 +21,7 @@ const {updatePosorder} =require('../controller/posUpdateController')
 const {getAllPos,completePaymeny} =require('../controller/posneworderController')
 const {runningOrder,getKot,getedit,getSplit,getMerge} =require('../controller/posrunningorderController')
 const {todayDelivery} =require('../controller/posdeliveryController')
+const {posinvoiceReport} =require('../controller/posinvoiceReportController')
 
 router.get('/poscategory',getposCategory);
 router.get('/posWaiter',getPosWaiter);
@@ -45,6 +46,7 @@ router.get('/tableorder',tableorder);
 router.get('/calculate',calculateTable);
 router.put('/updatepos/:id',updatePosorder);
 router.get('/gettodaydelivery',todayDelivery);
+router.get('/invoicereport',posinvoiceReport);
 
 
 
