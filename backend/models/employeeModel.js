@@ -1,8 +1,8 @@
 const mongoose = require('mongoose'); // Erase if already required
 
 // Declare the Schema of the Mongo model
-var expenseinvoiceSchema = new mongoose.Schema({
-    expenseId:{
+var employeeSchema = new mongoose.Schema({
+    first:{
         type: mongoose.Schema.ObjectId,
         ref: "Expense",
     },
@@ -24,4 +24,4 @@ var expenseinvoiceSchema = new mongoose.Schema({
 });
 
 //Export the model
-module.exports = mongoose.model('ExpenseInvoice', expenseinvoiceSchema);
+module.exports = mongoose.model('Employee', employeeSchema);

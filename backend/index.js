@@ -27,6 +27,7 @@ const balanceRouter =require('./routes/openningbalanceRoutes');
 const cashdropRouter =require('./routes/cashdropRoutes');
 const expenseRouter =require('./routes/expenseRoutes');
 const designationRouter =require('./routes/designationRoutes');
+const expenseinvoiceRouter =require('./routes/expenseinvoiceRoutes');
 
 const PORT = process.env.PORT || 4000;
 dbConnect();
@@ -67,6 +68,7 @@ app.use('/api/openningbalance',balanceRouter);
 app.use('/api/cashdrop',cashdropRouter);
 app.use('/api/expense',expenseRouter);
 app.use('/api/designation',designationRouter);
+app.use('/api/expenseinvoice',expenseinvoiceRouter);
 
 // app.use('/', (req, res) => {
 //   res.send('Hello From Server Side');

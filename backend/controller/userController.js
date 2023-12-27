@@ -29,10 +29,14 @@ const loginUserController =asyncHandler(async(req,res) =>{
     if(findUser && (await findUser.isPasswordMatched(password)))
     {
         const refreshToken = await generateRefreshToken(findUser?._id);
+        const currentDateTime = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        const shiftToken = `${findUser?.firstname}-${findUser?.lastname}-${currentDateTime}`;
+      
         const updateuser = await User.findByIdAndUpdate(
             findUser.id,
             {
               refreshToken: refreshToken,
+              shifttoken: shiftToken,
             },
             { new: true }
           );
@@ -48,6 +52,7 @@ const loginUserController =asyncHandler(async(req,res) =>{
             email:findUser?.email,
             mobile:findUser?.mobile,
             token:generateToken(findUser?._id),
+            shifttoken: shiftToken,
 
 
 

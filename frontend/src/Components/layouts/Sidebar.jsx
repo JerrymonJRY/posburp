@@ -137,7 +137,7 @@ const Sidebar =() =>{
    
         <li className="nav-item">
         
-          <Link className="nav-link" to="/dashboard"> <span className="menu-title">Expense</span>  <i className="mdi mdi-format-list-bulleted menu-icon"></i></Link>
+          <Link className="nav-link" to="/viewExpenseinvoice"> <span className="menu-title">Expense</span>  <i className="mdi mdi-format-list-bulleted menu-icon"></i></Link>
         </li>
         <li className="nav-item">
             <a className="nav-link" data-bs-toggle="collapse" href="#general-reports" aria-expanded="false" aria-controls="general-inventory">

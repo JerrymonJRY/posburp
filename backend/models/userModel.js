@@ -20,6 +20,10 @@ var userSchema = new mongoose.Schema({
         required:true,
         unique:true,
     },
+    designation:{
+        type: mongoose.Schema.ObjectId,
+        ref: "Designation",
+    },
     mobile:{
         type:String,
         required:true,
@@ -32,6 +36,11 @@ var userSchema = new mongoose.Schema({
     refreshToken: {
         type: String,
       },
+      shifttoken:{
+        type: String,
+        
+    },
+  status: { type: String, default: 'Active' },
 });
 
 userSchema.pre("save",async function (next){

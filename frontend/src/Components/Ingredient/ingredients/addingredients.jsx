@@ -36,7 +36,8 @@ const AddIngredients =() =>{
  
   useEffect(() => {
     // Fetch categories from the server
-    axios.get('http://localhost:5000/api/ingredient/getingunit')
+    
+    axios.get(`${apiConfig.baseURL}/api/ingredient/getingunit`)
       .then((response) => {
         setUnits(response.data);
       })
@@ -61,7 +62,7 @@ const AddIngredients =() =>{
     const handleSubmit =(event) =>{
 
         event.preventDefault();
-        axios.post('http://localhost:5000/api/ingredient/createingredient',{ name,categoryId,unitId ,purchaseprice,alertquantity,description })
+        axios.post(`${apiConfig.baseURL}/api/ingredient/createingredient`,{ name,categoryId,unitId ,purchaseprice,alertquantity,description })
         .then(res =>{
 
             console.log(res);

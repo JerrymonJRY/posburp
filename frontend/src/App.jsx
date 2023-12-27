@@ -71,6 +71,9 @@ import EditExpense from './Components/Expense/editExpense';
 import ViewDesignation from './Components/Designation/viewDesignation';
 import AddDesignation from './Components/Designation/addDesignation';
 import EditDesignation from './Components/Designation/editDesignation';
+import ViewExpenseInvoice from './Components/ExpenseInvoice/viewExpenseInvoice';
+import AddExpenseInvoice from './Components/ExpenseInvoice/addExpenseInvoice';
+import EditExpenseInvoice from './Components/ExpenseInvoice/editExpenseInvoice';
 
 function App() {
 
@@ -213,7 +216,13 @@ function App() {
               <Route path='/viewExpense' element={<RequireToken><ViewExpense /></RequireToken>}></Route>
               <Route path='/addExpense' element={<RequireToken><AddExpense /></RequireToken>}></Route>
               <Route path='/editExpense/:id' element={<RequireToken><EditExpense /></RequireToken>}></Route>
+              
 
+              {/* ExpenseInvoice */}
+              <Route path='/viewExpenseinvoice' element={<RequireToken><ViewExpenseInvoice /></RequireToken>}></Route>
+              <Route path='/addExpenseinvoice' element={<RequireToken><AddExpenseInvoice /></RequireToken>}></Route>
+              <Route path='/editExpenseinvoice/:id' element={<RequireToken><EditExpenseInvoice /></RequireToken>}></Route>
+              
               {/* Designation */}
               <Route path='/viewDesignation' element={<RequireToken><ViewDesignation /></RequireToken>}></Route>
               <Route path='/addDesignation' element={<RequireToken><AddDesignation /></RequireToken>}></Route>
