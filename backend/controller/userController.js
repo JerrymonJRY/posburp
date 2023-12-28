@@ -100,9 +100,9 @@ const dashboard =asyncHandler(async(req,res)=>{
 
 
 const logout = asyncHandler(async (req, res) => {
-    const cookie = req.cookies;
-    if (!cookie?.refreshToken) throw new Error("No Refresh Token in Cookies");
-    const refreshToken = cookie.refreshToken;
+    // const cookie = req.cookies;
+    // if (!cookie?.refreshToken) throw new Error("No Refresh Token in Cookies");
+    // const refreshToken = cookie.refreshToken;
     const user = await User.findOne({ refreshToken });
     if (!user) {
       res.clearCookie("refreshToken", {
@@ -113,6 +113,7 @@ const logout = asyncHandler(async (req, res) => {
     }
     await User.findOneAndUpdate(refreshToken, {
       refreshToken: "",
+     
     });
     res.clearCookie("refreshToken", {
       httpOnly: true,

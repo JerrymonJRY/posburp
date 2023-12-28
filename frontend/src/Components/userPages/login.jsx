@@ -3,7 +3,7 @@ import { useState } from 'react'
 import axios from 'axios'
 import { redirect, useNavigate } from "react-router-dom";
 import apiConfig from '../layouts/base_url';
-import { setToken,setfirstNames,setlastNames,setUserId } from '../routes/PrivateRoutes';
+import { setToken,setfirstNames,setlastNames,setUserId,setShiftToken } from '../routes/PrivateRoutes';
 function  Login() {
 
   const [email,setEmail]=useState()
@@ -35,6 +35,7 @@ function  Login() {
                setfirstNames(data.firstname);
                setlastNames(data.lastname);
                setUserId(data._id);
+               setShiftToken(data.shifttoken);
              } else {
         
                }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../layouts/Header';
 import Sidebar from '../layouts/Sidebar';
@@ -10,42 +10,56 @@ import Swal from 'sweetalert2';
 const OpenningBalance = () => {
   const [amount, setAmount] = useState('');
   const [errors, setErrors] = useState({});
+  const [addedby, setuserid] = useState('');
+  const [shiftstoken, setShiftstoken] = useState('');
+
+  useEffect(() => {
+    const storeid = localStorage.getItem('_id');
+    const storetoken = localStorage.getItem('shifttoken');
+    setuserid(storeid);
+    setShiftstoken(storetoken)
+  }, []);
+
+
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    
+
 
     // if (Object.keys(validationErrors).length === 0) {
-      const formData = new FormData();
-      formData.append('amount', amount);
+    const formData = new FormData();
+    formData.append('amount', amount);
+    formData.append('addedby', addedby);
+    formData.append('shiftstoken', shiftstoken);
 
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
 
-      axios
-        .post(`${apiConfig.baseURL}/api/openningbalance/create`, formData, config)
-        .then((res) => {
-          console.log(res);
-          Swal.fire({
-            icon: 'success',
-            title: 'Opening Balance Created!',
-            text: 'Your Opening Balance has been created successfully.',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            },
-          }).then(() => {
-            navigate('/pos');
-          });
-        })
-        .catch((err) => console.log(err));
+
+    axios
+      .post(`${apiConfig.baseURL}/api/openningbalance/create`, formData, config)
+      .then((res) => {
+        console.log(res);
+        Swal.fire({
+          icon: 'success',
+          title: 'Opening Balance Created!',
+          text: 'Your Opening Balance has been created successfully.',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).then(() => {
+          navigate('/pos');
+        });
+      })
+      .catch((err) => console.log(err));
     // } else {
     //   // Set validation errors
     //   setErrors(validationErrors);

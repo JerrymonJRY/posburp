@@ -11,22 +11,36 @@ const Header =() =>{
    
   };
 
+  // const logOut = (e) => {
+  
+  //   axios.get(`${apiConfig.baseURL}/api/user/logout`)
+  //   .then((response) => {
+  //     navigate('/')
+  //   })
+    
+   
+  // };
+
 
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
+  const [shiftstokens, setShiftsTokens] = useState('');
   useEffect(() => {
 
 const storedFirstname = localStorage.getItem('firstname');
 const storedLastname = localStorage.getItem('lastname');
-
+const storedtoken = localStorage.getItem('shifttoken');
 
 setFirstname(storedFirstname);
 setLastname(storedLastname);
+setShiftsTokens(storedtoken);
   }, []);
 
   const fullName = `${firstname} ${lastname}`;
   const imageName = "burps.png";
   const faceimage ="face1.jpg"
+
+  console.log(shiftstokens);
 
     return (
         <nav className="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">

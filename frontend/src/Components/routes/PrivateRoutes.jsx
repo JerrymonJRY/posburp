@@ -39,3 +39,8 @@ export const setUserId = (_id) =>{
   // set token in localStorage
   localStorage.setItem('_id', _id)
 }
+
+export const setShiftToken = (shifttoken) =>{
+  // set token in localStorage
+  localStorage.setItem('shifttoken', shifttoken)
+}

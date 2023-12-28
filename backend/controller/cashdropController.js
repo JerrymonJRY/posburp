@@ -5,7 +5,7 @@ const Transaction =require('../models/acctransactionModel');
 
 const createCash =asyncHandler(async(req,res) =>{
 
-    const {amount,dropout,notes} = req.body;
+    const {amount,dropout,notes,addedby,shiftstoken} = req.body;
   // console.log(req.body);
   try
   {
@@ -13,6 +13,8 @@ const createCash =asyncHandler(async(req,res) =>{
         amount:amount,
         dropout:dropout,
         notes:notes,
+        addedby:addedby,
+        shiftstoken:shiftstoken,
        
       
     });
@@ -45,7 +47,8 @@ const createCash =asyncHandler(async(req,res) =>{
         transnumber:nextIdNumber,
         transmode:dropout,
         amount:amount,
-        transtype:transtype
+        transtype:transtype,
+        shiftstoken:shiftstoken,
 
 
   
@@ -83,6 +86,7 @@ const createCash =asyncHandler(async(req,res) =>{
       transmode: dropout,
       amount: amount,
       transtype: transtype,
+      shiftstoken:shiftstoken,
     });
 
     await newEntry.save();

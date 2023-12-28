@@ -1,9 +1,9 @@
 const asyncHandler =require('express-async-handler');
 const Balance =require('../models/openningbalanceModel')
-
+const Transaction =require('../models/acctransactionModel');
 
 const createBalance = asyncHandler(async (req, res) => {
-  const { amount } = req.body;
+  const { amount,addedby,shiftstoken } = req.body;
 
   try {
    
@@ -28,10 +28,49 @@ const createBalance = asyncHandler(async (req, res) => {
     const newEntry = new Balance({
       openningbalancenumber: nextIdNumber,
       amount: amount,
+      addedby:addedby,
+      shiftstoken:shiftstoken,
     });
 
     
     const savedEntry = await newEntry.save();
+
+    const sequence = await Transaction.findOne({}).sort('-transnumber');
+      
+        let newTransNumber = 'TR10001';
+  
+        if (sequence && sequence.transnumber) {
+          
+          const lastIdNumber = sequence.transnumber;
+          const numericPart = lastIdNumber.substring(2); 
+          const nextNumericValue = parseInt(numericPart, 10) + 1; 
+          newTransNumber = `TR${nextNumericValue.toString().padStart(5, '0')}`; 
+        }
+  
+        const exist = await Transaction.findOne({ transnumber: newTransNumber });
+  
+        if (exists) {
+          return res.status(400).json({ error: 'ID number already exists' });
+        }
+        let transtype ="Debit";
+        let transmode ="Openning Balance";
+  
+        const newTransaction = new Transaction({ 
+          accountsid:savedEntry._id,
+          transnumber:newTransNumber,
+          transmode:transmode,
+          amount:amount,
+          transtype:transtype
+  
+  
+    
+    
+         
+        
+        });
+        await newTransaction.save();
+
+
 
    
     res.json(savedEntry);
@@ -52,8 +91,12 @@ const checkBalance = asyncHandler(async (req, res) => {
     const today = new Date().toISOString().split('T')[0];
   
     try {
+      // const result = await Balance.findOne({
+      //   date: { $gte: new Date(today), $lt: new Date(today + 'T23:59:59.999Z') },
+      // });
       const result = await Balance.findOne({
         date: { $gte: new Date(today), $lt: new Date(today + 'T23:59:59.999Z') },
+        status: "Active",
       });
   
       if (result) {

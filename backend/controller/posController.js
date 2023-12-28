@@ -1,416 +1,375 @@
-const asyncHandler =require('express-async-handler');
-const mongoose = require('mongoose');
-const foodcategory =require('../models/foodcategoryModel');
-const Waiter =require('../models/waiterModel');
-const Table =require('../models/tableModel');
-const Customer =require('../models/customerModel');
-const Foodmenu =require('../models/foodmenuModel');
-const Pos  =require('../models/posModels');
-const Delivery =require('../models/deliveryModel');
-const OrderTable =require('../models/ordertableModel');
-const Payment =require('../models/paymentModel');
-const Transaction =require('../models/acctransactionModel')
-
+const asyncHandler = require("express-async-handler");
+const mongoose = require("mongoose");
+const foodcategory = require("../models/foodcategoryModel");
+const Waiter = require("../models/waiterModel");
+const Table = require("../models/tableModel");
+const Customer = require("../models/customerModel");
+const Foodmenu = require("../models/foodmenuModel");
+const Pos = require("../models/posModels");
+const Delivery = require("../models/deliveryModel");
+const OrderTable = require("../models/ordertableModel");
+const Payment = require("../models/paymentModel");
+const Transaction = require("../models/acctransactionModel");
 
 //Food Category
-const getposCategory =asyncHandler(async (req,res) =>{
-    try {
-        const getfoodcat = await foodcategory.find();
-        res.json(getfoodcat);
-      } catch (error) {
-        throw new Error(error);
-      }
-
+const getposCategory = asyncHandler(async (req, res) => {
+  try {
+    const getfoodcat = await foodcategory.find();
+    res.json(getfoodcat);
+  } catch (error) {
+    throw new Error(error);
+  }
 });
 
 //Waiter Modal
-const getPosWaiter =asyncHandler(async (req,res) =>{
+const getPosWaiter = asyncHandler(async (req, res) => {
   try {
-      const getWaiter = await Waiter.find();
-      res.json(getWaiter);
-    } catch (error) {
-      throw new Error(error);
-    }
-
+    const getWaiter = await Waiter.find();
+    res.json(getWaiter);
+  } catch (error) {
+    throw new Error(error);
+  }
 });
 //Customer Model
-const getCustomer =asyncHandler(async (req,res) =>{
+const getCustomer = asyncHandler(async (req, res) => {
   try {
-      const getCustomer = await Customer.find();
-      res.json(getCustomer);
-    } catch (error) {
-      throw new Error(error);
-    }
-
+    const getCustomer = await Customer.find();
+    res.json(getCustomer);
+  } catch (error) {
+    throw new Error(error);
+  }
 });
 //Table Model
-const getTable =asyncHandler(async (req,res) =>{
+const getTable = asyncHandler(async (req, res) => {
   try {
-      const getTable = await Table.find();
-      res.json(getTable);
-    } catch (error) {
-      throw new Error(error);
-    }
-
+    const getTable = await Table.find();
+    res.json(getTable);
+  } catch (error) {
+    throw new Error(error);
+  }
 });
 
-
-const getDelivery =asyncHandler(async(req,res) =>{
+const getDelivery = asyncHandler(async (req, res) => {
   try {
     const getDelivery = await Delivery.find();
     res.json(getDelivery);
   } catch (error) {
     throw new Error(error);
   }
+});
 
-
-})
-
-const getposFooditems =asyncHandler(async (req,res) =>{
+const getposFooditems = asyncHandler(async (req, res) => {
   try {
     const posfoodmenu = await Foodmenu.aggregate([
       {
         $lookup: {
-          from: 'foodcategories',
-          localField: 'foodcategoryId',
-          foreignField: '_id',
-          as: 'foodcategory',
+          from: "foodcategories",
+          localField: "foodcategoryId",
+          foreignField: "_id",
+          as: "foodcategory",
         },
       },
       {
-        $unwind: '$foodcategory',
+        $unwind: "$foodcategory",
       },
       {
         $lookup: {
-          from: 'vats',
-          localField: 'vatId',
-          foreignField: '_id',
-          as: 'vat',
+          from: "vats",
+          localField: "vatId",
+          foreignField: "_id",
+          as: "vat",
         },
       },
       {
-        $unwind: '$vat',
+        $unwind: "$vat",
       },
-      
     ]);
-  
+
     res.json(posfoodmenu);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'An error occurred' });
+    res.status(500).json({ error: "An error occurred" });
   }
-
 });
 
-
-const insertPos =asyncHandler(async(req,res) =>{
+const insertPos = asyncHandler(async (req, res) => {
   try {
-    const  {customers,options,grandTotal,cart,vatAmount,total,foodoption,waiterId,tableId,delivery,numberofperson,addedby}  = req.body;
-  console.log(req.body);
+    const {
+      customers,
+      options,
+      grandTotal,
+      cart,
+      vatAmount,
+      total,
+      foodoption,
+      waiterId,
+      tableId,
+      delivery,
+      numberofperson,
+      addedby,
+    } = req.body;
+    console.log(req.body);
 
- const sequence = await Pos.findOne({}).sort('-ordernumber'); // Find the latest ID
+    const sequence = await Pos.findOne({}).sort("-ordernumber"); // Find the latest ID
 
- let nextIdNumber = 'ORD10001';
+    let nextIdNumber = "ORD10001";
 
-if (sequence && sequence.ordernumber) {
-  const lastIdNumber = sequence.ordernumber;
-  const numericPart = lastIdNumber.substring(3); // Adjust the starting index
-  const nextNumericValue = parseInt(numericPart, 10) + 1;
-  nextIdNumber = `ORD${nextNumericValue.toString().padStart(5, '0')}`;
-}
+    if (sequence && sequence.ordernumber) {
+      const lastIdNumber = sequence.ordernumber;
+      const numericPart = lastIdNumber.substring(3); // Adjust the starting index
+      const nextNumericValue = parseInt(numericPart, 10) + 1;
+      nextIdNumber = `ORD${nextNumericValue.toString().padStart(5, "0")}`;
+    }
 
     // Check if the ID number already exists
     const exists = await Pos.findOne({ ordernumber: nextIdNumber });
 
     if (exists) {
-      return res.status(400).json({ error: 'ID number already exists' });
+      return res.status(400).json({ error: "ID number already exists" });
     }
-    let paymentstatus ="notpaid";
+    let paymentstatus = "notpaid";
 
-    const newEntry = new Pos({ 
+    const newEntry = new Pos({
       ordernumber: nextIdNumber,
-      customers:customers,
-      options:foodoption,
-      cart:cart,
-      total:total,
-      grandTotal:grandTotal,
-      vatAmount:vatAmount,
-      waiterId:waiterId,
-      tableId:tableId,
-      paymentstatus:paymentstatus,
-      delivery:delivery,
-      addedby:addedby,
-});
-   
+      customers: customers,
+      options: foodoption,
+      cart: cart,
+      total: total,
+      grandTotal: grandTotal,
+      vatAmount: vatAmount,
+      waiterId: waiterId,
+      tableId: tableId,
+      paymentstatus: paymentstatus,
+      delivery: delivery,
+      addedby: addedby,
+    });
+
     const finaldata = await newEntry.save();
 
-    if (tableId !== null && tableId !== undefined && tableId !== '') {
-
-      let orderstatus ="Pending";
-      const Tableorder = new OrderTable({ 
-        orderId:finaldata._id,
-        ordertableId:tableId,
-        numberofperson:numberofperson,
-        orderstatus:orderstatus
-       
+    if (tableId !== null && tableId !== undefined && tableId !== "") {
+      let orderstatus = "Pending";
+      const Tableorder = new OrderTable({
+        orderId: finaldata._id,
+        ordertableId: tableId,
+        numberofperson: numberofperson,
+        orderstatus: orderstatus,
       });
       await Tableorder.save();
-
     }
-  
-
-
-
- 
-
-  
 
     res.json(finaldata);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'An error occurred while inserting data' });
+    res.status(500).json({ error: "An error occurred while inserting data" });
   }
-})
+});
 
-
-
-
-
-
-
-
-const updatePayment =asyncHandler(async(req,res) =>
-{
+const updatePayment = asyncHandler(async (req, res) => {
   try {
-  
-    const { id } = req.params; 
-    const { paymentType,total,vatAmount,grandTotal } = req.body;
-      let paymentstatus ='paid';
+    const { id } = req.params;
+    const { paymentType, total, vatAmount, grandTotal,addedby,shiftstoken } = req.body;
+    let paymentstatus = "paid";
     const updateResult = await Pos.updateOne(
-      { _id: id }, 
+      { _id: id },
       {
         $set: {
-          paymentstatus:paymentstatus, 
-          paymentType,  
+          paymentstatus: paymentstatus,
+          paymentType,
         },
       }
     );
-  
+
     if (updateResult.nModified === 0) {
-     
-      return res.status(404).json({ error: 'No matching document found' });
+      return res.status(404).json({ error: "No matching document found" });
     }
 
-    let orderstatus ="Complete";
+    let orderstatus = "Complete";
 
     const updateorderTable = await OrderTable.updateOne(
-      { orderId: id }, 
+      { orderId: id },
       {
         $set: {
-          orderstatus:orderstatus
+          orderstatus: orderstatus,
         },
       }
     );
 
+    const sequence = await Payment.findOne({}).sort("-bilnumber"); // Find the latest ID
 
-    
-    
+    let nextIdNumber = "BIL10001";
 
+    if (sequence && sequence.bilnumber) {
+      const lastIdNumber = sequence.bilnumber;
+      const numericPart = lastIdNumber.substring(3); // Adjust the starting index
+      const nextNumericValue = parseInt(numericPart, 10) + 1;
+      nextIdNumber = `BIL${nextNumericValue.toString().padStart(5, "0")}`;
+    }
 
-
-
-
-
-    const sequence = await Payment.findOne({}).sort('-bilnumber'); // Find the latest ID
-
-    let nextIdNumber = 'BIL10001';
-   
-   if (sequence && sequence.bilnumber) {
-     const lastIdNumber = sequence.bilnumber;
-     const numericPart = lastIdNumber.substring(3); // Adjust the starting index
-     const nextNumericValue = parseInt(numericPart, 10) + 1;
-     nextIdNumber = `BIL${nextNumericValue.toString().padStart(5, '0')}`;
-   }
-   
-       // Check if the ID number already exists
+    // Check if the ID number already exists
     const exists = await Payment.findOne({ bilnumber: nextIdNumber });
 
     if (exists) {
-      return res.status(400).json({ error: 'ID number already exists' });
+      return res.status(400).json({ error: "ID number already exists" });
     }
 
     const cashpayment = new Payment({
-      bilnumber:nextIdNumber,
-      orderId:id,
-      total:total,
-      vatAmount:vatAmount,
-      grandTotal:grandTotal,
-      paymentType:paymentType,
-     
-    
-  });
+      bilnumber: nextIdNumber,
+      orderId: id,
+      total: total,
+      vatAmount: vatAmount,
+      grandTotal: grandTotal,
+      paymentType: paymentType,
+      addedby:addedby,
+      shiftstoken:shiftstoken,
+    });
 
-  const finaldata = await cashpayment.save();
+    const finaldata = await cashpayment.save();
 
-    const trans = await Transaction.findOne({}).sort('-transnumber');
-      
-      let transIdnumber = 'TR10001';
+    const trans = await Transaction.findOne({}).sort("-transnumber");
 
-      if (trans && trans.transnumber) {
-        
-        const lastIdNumber = trans.transnumber;
-        const numericPart = lastIdNumber.substring(2); 
-        const nextNumericValue = parseInt(numericPart, 10) + 1; 
-        transIdnumber = `TR${nextNumericValue.toString().padStart(5, '0')}`; 
-      }
+    let transIdnumber = "TR10001";
 
-      const exist = await Transaction.findOne({ transnumber: transIdnumber });
-  
-      if (exist) {
-        return res.status(400).json({ error: 'ID number already exists' });
-      }
+    if (trans && trans.transnumber) {
+      const lastIdNumber = trans.transnumber;
+      const numericPart = lastIdNumber.substring(2);
+      const nextNumericValue = parseInt(numericPart, 10) + 1;
+      transIdnumber = `TR${nextNumericValue.toString().padStart(5, "0")}`;
+    }
 
-      let transtype ="Credit";
-      let transmode ="Food Bill"
+    const exist = await Transaction.findOne({ transnumber: transIdnumber });
 
-      const newEntry = new Transaction({ 
-        accountsid:finaldata._id,
-        transnumber:transIdnumber,
-        transmode:transmode,
-        amount:grandTotal,
-        transtype:transtype
+    if (exist) {
+      return res.status(400).json({ error: "ID number already exists" });
+    }
 
+    let transtype = "Credit";
+    let transmode = "Food Bill";
 
-  
-  
-       
-      
-      });
-      await newEntry.save();
- 
+    const newEntry = new Transaction({
+      accountsid: finaldata._id,
+      transnumber: transIdnumber,
+      transmode: transmode,
+      amount: grandTotal,
+      transtype: transtype,
+      shiftstoken:shiftstoken,
+    });
+    await newEntry.save();
+
     const updatedDocument = await Pos.findById(id);
-  
+
     res.json(updatedDocument);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
-  
 });
 
-
-
-
-const insertPoshold =asyncHandler(async(req,res) =>{
+const insertPoshold = asyncHandler(async (req, res) => {
   try {
-    const  {customers,options,grandTotal,cart,vatAmount,total,foodoption,waiterId,tableId,delivery}  = req.body;
-  console.log(req.body);
+    const {
+      customers,
+      options,
+      grandTotal,
+      cart,
+      vatAmount,
+      total,
+      foodoption,
+      waiterId,
+      tableId,
+      delivery,
+    } = req.body;
+    console.log(req.body);
 
- const sequence = await Pos.findOne({}).sort('-ordernumber'); // Find the latest ID
+    const sequence = await Pos.findOne({}).sort("-ordernumber"); // Find the latest ID
 
- let nextIdNumber = 'ORD10001';
+    let nextIdNumber = "ORD10001";
 
-if (sequence && sequence.ordernumber) {
-  const lastIdNumber = sequence.ordernumber;
-  const numericPart = lastIdNumber.substring(3); // Adjust the starting index
-  const nextNumericValue = parseInt(numericPart, 10) + 1;
-  nextIdNumber = `ORD${nextNumericValue.toString().padStart(5, '0')}`;
-}
+    if (sequence && sequence.ordernumber) {
+      const lastIdNumber = sequence.ordernumber;
+      const numericPart = lastIdNumber.substring(3); // Adjust the starting index
+      const nextNumericValue = parseInt(numericPart, 10) + 1;
+      nextIdNumber = `ORD${nextNumericValue.toString().padStart(5, "0")}`;
+    }
     // Check if the ID number already exists
     const exists = await Pos.findOne({ ordernumber: nextIdNumber });
 
     if (exists) {
-      return res.status(400).json({ error: 'ID number already exists' });
+      return res.status(400).json({ error: "ID number already exists" });
     }
-    let hold ="hold";
+    let hold = "hold";
 
-    const newEntry = new Pos({ 
+    const newEntry = new Pos({
       ordernumber: nextIdNumber,
-      customers:customers,
-      options:foodoption,
-      cart:cart,
-      total:total,
-      grandTotal:grandTotal,
-      vatAmount:vatAmount,
-      waiterId:waiterId,
-      tableId:tableId,
-      hold:hold,
-      delivery:delivery,
-
-
-     
-    
+      customers: customers,
+      options: foodoption,
+      cart: cart,
+      total: total,
+      grandTotal: grandTotal,
+      vatAmount: vatAmount,
+      waiterId: waiterId,
+      tableId: tableId,
+      hold: hold,
+      delivery: delivery,
     });
     await newEntry.save();
-
- 
-
-  
 
     res.json(newEntry);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'An error occurred while inserting data' });
+    res.status(500).json({ error: "An error occurred while inserting data" });
   }
 });
 
-const getHold =asyncHandler(async(req,res) =>
-{
+const getHold = asyncHandler(async (req, res) => {
   try {
     const holdingorder = await Pos.aggregate([
       {
         $match: {
-          hold: "hold"
-        }
+          hold: "hold",
+        },
       },
 
       {
         $lookup: {
-          from: 'tables',
-          localField: 'tableId',
-          foreignField: '_id',
-          as: 'table',
+          from: "tables",
+          localField: "tableId",
+          foreignField: "_id",
+          as: "table",
         },
       },
       {
         //$unwind: '$table',
         $unwind: {
           path: "$table",
-          preserveNullAndEmptyArrays: true // Keep customerDetails even if it's null
-        }
-      },
-      {
-        $lookup: {
-          from: 'waiters',
-          localField: 'waiterId',
-          foreignField: '_id',
-          as: 'waiter',
+          preserveNullAndEmptyArrays: true, // Keep customerDetails even if it's null
         },
       },
       {
-        $unwind: '$waiter',
+        $lookup: {
+          from: "waiters",
+          localField: "waiterId",
+          foreignField: "_id",
+          as: "waiter",
+        },
       },
-      
-
+      {
+        $unwind: "$waiter",
+      },
     ]);
     res.json(holdingorder);
     // Use Mongoose to find orders where paymentstatus is "notpaid"
-   // const notPaidOrders = await Pos.find({ paymentstatus: 'notpaid' });
+    // const notPaidOrders = await Pos.find({ paymentstatus: 'notpaid' });
 
-   // res.json(notPaidOrders);
+    // res.json(notPaidOrders);
   } catch (error) {
     console.error('Error fetching "notpaid" orders:', error);
-  
   }
 });
 
-
-const todayOrder =asyncHandler(async(req,res) =>
-{
+const todayOrder = asyncHandler(async (req, res) => {
   try {
-
     const today = new Date();
-  today.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
 
     const todayorder = await Pos.aggregate([
       {
@@ -418,235 +377,216 @@ const todayOrder =asyncHandler(async(req,res) =>
           paymentstatus: "paid",
           date: {
             $gte: today, // Greater than or equal to the beginning of the day
-            $lt: new Date(today.getTime() + 24 * 60 * 60 * 1000) // Less than the beginning of the next day
-          }
-        }
+            $lt: new Date(today.getTime() + 24 * 60 * 60 * 1000), // Less than the beginning of the next day
+          },
+        },
       },
 
       {
         $lookup: {
-          from: 'tables',
-          localField: 'tableId',
-          foreignField: '_id',
-          as: 'table',
+          from: "tables",
+          localField: "tableId",
+          foreignField: "_id",
+          as: "table",
         },
       },
       {
         //$unwind: '$table',
         $unwind: {
           path: "$table",
-          preserveNullAndEmptyArrays: true // Keep customerDetails even if it's null
-        }
-      },
-      {
-        $lookup: {
-          from: 'waiters',
-          localField: 'waiterId',
-          foreignField: '_id',
-          as: 'waiter',
+          preserveNullAndEmptyArrays: true, // Keep customerDetails even if it's null
         },
       },
       {
-        $unwind: '$waiter',
+        $lookup: {
+          from: "waiters",
+          localField: "waiterId",
+          foreignField: "_id",
+          as: "waiter",
+        },
+      },
+      {
+        $unwind: "$waiter",
       },
 
       {
         $lookup: {
-          from: 'users',
-          localField: 'addedby',
-          foreignField: '_id',
-          as: 'user',
+          from: "users",
+          localField: "addedby",
+          foreignField: "_id",
+          as: "user",
         },
       },
       {
-        $unwind: '$user',
+        $unwind: "$user",
       },
-      
-
     ]);
     res.json(todayorder);
-   
-
-   
   } catch (error) {
     console.error('Error fetching "notpaid" orders:', error);
-  
   }
-
 });
 
-const insertQuickpay =asyncHandler(async(req,res) =>{
-
+const insertQuickpay = asyncHandler(async (req, res) => {
   try {
-    const  {customers,options,grandTotal,cart,vatAmount,total,foodoption,waiterId,tableId,delivery}  = req.body;
-  console.log(req.body);
+    const {
+      customers,
+      options,
+      grandTotal,
+      cart,
+      vatAmount,
+      total,
+      foodoption,
+      waiterId,
+      tableId,
+      delivery,
+    } = req.body;
+    console.log(req.body);
 
- const sequence = await Pos.findOne({}).sort('-ordernumber'); // Find the latest ID
+    const sequence = await Pos.findOne({}).sort("-ordernumber"); // Find the latest ID
 
- let nextIdNumber = 'ORD10001';
+    let nextIdNumber = "ORD10001";
 
- if (sequence && sequence.ordernumber) {
-   const lastIdNumber = sequence.ordernumber;
-   const numericPart = lastIdNumber.substring(3); // Adjust the starting index
-   const nextNumericValue = parseInt(numericPart, 10) + 1;
-   nextIdNumber = `ORD${nextNumericValue.toString().padStart(5, '0')}`;
- }
+    if (sequence && sequence.ordernumber) {
+      const lastIdNumber = sequence.ordernumber;
+      const numericPart = lastIdNumber.substring(3); // Adjust the starting index
+      const nextNumericValue = parseInt(numericPart, 10) + 1;
+      nextIdNumber = `ORD${nextNumericValue.toString().padStart(5, "0")}`;
+    }
 
     // Check if the ID number already exists
     const exists = await Pos.findOne({ ordernumber: nextIdNumber });
 
     if (exists) {
-      return res.status(400).json({ error: 'ID number already exists' });
+      return res.status(400).json({ error: "ID number already exists" });
     }
-    let paymentstatus ="paid";
+    let paymentstatus = "paid";
 
-    const newEntry = new Pos({ 
+    const newEntry = new Pos({
       ordernumber: nextIdNumber,
-      customers:customers,
-      options:foodoption,
-      cart:cart,
-      total:total,
-      grandTotal:grandTotal,
-      vatAmount:vatAmount,
-      waiterId:waiterId,
-      tableId:tableId,
-      paymentstatus:paymentstatus,
-      delivery:delivery,
-
-
-     
-    
+      customers: customers,
+      options: foodoption,
+      cart: cart,
+      total: total,
+      grandTotal: grandTotal,
+      vatAmount: vatAmount,
+      waiterId: waiterId,
+      tableId: tableId,
+      paymentstatus: paymentstatus,
+      delivery: delivery,
     });
     const quick = await newEntry.save();
 
-    const orderbill = await Payment.findOne({}).sort('-bilnumber'); // Find the latest ID
+    const orderbill = await Payment.findOne({}).sort("-bilnumber"); // Find the latest ID
 
-    let billIdnumber = 'BIL10001';
-   
-   if (orderbill && orderbill.bilnumber) {
-     const lastIdNumber = orderbill.bilnumber;
-     const numericPart = lastIdNumber.substring(3); // Adjust the starting index
-     const nextNumericValue = parseInt(numericPart, 10) + 1;
-     billIdnumber = `BIL${nextNumericValue.toString().padStart(5, '0')}`;
-   }
-   
-       // Check if the ID number already exists
+    let billIdnumber = "BIL10001";
+
+    if (orderbill && orderbill.bilnumber) {
+      const lastIdNumber = orderbill.bilnumber;
+      const numericPart = lastIdNumber.substring(3); // Adjust the starting index
+      const nextNumericValue = parseInt(numericPart, 10) + 1;
+      billIdnumber = `BIL${nextNumericValue.toString().padStart(5, "0")}`;
+    }
+
+    // Check if the ID number already exists
     const exist = await Payment.findOne({ bilnumber: billIdnumber });
 
     if (exist) {
-      return res.status(400).json({ error: 'ID number already exists' });
+      return res.status(400).json({ error: "ID number already exists" });
     }
-    let paymentType="Cash";
+    let paymentType = "Cash";
 
     const cashpayment = new Payment({
-      bilnumber:billIdnumber,
-      orderId:quick._id,
-      total:total,
-      vatAmount:vatAmount,
-      grandTotal:grandTotal,
-      paymentType:paymentType,
-     
-    
-  });
+      bilnumber: billIdnumber,
+      orderId: quick._id,
+      total: total,
+      vatAmount: vatAmount,
+      grandTotal: grandTotal,
+      paymentType: paymentType,
+    });
 
-  const finaldata = await cashpayment.save();
+    const finaldata = await cashpayment.save();
 
- 
-  const trans = await Transaction.findOne({}).sort('-transnumber');
-      
-      let transIdnumber = 'TR10001';
+    const trans = await Transaction.findOne({}).sort("-transnumber");
 
-      if (trans && trans.transnumber) {
-        
-        const lastIdNumber = trans.transnumber;
-        const numericPart = lastIdNumber.substring(2); 
-        const nextNumericValue = parseInt(numericPart, 10) + 1; 
-        transIdnumber = `TR${nextNumericValue.toString().padStart(5, '0')}`; 
-      }
+    let transIdnumber = "TR10001";
 
-      const transz = await Transaction.findOne({ transnumber: transIdnumber });
-  
-      if (transz) {
-        return res.status(400).json({ error: 'ID number already exists' });
-      }
+    if (trans && trans.transnumber) {
+      const lastIdNumber = trans.transnumber;
+      const numericPart = lastIdNumber.substring(2);
+      const nextNumericValue = parseInt(numericPart, 10) + 1;
+      transIdnumber = `TR${nextNumericValue.toString().padStart(5, "0")}`;
+    }
 
-      let transtype ="Credit";
-      let transmode ="Food Bill"
+    const transz = await Transaction.findOne({ transnumber: transIdnumber });
 
-      const newTransaction = new Transaction({ 
-        accountsid:finaldata._id,
-        transnumber:transIdnumber,
-        transmode:transmode,
-        amount:grandTotal,
-        transtype:transtype
+    if (transz) {
+      return res.status(400).json({ error: "ID number already exists" });
+    }
 
+    let transtype = "Credit";
+    let transmode = "Food Bill";
 
-  
-  
-       
-      
-      });
-      await newTransaction.save();
-
-  
+    const newTransaction = new Transaction({
+      accountsid: finaldata._id,
+      transnumber: transIdnumber,
+      transmode: transmode,
+      amount: grandTotal,
+      transtype: transtype,
+    });
+    await newTransaction.save();
 
     res.json(newEntry);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'An error occurred while inserting data' });
+    res.status(500).json({ error: "An error occurred while inserting data" });
   }
-
 });
-
-
-
-
-
-
-
-
-
 
 const tableorder = asyncHandler(async (req, res) => {
-
   try {
     const result = await Table.aggregate([
       {
         $lookup: {
-          from: 'ordertables',
-          localField: '_id',
-          foreignField: 'ordertableId',
-          as: 'orderData',
+          from: "ordertables",
+          localField: "_id",
+          foreignField: "ordertableId",
+          as: "orderData",
         },
       },
       {
         $unwind: {
-          path: '$orderData',
+          path: "$orderData",
           preserveNullAndEmptyArrays: true,
         },
       },
       {
         $group: {
-          _id: '$_id',
-          tablename: { $first: '$tablename' },
-          Position: { $first: '$Position' },
-          seatcapacity: { $first: '$seatcapacity' },
-          description: { $first: '$description' },
-          orderstatus: { $first: '$orderData.orderstatus' },
+          _id: "$_id",
+          tablename: { $first: "$tablename" },
+          Position: { $first: "$Position" },
+          seatcapacity: { $first: "$seatcapacity" },
+          description: { $first: "$description" },
+          orderstatus: { $first: "$orderData.orderstatus" },
           subtractedValue: {
             $sum: {
               $cond: {
                 if: {
                   $and: [
-                    { $ne: ['$orderData', null] },
-                    { $eq: ['$orderData.orderstatus', 'Pending'] },
+                    { $ne: ["$orderData", null] },
+                    { $eq: ["$orderData.orderstatus", "Pending"] },
                   ],
                 },
                 then: {
                   $cond: {
-                    if: { $gte: [{ $toInt: '$seatcapacity' }, { $toInt: '$orderData.numberofperson' }] },
-                    then: { $toInt: '$orderData.numberofperson' },
-                    else: { $toInt: '$seatcapacity' },
+                    if: {
+                      $gte: [
+                        { $toInt: "$seatcapacity" },
+                        { $toInt: "$orderData.numberofperson" },
+                      ],
+                    },
+                    then: { $toInt: "$orderData.numberofperson" },
+                    else: { $toInt: "$seatcapacity" },
                   },
                 },
                 else: 0,
@@ -663,61 +603,63 @@ const tableorder = asyncHandler(async (req, res) => {
           description: 1,
           orderstatus: 1,
           subtractedValue: 1,
-          availableSeat: { $subtract: [{ $toInt: '$seatcapacity' }, '$subtractedValue'] },
+          availableSeat: {
+            $subtract: [{ $toInt: "$seatcapacity" }, "$subtractedValue"],
+          },
         },
       },
     ]);
-  
+
     res.json(result);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-
-const calculateTable =asyncHandler(async(req,res) =>{
- 
-
-  
-  
+const calculateTable = asyncHandler(async (req, res) => {
   try {
     const result = await Table.aggregate([
       {
         $lookup: {
-          from: 'ordertables',
-          localField: '_id',
-          foreignField: 'ordertableId',
-          as: 'orderData',
+          from: "ordertables",
+          localField: "_id",
+          foreignField: "ordertableId",
+          as: "orderData",
         },
       },
       {
         $unwind: {
-          path: '$orderData',
+          path: "$orderData",
           preserveNullAndEmptyArrays: true,
         },
       },
       {
         $group: {
-          _id: '$_id',
-          tablename: { $first: '$tablename' },
-          Position: { $first: '$Position' },
-          seatcapacity: { $first: '$seatcapacity' },
-          description: { $first: '$description' },
-          orderstatus: { $first: '$orderData.orderstatus' },
+          _id: "$_id",
+          tablename: { $first: "$tablename" },
+          Position: { $first: "$Position" },
+          seatcapacity: { $first: "$seatcapacity" },
+          description: { $first: "$description" },
+          orderstatus: { $first: "$orderData.orderstatus" },
           subtractedValue: {
             $sum: {
               $cond: {
                 if: {
                   $and: [
-                    { $ne: ['$orderData', null] },
-                    { $eq: ['$orderData.orderstatus', 'Pending'] },
+                    { $ne: ["$orderData", null] },
+                    { $eq: ["$orderData.orderstatus", "Pending"] },
                   ],
                 },
                 then: {
                   $cond: {
-                    if: { $gte: [{ $toInt: '$seatcapacity' }, { $toInt: '$orderData.numberofperson' }] },
-                    then: { $toInt: '$orderData.numberofperson' },
-                    else: { $toInt: '$seatcapacity' },
+                    if: {
+                      $gte: [
+                        { $toInt: "$seatcapacity" },
+                        { $toInt: "$orderData.numberofperson" },
+                      ],
+                    },
+                    then: { $toInt: "$orderData.numberofperson" },
+                    else: { $toInt: "$seatcapacity" },
                   },
                 },
                 else: 0,
@@ -734,27 +676,21 @@ const calculateTable =asyncHandler(async(req,res) =>{
           description: 1,
           orderstatus: 1,
           subtractedValue: 1,
-          availableSeat: { $subtract: [{ $toInt: '$seatcapacity' }, '$subtractedValue'] },
+          availableSeat: {
+            $subtract: [{ $toInt: "$seatcapacity" }, "$subtractedValue"],
+          },
         },
       },
     ]);
-  
+
     res.json(result);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-  
-  
-  
-  
-})
+});
 
-
-
-
-
-module.exports = 
-{getposCategory,
+module.exports = {
+  getposCategory,
   getPosWaiter,
   getCustomer,
   getTable,
@@ -768,5 +704,4 @@ module.exports =
   insertQuickpay,
   tableorder,
   calculateTable,
-  
 };

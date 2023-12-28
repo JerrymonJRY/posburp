@@ -28,6 +28,7 @@ import PosNeworderKotModal from "./neworder/posNeworderkotmodal";
 import PosNewHoldingModal from "./neworder/posNewHoldingmodal";
 import PosCashDrop from "./neworder/cashDropout";
 import PosInvoiceReport from "./neworder/posinvoiceReport";
+import PosClosingBalance from "./neworder/posClosingbalance";
 
 const PosNewOrder = () => {
   const kotModalRef = useRef();
@@ -103,6 +104,7 @@ const PosNewOrder = () => {
   const [isModalCashDrop, setModalCashDrop] = useState(false);
   const [numberofperson, setNumberofPerson] = useState("");
   const [isModalInvoiceReport, setModalInvoiceReport] = useState(false);
+  const [isModalClosingBalance,setModalClosingBalance] =useState(false);
 
   const [activeTabletab, setactiveTableTab] = useState(0);
   const handleSearch = (e) => {
@@ -741,6 +743,11 @@ const PosNewOrder = () => {
     setModalInvoiceReport(true);
   };
 
+  const handleClosingBalance =() =>
+  {
+    setModalClosingBalance(true);
+  }
+
   return (
     <div className="row">
       <div className="col-sm-4 col-lg-auto">
@@ -951,6 +958,20 @@ const PosNewOrder = () => {
           >
             <LiaFileInvoiceSolid className="mr-2" />
             <br /> Invoice Report
+          </a>
+
+          <a
+           onClick={handleClosingBalance}
+            class="nav-link text-center navleft"
+            id="v-pills-invoice-tab"
+            data-toggle="pill"
+            href="#v-pills-invoice"
+            role="tab"
+            aria-controls="v-pills-invoice"
+            aria-selected="false"
+          >
+            <LiaFileInvoiceSolid className="mr-2" />
+            <br /> Closing Balance
           </a>
         </div>
       </div>
@@ -1494,6 +1515,9 @@ const PosNewOrder = () => {
         isModalInvoiceReport={isModalInvoiceReport}
         setModalInvoiceReport={setModalInvoiceReport}
       />
+
+    <PosClosingBalance isModalClosingBalance={isModalClosingBalance}  setModalClosingBalance={setModalClosingBalance}/>
+
     </div>
   );
 };

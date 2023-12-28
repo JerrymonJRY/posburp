@@ -22,6 +22,7 @@ const {getAllPos,completePaymeny} =require('../controller/posneworderController'
 const {runningOrder,getKot,getedit,getSplit,getMerge} =require('../controller/posrunningorderController')
 const {todayDelivery} =require('../controller/posdeliveryController')
 const {posinvoiceReport} =require('../controller/posinvoiceReportController')
+const {closingbalance,closeShift} = require('../controller/closingbalanceController');
 
 router.get('/poscategory',getposCategory);
 router.get('/posWaiter',getPosWaiter);
@@ -47,6 +48,8 @@ router.get('/calculate',calculateTable);
 router.put('/updatepos/:id',updatePosorder);
 router.get('/gettodaydelivery',todayDelivery);
 router.get('/invoicereport',posinvoiceReport);
+router.get('/closingBalance',closingbalance)
+router.put('/closeShift',closeShift);
 
 
 

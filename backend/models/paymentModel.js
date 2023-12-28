@@ -16,6 +16,15 @@ var paymentSchema = new mongoose.Schema({
     type:String,
     default:null,
   },
+  addedby: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+
+  shiftstoken:{
+    type: String,
+    
+},
 
     date: { type: Date, default: Date.now },
  
