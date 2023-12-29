@@ -19,7 +19,7 @@ const RunningOrderKot =({kotdata,showkotModal,setShowKotModal}) =>
     return (
         <div>
    
-        <div className={`modal ${showkotModal ? 'show' : ''}`} tabIndex="-1" role="dialog" style={{ display: showkotModal ? 'block' : 'none' }} ref={kotModalRef}>
+        <div className={`modal ${showkotModal ? 'show' : ''}`} tabIndex="-1" role="dialog" style={{ display: showkotModal ? 'block' : 'none' }} >
                <div className="modal-dialog" role="document">
                  <div className="modal-content">
                    <div className="modal-header">
@@ -28,7 +28,7 @@ const RunningOrderKot =({kotdata,showkotModal,setShowKotModal}) =>
                        <span aria-hidden="true">&times;</span>
                      </button>
                    </div>
-                   <div className="modal-body">
+                   <div className="modal-body" ref={kotModalRef}>
                      {/* Display the data here */}
                      
                      { kotdata ? (
@@ -69,15 +69,7 @@ const RunningOrderKot =({kotdata,showkotModal,setShowKotModal}) =>
        
                   
        
-                       <div className="modal-footer">
-                       {/* <button type="button" onClick={handlePrint}  className="btn btn-outline-primary" >Print</button>  */}
-                   <ReactToPrint
-               trigger={() => <button onClick={handlePrint}>Print KOT</button>}
-               content={() => kotModalRef.current}
-             />
-                   
-                     <button type="button" className="btn btn-outline-secondary" onClick={() => setShowKotModal(false)}>Close</button>
-                   </div>
+                      
           
                     </div>
                   
@@ -86,6 +78,15 @@ const RunningOrderKot =({kotdata,showkotModal,setShowKotModal}) =>
                        <p>No data</p>
                      )
                    }
+                   </div>
+                   <div className="modal-footer">
+                       {/* <button type="button" onClick={handlePrint}  className="btn btn-outline-primary" >Print</button>  */}
+                   <ReactToPrint
+               trigger={() => <button onClick={handlePrint}>Print KOT</button>}
+               content={() => kotModalRef.current}
+             />
+                   
+                     <button type="button" className="btn btn-outline-secondary" onClick={() => setShowKotModal(false)}>Close</button>
                    </div>
        
                   

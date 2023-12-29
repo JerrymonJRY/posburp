@@ -28,6 +28,7 @@ const PosClosingBalance = ({ isModalClosingBalance, setModalClosingBalance }) =>
 
   useEffect(() => {
 
+    //axios.get(`${apiConfig.baseURL}/api/pos/closingBalance?shiftstoken=${encodeURIComponent(shiftstoken)}`)
     axios.get(`${apiConfig.baseURL}/api/pos/closingBalance?shiftstoken=${encodeURIComponent(shiftstoken)}`)
       // .then((response) => response.json())
       // .then((data) => setPosCloseBalance(data))
@@ -100,8 +101,7 @@ const PosClosingBalance = ({ isModalClosingBalance, setModalClosingBalance }) =>
 
               <div className="container">
                 <div className="row">
-                  {posclosebalance ? (
-                    posclosebalance.map((order) => (
+                  {posclosebalance ? ( posclosebalance.map((order) => (
                       <>
                         <div key={order.id}>
                           <h3>Openning Balance Amount :{order.amount}</h3>

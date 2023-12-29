@@ -29,16 +29,12 @@ import PosNewHoldingModal from "./neworder/posNewHoldingmodal";
 import PosCashDrop from "./neworder/cashDropout";
 import PosInvoiceReport from "./neworder/posinvoiceReport";
 import PosClosingBalance from "./neworder/posClosingbalance";
-
+import PosOrderPrint from "./print/posOrderPrint";
+import { useReactToPrint } from 'react-to-print';
 const PosNewOrder = () => {
   const kotModalRef = useRef();
 
-  const handlePrint = () => {
-    if (kotModalRef.current) {
-      // Use ReactToPrint to handle the print action for the KOT modal
-      kotModalRef.current.handlePrint();
-    }
-  };
+  
   const navigate = useNavigate();
   const [tabEnabled, setTabEnabled] = useState({
     dineIn: false,
@@ -403,27 +399,28 @@ const PosNewOrder = () => {
     setCart(addQuantity);
   };
 
-  const handlePlaceorder = (event) => {
+  const handlePlaceorder = async (event) => {
     event.preventDefault();
     if (!selectWaiter) {
       Swal.fire({
-        icon: "error",
-        title: "Waiter is Empty",
-        text: "Please add items to your cart before placing an order.",
+        icon: 'error',
+        title: 'Waiter is Empty',
+        text: 'Please add items to your cart before placing an order.',
       });
     } else if (cart.length < 1) {
       Swal.fire({
-        icon: "error",
-        title: "Cart is empty",
-        text: "Please add items to your cart before placing an order.",
+        icon: 'error',
+        title: 'Cart is empty',
+        text: 'Please add items to your cart before placing an order.',
       });
     } else if (!options) {
       Swal.fire({
-        icon: "error",
-        title: "Options not selected",
-        text: "Please select options before placing an order.",
+        icon: 'error',
+        title: 'Options not selected',
+        text: 'Please select options before placing an order.',
       });
     } else {
+      // setPlaceOrder is not used in the provided code. If not needed, you can remove this line.
       setPlaceOrder({
         option: options,
         waiter: selectWaiter,
@@ -436,126 +433,164 @@ const PosNewOrder = () => {
         delivery: selectDelivery,
         numberofperson: numberofperson,
       });
-
+  
       var posData = new FormData();
-
+  
       if (selectCustomer && selectCustomer._id) {
-        posData.append("customers", selectCustomer._id);
+        posData.append('customers', selectCustomer._id);
       }
-
+  
       if (selectDelivery && selectDelivery._id) {
-        posData.append("delivery", selectDelivery._id);
+        posData.append('delivery', selectDelivery._id);
       }
-      posData.append("options", options);
-      posData.append("grandTotal", grandTotal);
-
+      posData.append('options', options);
+      posData.append('grandTotal', grandTotal);
+  
       for (let i = 0; i < cart.length; i++) {
         posData.append(`cart[${i}].foodmenuId`, cart[i]._id);
         posData.append(`cart[${i}].foodmenuname`, cart[i].foodmenuname);
         posData.append(`cart[${i}].salesprice`, cart[i].salesprice);
         posData.append(`cart[${i}].quantity`, cart[i].quantity);
       }
-      posData.append("vatAmount", vatAmount);
-      posData.append("total", totalAmount);
-      posData.append("foodoption", options);
-      posData.append("addedby", addedby);
+      posData.append('vatAmount', vatAmount);
+      posData.append('total', totalAmount);
+      posData.append('foodoption', options);
+      posData.append('addedby', addedby);
       if (selectTable && selectTable._id) {
-        posData.append("tableId", selectTable._id);
-        posData.append("numberofperson", numberofperson);
+        posData.append('tableId', selectTable._id);
+        posData.append('numberofperson', numberofperson);
       }
       if (selectWaiter && selectWaiter._id) {
-        posData.append("waiterId", selectWaiter._id);
+        posData.append('waiterId', selectWaiter._id);
       }
-      const config = { headers: { "Content-Type": "application/json" } };
+  
+      const config = { headers: { 'Content-Type': 'application/json' } };
+  
+      try {
+        // Your existing code...
+  
+        const response = await axios.post(`${apiConfig.baseURL}/api/pos/createpos`, posData, config);
+  
+        Swal.fire({
+          title: 'Success!',
+          text: 'Do you want to print the order?',
+          icon: 'success',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, print',
+          cancelButtonText: 'No',
+        }).then((result) => {
+          if (result.isConfirmed) {
 
-      axios
-        .post(`${apiConfig.baseURL}/api/pos/createpos`, posData, config)
+            const data = response.data;
+           console.log(data);
+            // openPrintModal();
+            setOrderData(data);
+            setShowPrintModal(true);
 
-        .then((res) => {
-          Swal.fire({
-            title: "Success!",
-            text: "Do you want to print the order?",
-            icon: "success",
-            showCancelButton: true,
-            confirmButtonText: "Yes, print",
-            cancelButtonText: "No",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              // Open your print modal here
-              console.log(posData);
-              openPrintModal(res.data);
-              setCart([]);
-              setTabEnabled({
-                dineIn: true,
-              });
-            } else {
-              // navigate('/posorder');
-              // setRefresh((prevRefresh) => !prevRefresh);
-              setCart([]);
-              setTabEnabled({
-                dineIn: true,
-              });
-            }
-          });
-        })
-        .catch((err) => console.log(err));
+           // console.info(orderData);
+            setCart([]);
+            setTabEnabled({
+              dineIn: true,
+            });
+          } else {
+            setCart([]);
+            setTabEnabled({
+              dineIn: true,
+            });
+          }
+        });
+      } catch (error) {
+        console.error('Error placing order:', error);
+        // Handle error appropriately (e.g., show an error message to the user)
+      }
     }
   };
+  
 
-  function openPrintModal(data) {
-    // Create a modal dialog or use a library like Swal
-    Swal.fire({
-      title: "Order Details",
-      html: getFormattedOrderDetails(data), // Call a function to format the data
-      icon: "success",
-      confirmButtonText: "OK",
-    }).then((result) => {
-      if (result.isConfirmed) {
-      }
+  const componentRef = React.useRef();
+
+  const handleClosePrint = () => {
+      setShowPrintModal(false);
+      
+    }
+
+    const handlePrints = useReactToPrint({
+      content: () => componentRef.current,
     });
-  }
 
-  useEffect(() => { }, [refresh]);
+  
 
-  function getFormattedOrderDetails(data) {
-    // Create an HTML structure to display the order details
-    let formattedDetails = "<div>";
-    formattedDetails += `<p><strong>Order Number:</strong> ${data.ordernumber}</p>`;
-    formattedDetails += `<p><strong>Customer:</strong> ${data.customers}</p>`;
-    formattedDetails += `<p><strong>Options:</strong> ${data.options}</p>`;
+  const [showPrintModal, setShowPrintModal] = useState(false);
+  const [orderData,setOrderData ] = useState(null);
 
-    // Loop through cart items
-    formattedDetails += "<p><strong>Cart:</strong></p>";
-    formattedDetails += `<table className="table table-bordered">`;
-    formattedDetails += `<thead>`;
-    formattedDetails += `<tr>`;
-    formattedDetails += `<th>Item</th>`;
-    formattedDetails += `<th>Food Menu Name</th>`;
-    formattedDetails += `<th>Sales Price</th>`;
-    formattedDetails += `<th>Quantity</th>`;
-    formattedDetails += `</tr>`;
-    formattedDetails += `<tbody>`;
+  useEffect(() => {
+    // You can perform actions here after orderData state is updated
+    // For example, open the print modal
+    if (orderData) {
+      setShowPrintModal(true);
+    }
+  }, [orderData]); 
+ 
 
-    data.cart.forEach((item, index) => {
-      formattedDetails += `<tr>`;
-      formattedDetails += `<td>${index + 1}</td>`;
+  // const openPrintModal = () => {
+   
+  //   setShowPrintModal(true);
+  // };
 
-      formattedDetails += `<td>${item.foodmenuname}</td>`;
-      formattedDetails += `<td>${item.salesprice}</td>`;
-      formattedDetails += `<td>${item.quantity}</td>`;
-      formattedDetails += `</tr>`;
-    });
-    formattedDetails += `</tbody>`;
-    formattedDetails += `</table>`;
+  // function openPrintModal(data) {
+  //   // Create a modal dialog or use a library like Swal
+  //   Swal.fire({
+  //     title: "Order Details",
+  //     html: getFormattedOrderDetails(data), // Call a function to format the data
+  //     icon: "success",
+  //     confirmButtonText: "OK",
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //     }
+  //   });
+  // }
 
-    formattedDetails += `<p><strong>VAT Amount:</strong> ${data.vatAmount}</p>`;
-    formattedDetails += `<p><strong>Total Amount:</strong> ${data.total}</p>`;
-    formattedDetails += `<p><strong>Grand Total:</strong> ${data.grandTotal}</p>`;
+  // useEffect(() => { }, [refresh]);
 
-    formattedDetails += "</div>";
+  // function getFormattedOrderDetails(data) {
+  //   // Create an HTML structure to display the order details
+  //   let formattedDetails = "<div>";
+  //   formattedDetails += `<p><strong>Order Number:</strong> ${data.ordernumber}</p>`;
+  //   formattedDetails += `<p><strong>Customer:</strong> ${data.customers}</p>`;
+  //   formattedDetails += `<p><strong>Options:</strong> ${data.options}</p>`;
 
-    return formattedDetails;
-  }
+  //   // Loop through cart items
+  //   formattedDetails += "<p><strong>Cart:</strong></p>";
+  //   formattedDetails += `<table className="table table-bordered">`;
+  //   formattedDetails += `<thead>`;
+  //   formattedDetails += `<tr>`;
+  //   formattedDetails += `<th>Item</th>`;
+  //   formattedDetails += `<th>Food Menu Name</th>`;
+  //   formattedDetails += `<th>Sales Price</th>`;
+  //   formattedDetails += `<th>Quantity</th>`;
+  //   formattedDetails += `</tr>`;
+  //   formattedDetails += `<tbody>`;
+
+  //   data.cart.forEach((item, index) => {
+  //     formattedDetails += `<tr>`;
+  //     formattedDetails += `<td>${index + 1}</td>`;
+
+  //     formattedDetails += `<td>${item.foodmenuname}</td>`;
+  //     formattedDetails += `<td>${item.salesprice}</td>`;
+  //     formattedDetails += `<td>${item.quantity}</td>`;
+  //     formattedDetails += `</tr>`;
+  //   });
+  //   formattedDetails += `</tbody>`;
+  //   formattedDetails += `</table>`;
+
+  //   formattedDetails += `<p><strong>VAT Amount:</strong> ${data.vatAmount}</p>`;
+  //   formattedDetails += `<p><strong>Total Amount:</strong> ${data.total}</p>`;
+  //   formattedDetails += `<p><strong>Grand Total:</strong> ${data.grandTotal}</p>`;
+
+  //   formattedDetails += "</div>";
+
+  //   return formattedDetails;
+  // }
 
   // console.info({filteredTables})
   const handleHold = (event) => {
@@ -1516,7 +1551,60 @@ const PosNewOrder = () => {
         setModalInvoiceReport={setModalInvoiceReport}
       />
 
-    <PosClosingBalance isModalClosingBalance={isModalClosingBalance}  setModalClosingBalance={setModalClosingBalance}/>
+    <PosClosingBalance 
+      isModalClosingBalance={isModalClosingBalance}  
+      setModalClosingBalance={setModalClosingBalance}
+    />
+
+    {/* <PosOrderPrint 
+     orderData={orderData} 
+      showPrintModal={showPrintModal} 
+      setShowPrintModal={setShowPrintModal} 
+     
+    /> */}
+            <div>
+        <div className={`modal ${showPrintModal ? 'show' : ''}`} tabIndex="-1" role="dialog" style={{ display: showPrintModal ? 'block' : 'none' }}>
+          <div className="modal-dialog modal-md" role="document" style={{ maxWidth: '1200px' }}>
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Pos Closing Balance</h5>
+                <button type="button" className="close" onClick={handleClosePrint}>
+                  <span>&times;</span>
+                </button>
+              </div>
+              <div className="modal-body" ref={componentRef}>
+
+  
+  
+              {
+  Array.isArray(orderData) &&
+  orderData.map((order) => (
+    <React.Fragment key={order?.ordernumber}>
+      <h2>Ordernumber: {order?.ordernumber}</h2>
+      <h4>Options: {order?.options}</h4>
+      <table className="table table-border">
+        {/* ... (rest of the table rendering code) */}
+      </table>
+      <h6 className="text-right">Total: {order?.total}</h6>
+      <h6 className="text-right">Vat Amount: {order?.vatAmount}</h6>
+      <h6 className="text-right">Grand Total: {order?.grandTotal}</h6>
+    </React.Fragment>
+  ))
+}
+  
+  
+  
+              </div>
+              <div className="modal-footer">
+              <button onClick={handlePrints}>Print</button>
+          
+              </div>
+  
+            </div>
+          </div>
+        </div>
+        <div className={`modal-backdrop ${showPrintModal ? 'show' : ''}`} style={{ display: showPrintModal ? 'block' : 'none' }}></div>
+      </div>
 
     </div>
   );
