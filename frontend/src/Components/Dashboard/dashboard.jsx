@@ -15,7 +15,35 @@ const Dashboard =() =>{
     localStorage.removeItem('token')
     navigate("/");
 }
+const cardBodyStyle = {
+  padding: '0',
+  // Add more styles for card body as needed
+};
 
+const [todayordercount, setTodayorderCount] = useState(0);
+const [totalordercount, setTotalorderCount] = useState(0);
+const [todaynotpaidcount,setNotpaidCount] =useState(0);
+
+useEffect(() => {
+ fetch(`${apiConfig.baseURL}/api/dashboard/todayorder`)
+    .then((response) => response.json())
+    .then((data) => setTodayorderCount(data.count))
+    .catch((error) => console.error(error));
+}, []);
+
+useEffect(() => {
+  fetch(`${apiConfig.baseURL}/api/dashboard/totalorder`)
+     .then((response) => response.json())
+     .then((data) => setTotalorderCount(data.count))
+     .catch((error) => console.error(error));
+ }, []);
+
+ useEffect(() => {
+  fetch(`${apiConfig.baseURL}/api/dashboard/todaynotpaidsales`)
+     .then((response) => response.json())
+     .then((data) => setNotpaidCount(data.count))
+     .catch((error) => console.error(error));
+ }, []);
 
 
 
@@ -43,13 +71,13 @@ const Dashboard =() =>{
             </div>
             <div className="row">
               <div className="col-md-3 stretch-card grid-margin">
-                <div className="card bg-gradient-danger card-img-holder text-white">
-                  <div className="card-body">
+                <div className="card bg-gradient-danger card-img-holder text-white" >
+                  <div className="card-body" >
                     <img src="assets/images/dashboard/circle.svg" className="card-img-absolute" alt="circle-image" />
-                    <h4 className="font-weight-normal mb-3">Weekly Sales <i className="mdi mdi-chart-line mdi-24px float-right"></i>
+                    <h4 className="font-weight-normal mb-3">Today Orders <i className="mdi mdi-chart-line mdi-24px float-right"></i>
                     </h4>
-                    <h2 className="mb-5">$ 15,0000</h2>
-                    <h6 className="card-text">Increased by 60%</h6>
+                    <h2 className="mb-5">{ todayordercount }</h2>
+                   
                   </div>
                 </div>
               </div>
@@ -57,10 +85,10 @@ const Dashboard =() =>{
                 <div className="card bg-gradient-info card-img-holder text-white">
                   <div className="card-body">
                     <img src="assets/images/dashboard/circle.svg" className="card-img-absolute" alt="circle-image" />
-                    <h4 className="font-weight-normal mb-3">Weekly Orders <i className="mdi mdi-bookmark-outline mdi-24px float-right"></i>
+                    <h4 className="font-weight-normal mb-3">Today Sales <i className="mdi mdi-bookmark-outline mdi-24px float-right"></i>
                     </h4>
-                    <h2 className="mb-5">45,6334</h2>
-                    <h6 className="card-text">Decreased by 10%</h6>
+                    <h2 className="mb-5">{todaynotpaidcount}</h2>
+                   
                   </div>
                 </div>
               </div>
@@ -68,10 +96,10 @@ const Dashboard =() =>{
                 <div className="card bg-gradient-success card-img-holder text-white">
                   <div className="card-body">
                     <img src="assets/images/dashboard/circle.svg" className="card-img-absolute" alt="circle-image" />
-                    <h4 className="font-weight-normal mb-3">Visitors Online <i className="mdi mdi-diamond mdi-24px float-right"></i>
+                    <h4 className="font-weight-normal mb-3">Total Orders <i className="mdi mdi-diamond mdi-24px float-right"></i>
                     </h4>
-                    <h2 className="mb-5">95,5741</h2>
-                    <h6 className="card-text">Increased by 5%</h6>
+                    <h2 className="mb-5">{totalordercount}</h2>
+                   
                   </div>
                 </div>
               </div>
@@ -79,10 +107,10 @@ const Dashboard =() =>{
                 <div className="card bg-gradient-success card-img-holder text-white">
                   <div className="card-body">
                     <img src="assets/images/dashboard/circle.svg" className="card-img-absolute" alt="circle-image" />
-                    <h4 className="font-weight-normal mb-3">Visitors Online <i className="mdi mdi-diamond mdi-24px float-right"></i>
+                    <h4 className="font-weight-normal mb-3">Total Sales  <i className="mdi mdi-diamond mdi-24px float-right"></i>
                     </h4>
                     <h2 className="mb-5">95,5741</h2>
-                    <h6 className="card-text">Increased by 5%</h6>
+                   
                   </div>
                 </div>
               </div>

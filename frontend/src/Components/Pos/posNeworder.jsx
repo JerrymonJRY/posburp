@@ -32,7 +32,7 @@ import PosClosingBalance from "./neworder/posClosingbalance";
 import PosOrderPrint from "./print/posOrderPrint";
 import { useReactToPrint } from 'react-to-print';
 const PosNewOrder = () => {
-  const kotModalRef = useRef();
+ 
 
   
   const navigate = useNavigate();
@@ -46,8 +46,6 @@ const PosNewOrder = () => {
 
   useEffect(() => {
     const storeid = localStorage.getItem("_id");
-
-    //console.log('Stored ID:', storeid);
     setuserid(storeid);
   }, []);
 
@@ -1297,13 +1295,16 @@ const PosNewOrder = () => {
               />
               <br />
               <div className="row">
+                
                 {filteredTables.map((tables, index) => (
                   <div
                     key={index}
                     className={`col-sm-3 col-md-3 ${selectTable === tables ? "disabled" : ""
                       }`}
                   >
-                    <div
+                    <div className="card">
+                    
+                    <div 
                       className={`menu-box ${selectTable ? "read-only" : "selectable"
                         }`}
                     >
@@ -1315,6 +1316,8 @@ const PosNewOrder = () => {
                       <p>SeatCapacity:{tables.seatcapacity}</p>
                       <p>Avilable Seat:{tables.availableSeat}</p>
                     </div>
+                    
+                    <div className="card-footer">
                     <div class="flex-row-container">
                       <div class="flex-row-item">
                         <input
@@ -1347,6 +1350,8 @@ const PosNewOrder = () => {
                           Add
                         </a>
                       </div>
+                    </div>
+                    </div>
                     </div>
                   </div>
                 ))}

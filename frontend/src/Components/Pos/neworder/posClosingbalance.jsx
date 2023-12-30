@@ -29,18 +29,12 @@ const PosClosingBalance = ({ isModalClosingBalance, setModalClosingBalance }) =>
   useEffect(() => {
 
     //axios.get(`${apiConfig.baseURL}/api/pos/closingBalance?shiftstoken=${encodeURIComponent(shiftstoken)}`)
-    axios.get(`${apiConfig.baseURL}/api/pos/closingBalance?shiftstoken=${encodeURIComponent(shiftstoken)}`)
-      // .then((response) => response.json())
-      // .then((data) => setPosCloseBalance(data))
-      .then((res) => {
-        setPosCloseBalance(res.data);
-
-        // Initialize DataTables after data is loaded
-
-      })
-      .catch((error) => console.error(error));
-
-
+    fetch(`${apiConfig.baseURL}/api/pos/closingBalance?shiftstoken=${encodeURIComponent(shiftstoken)}`)
+     
+      .then((response) => response.json())
+      .then((data) => setPosCloseBalance(data))
+     .catch((error) => console.error(error));
+  
   }, []);
   console.log(posclosebalance);
 

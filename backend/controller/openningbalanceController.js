@@ -60,7 +60,8 @@ const createBalance = asyncHandler(async (req, res) => {
           transnumber:newTransNumber,
           transmode:transmode,
           amount:amount,
-          transtype:transtype
+          transtype:transtype,
+          shiftstoken:shiftstoken
   
   
     

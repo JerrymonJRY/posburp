@@ -8,16 +8,17 @@ import apiConfig from '../layouts/base_url';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Select from 'react-select';
-
+import DataTable from "react-data-table-component";
 const DeliveryReport = () => {
   const [data, setData] = useState([]);
   const [deliveryperson, setDeliveryPerson] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [deliveryNameFilter, setDeliveryNameFilter] = useState('');
-  const [startDateFilter, setStartDateFilter] = useState('');
-  const [endDateFilter, setEndDateFilter] = useState('');
-  const [initialGrandTotal, setInitialGrandTotal] = useState(0);
-  const [filteredGrandTotal, setFilteredGrandTotal] = useState(0);
+  const [deliveryNameFilter, setDeliveryNameFilter] = useState(null);
+  const [startDateFilter, setStartDateFilter] = useState(null);
+  const [endDateFilter, setEndDateFilter] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSearchApplied, setIsSearchApplied] = useState(false);
+  const [overallGrandTotal, setOverallGrandTotal] = useState(0);
 
   useEffect(() => {
     axios
@@ -25,19 +26,9 @@ const DeliveryReport = () => {
       .then((res) => {
         setData(res.data);
         setFilteredData(res.data);
+        calculateOverallGrandTotal(res.data);
 
-        // Calculate and set initial Grand Total
-        const initialGrandTotal = res.data.reduce((total, order) => {
-          return total + parseFloat(order.grandTotal);
-        }, 0);
-
-        setInitialGrandTotal(initialGrandTotal);
-        setFilteredGrandTotal(initialGrandTotal);
-
-        // Initialize DataTables after data is loaded
-        $(document).ready(function () {
-          $('#example_table').DataTable();
-        });
+        
       })
       .catch((err) => console.log(err));
   }, []);
@@ -58,38 +49,79 @@ const DeliveryReport = () => {
     label: delivery.dliveryname,
   }));
 
+  const columns = [
+    { name: "SI No", selector: "siNo", sortable: true },
+    { name: "Order Number", selector: "ordernumber", sortable: true },
+    {
+      name: "Delivery Name",
+      selector: (row) => (
+        <React.Fragment key={row._id}>
+          {row.deliveryInfo.map((delivery) => (
+            <div key={delivery._id}>{delivery.dliveryname}</div>
+          ))}
+        </React.Fragment>
+      ),
+      sortable: true,
+    },
+    {
+      name: "Delivery Mobile",
+      selector: (row) => (
+        <React.Fragment key={row._id}>
+          {row.deliveryInfo.map((delivery) => (
+            <div key={delivery._id}>{delivery.deliverymobile}</div>
+          ))}
+        </React.Fragment>
+      ),
+      sortable: true,
+    },
+    {
+      name: "Date",
+      selector: "date",
+      sortable: true,
+      cell: (row) => new Date(row.date).toLocaleDateString(),
+    },
+    { name: "Grand Total", selector: "grandTotal", sortable: true },
+   
+  ];
+
+  const filteredDatas = data.map((order, index) => ({
+    ...order,
+    siNo: index + 1,
+  }));
+
   const handleSearch = () => {
-    const filtered = data.filter((order) => {
-      const deliveryMatches =
-        !deliveryNameFilter ||
-        order.deliveryInfo.some(
-          (delivery) =>
-            delivery.dliveryname.toLowerCase().includes(deliveryNameFilter.label.toLowerCase()) ||
-            delivery.deliverymobile.includes(deliveryNameFilter.label)
-        );
 
-      const startDateMatches = !startDateFilter || new Date(order.date) >= startDateFilter;
+    setIsLoading(true);
 
-      const endDateMatches = !endDateFilter || new Date(order.date) <= endDateFilter;
+    setIsLoading(true);
 
-      return deliveryMatches && startDateMatches && endDateMatches;
-    });
+    const formattedStartDate = startDateFilter ? startDateFilter.toISOString().split('T')[0] : '';
+    const formattedEndDate = endDateFilter ? endDateFilter.toISOString().split('T')[0] : '';
+    const deliveryId = deliveryNameFilter ? deliveryNameFilter.value : '';
 
-    const grandTotal = filtered.reduce((total, order) => {
-      return total + parseFloat(order.grandTotal);
-    }, 0);
+    fetch(`${apiConfig.baseURL}/api/reports/deliveryreports?startDateFilter=${formattedStartDate}&endDateFilter=${formattedEndDate}&deliveryId=${deliveryId}`)
+    .then((response) => response.json())
+    .then((data) => {
+      setData(data);
+      setIsSearchApplied(true); // Set search criteria flag
+      calculateOverallGrandTotal(data);
+    })
+    .catch((error) => console.error(error))
+    .finally(() => setIsLoading(false));
 
-    setFilteredGrandTotal(grandTotal);
-    setFilteredData(filtered);
   };
 
-  const formatDate = (timestamp) => {
-    const dateObject = new Date(timestamp);
-    const formattedDate = `${dateObject.getFullYear()}-${(dateObject.getMonth() + 1)
-      .toString()
-      .padStart(2, '0')}-${dateObject.getDate().toString().padStart(2, '0')}`;
-    return formattedDate;
+  const calculateOverallGrandTotal = (filteredData) => {
+    const grandTotal = filteredData.reduce(
+      (total, order) => total + parseFloat(order.grandTotal || 0),
+      0
+    );
+    
+    setOverallGrandTotal(isNaN(grandTotal) ? 0 : grandTotal.toFixed(0)); // Format the grand total as an integer
   };
+
+
+
 
   return (
     <div className="container-scroller">
@@ -102,11 +134,7 @@ const DeliveryReport = () => {
               <div className="card">
                 <div className="card-body">
                   <h4 className="card-title">Delivery Boy List</h4>
-                  <div className="d-flex justify-content-end">
-                    <Link to="/addPurchase" className="btn btn-success">
-                      Add +
-                    </Link>
-                  </div>
+                 
 
                   <div className="row">
                     <div className="col-md-3">
@@ -141,8 +169,20 @@ const DeliveryReport = () => {
                       </button>
                     </div>
                   </div>
+                  <div className='row'>
+                    <DataTable
+      columns={columns}
+      data={filteredDatas}
+      pagination
+      
+    />
+    
+<div style={{ textAlign: "right", marginTop: "10px" }}>
+            <strong>Overall Grand Total: {overallGrandTotal}</strong>
+          </div>
+                    </div>
 
-                  <table className="table table-hover" id="example_table" style={{ width: '100%' }}>
+                  {/* <table className="table table-hover" id="example_table" style={{ width: '100%' }}>
                     <thead>
                       <tr>
                         <th>Order Number</th>
@@ -181,7 +221,7 @@ const DeliveryReport = () => {
                       </tr>
                      
                     </tfoot>
-                  </table>
+                  </table> */}
                 </div>
               </div>
             </div>

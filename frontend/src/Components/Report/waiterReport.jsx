@@ -14,9 +14,12 @@ const WaiterReport = () => {
   const [data, setData] = useState([]);
   const [waiter, setWaiter] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [deliveryNameFilter, setDeliveryNameFilter] = useState('');
-  const [startDateFilter, setStartDateFilter] = useState('');
-  const [endDateFilter, setEndDateFilter] = useState('');
+  const [deliveryNameFilter, setDeliveryNameFilter] = useState(null);
+  const [startDateFilter, setStartDateFilter] = useState(null);
+  const [endDateFilter, setEndDateFilter] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSearchApplied, setIsSearchApplied] = useState(false);
+  const [overallGrandTotal, setOverallGrandTotal] = useState(0);
 
   useEffect(() => {
     axios
@@ -24,6 +27,7 @@ const WaiterReport = () => {
       .then((res) => {
         setData(res.data);
         setFilteredData(res.data);
+        calculateOverallGrandTotal(res.data);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -33,6 +37,7 @@ const WaiterReport = () => {
       .get(`${apiConfig.baseURL}/api/reports/getwaiter`)
       .then((response) => {
         setWaiter(response.data);
+      
       })
       .catch((error) => {
         console.error(error);
@@ -45,65 +50,72 @@ const WaiterReport = () => {
   }));
 
   const handleSearch = () => {
-    const filtered = data.filter((order) => {
-      const deliveryMatches =
-        !deliveryNameFilter ||
-        order.waiterInfo.some(
-          (delivery) =>
-            delivery.waitername.toLowerCase().includes(deliveryNameFilter.label.toLowerCase()) ||
-            delivery.mobile.includes(deliveryNameFilter.label)
-        );
 
-      const startDateMatches = !startDateFilter || new Date(order.date).getTime() >= startDateFilter.getTime();
+    setIsLoading(true);
 
-      const endDateMatches = !endDateFilter || new Date(order.date).getTime() <= endDateFilter.getTime();
+    setIsLoading(true);
 
-      return deliveryMatches && startDateMatches && endDateMatches;
-    });
+    const formattedStartDate = startDateFilter ? startDateFilter.toISOString().split('T')[0] : '';
+    const formattedEndDate = endDateFilter ? endDateFilter.toISOString().split('T')[0] : '';
+    const waiterId = deliveryNameFilter ? deliveryNameFilter.value : '';
 
-    setFilteredData(filtered);
+    fetch(`${apiConfig.baseURL}/api/reports/waiterreports?startDateFilter=${formattedStartDate}&endDateFilter=${formattedEndDate}&waiterId=${waiterId}`)
+    .then((response) => response.json())
+    .then((data) => {
+      setData(data);
+      setIsSearchApplied(true); // Set search criteria flag
+      calculateOverallGrandTotal(data);
+    })
+    .catch((error) => console.error(error))
+    .finally(() => setIsLoading(false));
   };
+    
+  
 
   const columns = [
-    { Header: 'Order Number', accessor: 'ordernumber' },
+    { name: "SI No", selector: "siNo", sortable: true },
+    { name: "Order Number", selector: "ordernumber", sortable: true },
+    // { name: "Waiter", selector: "waiterInfo.waitername", sortable: true },
     {
-      Header: 'Waiter Name',
-      accessor: 'waiterInfo',
-      Cell: ({ row }) => row.original.waiterInfo.map((delivery) => delivery.waitername).join(', '),
-    },
-    {
-      Header: 'Mobile Number',
-      accessor: 'waiterInfo',
-      Cell: ({ row }) => row.original.waiterInfo.map((delivery) => delivery.mobile).join(', '),
-    },
-    { Header: 'Date', accessor: (row) => formatDate(row.date) },
-    { Header: 'Amount', accessor: 'grandTotal' },
-    {
-      Header: 'Action',
-      Cell: ({ row }) => (
-        <Link to={`/editSupplier/${row.original._id}`} className="btn btn-primary">
-          Edit
-        </Link>
+      name: "Waiter Name",
+      selector: (row) => (
+        <React.Fragment key={row._id}>
+          {row.waiterInfo.map((waiter) => (
+            <div key={waiter._id}>{waiter.waitername}</div>
+          ))}
+        </React.Fragment>
       ),
+      sortable: true,
     },
+    {
+        name: "Date",
+        selector: "date",
+        sortable: true,
+        cell: (row) => new Date(row.date).toLocaleDateString(),
+      },
+    { name: "Total", selector: "total", sortable: true },
+    { name: "Vat Amount", selector: "vatAmount", sortable: true },
+  
+    { name: "Grand Total", selector: "grandTotal", sortable: true },
   ];
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-  } = useTable({ columns, data: filteredData });
+  const filteredDatas = data.map((order, index) => ({
+    ...order,
+    siNo: index + 1,
+  }));
 
-  const formatDate = (timestamp) => {
-    const dateObject = new Date(timestamp);
-    const formattedDate = `${dateObject.getFullYear()}-${(dateObject.getMonth() + 1)
-      .toString()
-      .padStart(2, '0')}-${dateObject.getDate().toString().padStart(2, '0')}`;
-    return formattedDate;
+  const calculateOverallGrandTotal = (filteredData) => {
+    const grandTotal = filteredData.reduce(
+      (total, order) => total + parseFloat(order.grandTotal || 0),
+      0
+    );
+    
+    setOverallGrandTotal(isNaN(grandTotal) ? 0 : grandTotal.toFixed(0)); // Format the grand total as an integer
   };
 
+ 
+
+ 
   return (
     <div className="container-scroller">
       <Header />
@@ -115,11 +127,7 @@ const WaiterReport = () => {
               <div className="card">
                 <div className="card-body">
                   <h4 className="card-title">Waiter List</h4>
-                  <div className="d-flex justify-content-end">
-                    <Link to="/addPurchase" className="btn btn-success">
-                      Add +
-                    </Link>
-                  </div>
+                  
 
                   <div className="row">
                     <div className="col-md-3">
@@ -154,30 +162,21 @@ const WaiterReport = () => {
                       </button>
                     </div>
                   </div>
+                  <div className="row"> 
+ <DataTable
+         
+          columns={columns}
+          data={filteredDatas}
+          pagination
+       
+        />
 
-                  <table {...getTableProps()} className="table table-hover" style={{ width: '100%' }}>
-                    <thead>
-                      {headerGroups.map((headerGroup) => (
-                        <tr {...headerGroup.getHeaderGroupProps()}>
-                          {headerGroup.headers.map((column) => (
-                            <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-                          ))}
-                        </tr>
-                      ))}
-                    </thead>
-                    <tbody {...getTableBodyProps()}>
-                      {rows.map((row) => {
-                        prepareRow(row);
-                        return (
-                          <tr {...row.getRowProps()}>
-                            {row.cells.map((cell) => (
-                              <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                            ))}
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+<div style={{ textAlign: "right", marginTop: "10px" }}>
+            <strong>Overall Grand Total: {overallGrandTotal}</strong>
+          </div>
+ </div>
+
+                 
                 </div>
               </div>
             </div>
