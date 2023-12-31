@@ -70,7 +70,7 @@ app.use('/api/cashdrop',cashdropRouter);
 app.use('/api/expense',expenseRouter);
 app.use('/api/designation',designationRouter);
 app.use('/api/expenseinvoice',expenseinvoiceRouter);
-app.use('/api/dashboard',dashboardRouter)
+app.use('/api/dashboard',dashboardRouter);
 
 // app.use('/', (req, res) => {
 //   res.send('Hello From Server Side');
