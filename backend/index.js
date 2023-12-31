@@ -34,14 +34,34 @@ const PORT = process.env.PORT || 4000;
 dbConnect();
 
 
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'https://monumental-sherbet-d68a44.netlify.app');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-});
+// app.use((req, res, next) => {
+//     res.header('Access-Control-Allow-Origin', 'https://monumental-sherbet-d68a44.netlify.app');
+//     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+//     res.header('Access-Control-Allow-Headers', 'Content-Type');
+//     next();
+// });
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', 'https://monumental-sherbet-d68a44.netlify.app');
+//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');  // Include OPTIONS if you're handling preflight requests
+//   res.header('Access-Control-Allow-Headers', 'Content-Type');
+//   next();
+// });
 
-  app.use(cors({ origin: 'https://monumental-sherbet-d68a44.netlify.app/' }));
+//   app.use(cors({ origin: 'https://monumental-sherbet-d68a44.netlify.app/' }));
+const allowedOrigins = ['https://monumental-sherbet-d68a44.netlify.app'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Check if the origin is in the allowedOrigins array or if it's not defined (e.g., a same-origin request)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Include OPTIONS if you're handling preflight requests
+  allowedHeaders: ['Content-Type'],
+}));
 //app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
