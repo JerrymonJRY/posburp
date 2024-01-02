@@ -14,7 +14,8 @@ const {getposCategory,
     todayOrder,
     insertQuickpay,
     tableorder,
-    calculateTable
+    calculateTable,
+    getorders
 } =require('../controller/posController');
 
 const {updatePosorder} =require('../controller/posUpdateController')
@@ -50,6 +51,7 @@ router.get('/gettodaydelivery',todayDelivery);
 router.get('/invoicereport',posinvoiceReport);
 router.get('/closingBalance',closingbalance)
 router.put('/closeShift',closeShift);
+router.get('/getOrders/:id',getorders);
 
 
 

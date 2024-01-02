@@ -12,6 +12,7 @@ const RunningPaymentModal = ({ data, showModal, setShowModal }) => {
   const [processedIds, setProcessedIds] = useState([]);
   const [addedby, setuserid] = useState("");
   const [shiftstoken, setShiftstoken] = useState('');
+  const imageName = "burps.png";
 
   useEffect(() => {
     const storeid = localStorage.getItem("_id");
@@ -71,6 +72,7 @@ const RunningPaymentModal = ({ data, showModal, setShowModal }) => {
           if (result.isConfirmed) {
             // Open your print modal here
             console.log(res);
+            openPrintModal(res.data);
             navigate('/runningorder');
             // openPrintModal(res.data);
           } else {
@@ -80,6 +82,93 @@ const RunningPaymentModal = ({ data, showModal, setShowModal }) => {
         });
       })
       .catch(err => console.log(err));
+  }
+
+  function openPrintModal(data) {
+    // Create a modal dialog or use a library like Swal
+    Swal.fire({
+      title: "Order Details",
+     // html: getFormattedOrderDetails(data), // Call a function to format the data
+     html: getFormattedOrderDetails(data) + '<button className="btn btn-outline-primary" id="printButton">Print</button>',
+      icon: "success",
+      confirmButtonText: "OK",
+    }).then((result) => {
+      if (result.isConfirmed) {
+      }
+    });
+
+    document.getElementById("printButton").addEventListener("click", () => {
+      printOrderDetails(data);
+    });
+
+    function getFormattedOrderDetails(data) {
+      // Create an HTML structure to display the order details
+      let formattedDetails = "<div>";
+     
+      formattedDetails += `<p><strong>Bill Number:</strong> ${data.billnumber}</p>`;
+      formattedDetails += `<p><strong>Order Number:</strong> ${data.ordernumber}</p>`;
+      formattedDetails += `<p><strong>Customer:</strong> ${data.customers}</p>`;
+      formattedDetails += `<p><strong>Options:</strong> ${data.options}</p>`;
+  
+      // Loop through cart items
+     
+      formattedDetails += `<table className="table table-bordered">`;
+      formattedDetails += `<thead>`;
+      formattedDetails += `<tr>`;
+      formattedDetails += `<th>Item</th>`;
+      formattedDetails += `<th>Food Menu Name</th>`;
+      formattedDetails += `<th>Sales Price</th>`;
+      formattedDetails += `<th>Quantity</th>`;
+      formattedDetails += `</tr>`;
+      formattedDetails += `<tbody>`;
+  
+      data.cart.forEach((item, index) => {
+        formattedDetails += `<tr>`;
+        formattedDetails += `<td>${index + 1}</td>`;
+  
+        formattedDetails += `<td>${item.foodmenuname}</td>`;
+        formattedDetails += `<td>${item.salesprice}</td>`;
+        formattedDetails += `<td>${item.quantity}</td>`;
+        formattedDetails += `</tr>`;
+      });
+      formattedDetails += `</tbody>`;
+      formattedDetails += `</table>`;
+  
+      formattedDetails += `<p><strong>VAT Amount:</strong> ${data.vatAmount}</p>`;
+      formattedDetails += `<p><strong>Total Amount:</strong> ${data.total}</p>`;
+      formattedDetails += `<p><strong>Grand Total:</strong> ${data.grandTotal}</p>`;
+  
+      formattedDetails += "</div>";
+  
+      return formattedDetails;
+    }
+  
+    function printOrderDetails(data) {
+      const modalContent = getFormattedOrderDetails(data);
+    
+      // Create a hidden iframe
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      document.body.appendChild(iframe);
+    
+      // Write the formatted order details to the iframe
+      const iframeDocument = iframe.contentWindow.document;
+      iframeDocument.write('<html><head><title>Order Details</title></head><body>');
+      iframeDocument.write(modalContent);
+      iframeDocument.write('</body></html>');
+      iframeDocument.close();
+    
+      // Trigger the print operation
+      iframe.contentWindow.print();
+    
+      // Remove the iframe after printing
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+      }, 1000); // Adjust the timeout value as needed
+    }
+
+
+
   }
 
   const closeModal = () => {
@@ -98,7 +187,7 @@ const RunningPaymentModal = ({ data, showModal, setShowModal }) => {
             </div>
             <div className="modal-body">
               {/* Display the data here */}
-
+           
               {data ? (
                 data.map((order) => (
                   <div key={order.id}>
@@ -135,7 +224,7 @@ const RunningPaymentModal = ({ data, showModal, setShowModal }) => {
                     <h6>Vat Amount :{order.vatAmount}</h6>
                     <h6>Grand Total :{order.grandTotal}</h6>
 
-
+                   
 
                     <div className="form-group row">
                       <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Select Payment</label>

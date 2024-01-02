@@ -175,7 +175,55 @@ const editfoodmenu =asyncHandler(async(req,res) =>{
   {
    throw new Error(error);
   }
-})
+});
+
+const updateFoodmenu =asyncHandler(async(req,res) =>{ 
+
+  const { id } = req.params;
+
+  const {filename} = req.file;
+  const {foodmenuname,foodcategoryId,vatId,salesprice,description,vegitem,beverage,bar,foodingredientId} = req.body;
+  
+  // const upload = multer({ storage }).single("photo");
+ 
+
+    try{
+      const existingFoodmenu = await Foodmenu.findById(id);
+
+      if (!existingFoodmenu) {
+        return res.status(404).json({ status: 404, error: 'Foodmenu not found' });
+      }
+  
+      // Update the food menu fields
+      existingFoodmenu.foodmenuname = foodmenuname;
+      existingFoodmenu.foodcategoryId = foodcategoryId;
+      existingFoodmenu.vatId = vatId;
+      existingFoodmenu.salesprice = salesprice;
+      existingFoodmenu.description = description;
+      existingFoodmenu.vegitem = vegitem;
+      existingFoodmenu.beverage = beverage;
+      existingFoodmenu.bar = bar;
+      existingFoodmenu.foodingredientId = foodingredientId;
+      existingFoodmenu.photo = filename;
+  
+      // Save the updated food menu
+      const updatedFoodmenu = await existingFoodmenu.save();
+  
+      res.json(updatedFoodmenu);
+      
+      
+      
+   
+
+   
+  }
+  catch (error) {
+    res.status(401).json({status:401,error})
+}
+ 
+
+  
+});
 
 
-module.exports = {getfoodCategory,getingredients,getvat,creatFoodmenu,getallfoods,editfoodmenu};
+module.exports = {getfoodCategory,getingredients,getvat,creatFoodmenu,getallfoods,editfoodmenu,updateFoodmenu};

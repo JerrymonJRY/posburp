@@ -255,6 +255,18 @@ const updatePayment = asyncHandler(async (req, res) => {
     });
     await newEntry.save();
 
+
+    const updateBill = await Pos.updateOne(
+      { _id: id },
+      {
+        $set: {
+          billnumber: nextIdNumber,
+          
+        },
+      }
+    );
+
+
     const updatedDocument = await Pos.findById(id);
 
     res.json(updatedDocument);
@@ -689,6 +701,122 @@ const calculateTable = asyncHandler(async (req, res) => {
   }
 });
 
+
+const getorders =asyncHandler(async(req,res) =>{
+  const { id } = req.params;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid ObjectId' });
+    }
+    const pos = await Pos.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(id), // Match documents with the specified _id
+        },
+      },
+      {
+        $unwind: "$cart" // Flatten the cart array
+      },
+      {
+        $lookup: {
+          from: "foodmenus",
+          localField: "cart.foodmenuId",
+          foreignField: "_id",
+          as: "menuItemDetails"
+        },
+      },
+      {
+        $unwind: "$menuItemDetails" // Unwind the menuItemDetails array
+      },
+      {
+        $lookup: {
+          from: "customers",
+          localField: "customers",
+          foreignField: "_id",
+          as: "customerDetails"
+        },
+      },
+      {
+        $unwind: {
+          path: "$customerDetails",
+          preserveNullAndEmptyArrays: true // Keep customerDetails even if it's null
+        },
+      },
+      {
+        $lookup: {
+          from: "waiters",
+          localField: "waiterId",
+          foreignField: "_id",
+          as: "waiterDetails"
+        },
+      },
+      {
+        $unwind: "$waiterDetails"
+      },
+      {
+        $lookup: {
+          from: "tables",
+          localField: "tableId",
+          foreignField: "_id",
+          as: "tableDetails"
+        },
+      },
+      {
+        // $unwind: "$tableDetails"
+        $unwind: {
+          path: "$tableDetails",
+          preserveNullAndEmptyArrays: true // Keep customerDetails even if it's null
+        },
+      },
+      {
+        $lookup: {
+          from: "delivery",
+          localField: "delivery",
+          foreignField: "_id",
+          as: "deliveryDetails"
+        }
+      },
+      {
+        $unwind: {
+          path: "$deliveryDetails",
+          preserveNullAndEmptyArrays: true // Keep customerDetails even if it's null
+        }
+      },
+      {
+        $group: {
+          _id: "$_id",
+          ordernumber: { $first: "$ordernumber" },
+          options: { $first: "$options" },
+          total: { $first: "$total" },
+          grandTotal: { $first: "$grandTotal" },
+          vatAmount: { $first: "$vatAmount" },
+          createdAt: { $first: "$createdAt" },
+          updatedAt: { $first: "$updatedAt" },
+          cart: {
+            $push: {
+              foodmenuId: "$cart.foodmenuId",
+              salesprice: "$cart.salesprice",
+              quantity: "$cart.quantity",
+              menuItemDetails: "$menuItemDetails"
+            }
+          },
+          customerDetails: { $first: "$customerDetails" },
+  
+          waiterDetails: { $first: "$waiterDetails" },
+          deliveryDetails :{ $first : "$deliveryDetails" }
+        }
+      },
+    ]);
+  
+    res.json(pos);
+  } catch (error) {
+    console.error(error);
+    throw new Error(error);
+  }
+})
+
+
 module.exports = {
   getposCategory,
   getPosWaiter,
@@ -704,4 +832,5 @@ module.exports = {
   insertQuickpay,
   tableorder,
   calculateTable,
+  getorders
 };

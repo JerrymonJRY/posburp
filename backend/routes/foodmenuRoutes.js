@@ -2,7 +2,7 @@ const express =require('express');
 const router =express.Router();
 const multer = require('multer');
 
-const {getfoodCategory,getingredients,getvat,creatFoodmenu,getallfoods,editfoodmenu} =require('../controller/foodmenuController');
+const {getfoodCategory,getingredients,getvat,creatFoodmenu,getallfoods,editfoodmenu,updateFoodmenu} =require('../controller/foodmenuController');
 
 
 const imgconfig = multer.diskStorage({
@@ -35,6 +35,7 @@ router.get('/vat',getvat);
 router.post('/creatfoodmenu',upload.single("photo"),creatFoodmenu),
 router.get('/getallfoodmenu',getallfoods);
 router.get('/editfoodmenu/:id',editfoodmenu);
+router.put('/updatefoodmenu/:id',upload.single("photo"),updateFoodmenu);
 
 
 

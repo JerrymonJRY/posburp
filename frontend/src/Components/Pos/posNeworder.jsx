@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
-import { redirect, useNavigate, Link } from "react-router-dom";
+import { redirect, useNavigate, Link,useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import apiConfig from "../layouts/base_url";
 import {
@@ -43,7 +43,7 @@ const PosNewOrder = () => {
   });
 
   const [addedby, setuserid] = useState("");
-
+  const { id } = useParams();
   useEffect(() => {
     const storeid = localStorage.getItem("_id");
     setuserid(storeid);
@@ -176,7 +176,7 @@ const PosNewOrder = () => {
       delivery: true,
     });
   };
-  console.log("selectWaiter is not empty:", selectWaiter);
+//  console.log("selectWaiter is not empty:", selectWaiter);
   const handleTable = (tables) => {
     if (numberofperson.trim() === "") {
       Swal.fire({
@@ -189,6 +189,10 @@ const PosNewOrder = () => {
       setEnableFoodmenu(true);
       setShowFoodMenuTab(true);
     }
+  };
+
+  const handleTabsClick = (index) => {
+    setActiveTab(index);
   };
   // const trimmedValue = typeof numberofperson === 'string' ? numberofperson.trim() : '';
 
@@ -357,7 +361,7 @@ const PosNewOrder = () => {
           (parseInt(icart.vat.percentage) / 100)
           : newVatAmount;
     });
-    console.log({ newVatAmount });
+    //console.log({ newVatAmount });
     setTotalAmount(newTotalAmount);
     setTotalVat(newVatAmount.toFixed(2));
     setGrandTotal((newTotalAmount + newVatAmount).toFixed());
@@ -365,8 +369,8 @@ const PosNewOrder = () => {
 
   const handleIncrement = (prod) => {
     const { _id, salesprice } = prod;
-    console.log({ cart, prod });
-    console.log({ prodId: prod["_id"] });
+  //  console.log({ cart, prod });
+   // console.log({ prodId: prod["_id"] });
     let addQuantity = cart.map((item) => {
       if (item["_id"] == prod["_id"]) {
         console.log({ item });
@@ -382,17 +386,17 @@ const PosNewOrder = () => {
 
   const handleDecrement = (prod) => {
     const { _id, salesprice } = prod;
-    console.log({ cart, prod });
-    console.log({ prodId: prod["_id"] });
+   // console.log({ cart, prod });
+  //  console.log({ prodId: prod["_id"] });
     let addQuantity = cart.map((item) => {
       if (item["_id"] == _id) {
-        console.log({ item });
+    //    console.log({ item });
         item.quantity = item.quantity > 1 ? item.quantity - 1 : 1;
         return item;
       }
       return item;
     });
-    console.log({ addQuantity });
+  //  console.log({ addQuantity });
     // setTotalAmount(parseInt(totalAmount) - parseInt(salesprice))
     setCart(addQuantity);
   };
@@ -480,10 +484,14 @@ const PosNewOrder = () => {
           if (result.isConfirmed) {
 
             const data = response.data;
-           console.log(data);
+           console.log(data._id);
+          
+           openPrintModal(response.data);
+
+
             // openPrintModal();
-            setOrderData(data);
-            setShowPrintModal(true);
+            // setOrderData(data.\);
+            // setShowPrintModal(true);
 
            // console.info(orderData);
             setCart([]);
@@ -535,60 +543,89 @@ const PosNewOrder = () => {
   //   setShowPrintModal(true);
   // };
 
-  // function openPrintModal(data) {
-  //   // Create a modal dialog or use a library like Swal
-  //   Swal.fire({
-  //     title: "Order Details",
-  //     html: getFormattedOrderDetails(data), // Call a function to format the data
-  //     icon: "success",
-  //     confirmButtonText: "OK",
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //     }
-  //   });
-  // }
+  function openPrintModal(data) {
+    // Create a modal dialog or use a library like Swal
+    Swal.fire({
+      title: "Order Details",
+     // html: getFormattedOrderDetails(data), // Call a function to format the data
+     html: getFormattedOrderDetails(data) + '<button id="printButton">Print</button>',
+      icon: "success",
+      confirmButtonText: "OK",
+    }).then((result) => {
+      if (result.isConfirmed) {
+      }
+    });
+
+    document.getElementById("printButton").addEventListener("click", () => {
+      printOrderDetails(data);
+    });
+  }
 
   // useEffect(() => { }, [refresh]);
 
-  // function getFormattedOrderDetails(data) {
-  //   // Create an HTML structure to display the order details
-  //   let formattedDetails = "<div>";
-  //   formattedDetails += `<p><strong>Order Number:</strong> ${data.ordernumber}</p>`;
-  //   formattedDetails += `<p><strong>Customer:</strong> ${data.customers}</p>`;
-  //   formattedDetails += `<p><strong>Options:</strong> ${data.options}</p>`;
+  function getFormattedOrderDetails(data) {
+    // Create an HTML structure to display the order details
+    let formattedDetails = "<div>";
+    formattedDetails += `<p><strong>Order Number:</strong> ${data.ordernumber}</p>`;
+    formattedDetails += `<p><strong>Customer:</strong> ${data.customers}</p>`;
+    formattedDetails += `<p><strong>Options:</strong> ${data.options}</p>`;
 
-  //   // Loop through cart items
-  //   formattedDetails += "<p><strong>Cart:</strong></p>";
-  //   formattedDetails += `<table className="table table-bordered">`;
-  //   formattedDetails += `<thead>`;
-  //   formattedDetails += `<tr>`;
-  //   formattedDetails += `<th>Item</th>`;
-  //   formattedDetails += `<th>Food Menu Name</th>`;
-  //   formattedDetails += `<th>Sales Price</th>`;
-  //   formattedDetails += `<th>Quantity</th>`;
-  //   formattedDetails += `</tr>`;
-  //   formattedDetails += `<tbody>`;
+    // Loop through cart items
+    formattedDetails += "<p><strong>Cart:</strong></p>";
+    formattedDetails += `<table className="table table-bordered">`;
+    formattedDetails += `<thead>`;
+    formattedDetails += `<tr>`;
+    formattedDetails += `<th>Item</th>`;
+    formattedDetails += `<th>Food Menu Name</th>`;
+    formattedDetails += `<th>Sales Price</th>`;
+    formattedDetails += `<th>Quantity</th>`;
+    formattedDetails += `</tr>`;
+    formattedDetails += `<tbody>`;
 
-  //   data.cart.forEach((item, index) => {
-  //     formattedDetails += `<tr>`;
-  //     formattedDetails += `<td>${index + 1}</td>`;
+    data.cart.forEach((item, index) => {
+      formattedDetails += `<tr>`;
+      formattedDetails += `<td>${index + 1}</td>`;
 
-  //     formattedDetails += `<td>${item.foodmenuname}</td>`;
-  //     formattedDetails += `<td>${item.salesprice}</td>`;
-  //     formattedDetails += `<td>${item.quantity}</td>`;
-  //     formattedDetails += `</tr>`;
-  //   });
-  //   formattedDetails += `</tbody>`;
-  //   formattedDetails += `</table>`;
+      formattedDetails += `<td>${item.foodmenuname}</td>`;
+      formattedDetails += `<td>${item.salesprice}</td>`;
+      formattedDetails += `<td>${item.quantity}</td>`;
+      formattedDetails += `</tr>`;
+    });
+    formattedDetails += `</tbody>`;
+    formattedDetails += `</table>`;
 
-  //   formattedDetails += `<p><strong>VAT Amount:</strong> ${data.vatAmount}</p>`;
-  //   formattedDetails += `<p><strong>Total Amount:</strong> ${data.total}</p>`;
-  //   formattedDetails += `<p><strong>Grand Total:</strong> ${data.grandTotal}</p>`;
+    formattedDetails += `<p><strong>VAT Amount:</strong> ${data.vatAmount}</p>`;
+    formattedDetails += `<p><strong>Total Amount:</strong> ${data.total}</p>`;
+    formattedDetails += `<p><strong>Grand Total:</strong> ${data.grandTotal}</p>`;
 
-  //   formattedDetails += "</div>";
+    formattedDetails += "</div>";
 
-  //   return formattedDetails;
-  // }
+    return formattedDetails;
+  }
+
+  function printOrderDetails(data) {
+    const modalContent = getFormattedOrderDetails(data);
+  
+    // Create a hidden iframe
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    document.body.appendChild(iframe);
+  
+    // Write the formatted order details to the iframe
+    const iframeDocument = iframe.contentWindow.document;
+    iframeDocument.write('<html><head><title>Order Details</title></head><body>');
+    iframeDocument.write(modalContent);
+    iframeDocument.write('</body></html>');
+    iframeDocument.close();
+  
+    // Trigger the print operation
+    iframe.contentWindow.print();
+  
+    // Remove the iframe after printing
+    setTimeout(() => {
+      document.body.removeChild(iframe);
+    }, 1000); // Adjust the timeout value as needed
+  }
 
   // console.info({filteredTables})
   const handleHold = (event) => {
@@ -661,7 +698,7 @@ const PosNewOrder = () => {
           }).then((result) => {
             if (result.isConfirmed) {
               // Open your print modal here
-              console.log(res);
+          //    console.log(res);
               openPrintModal(res.data);
             } else {
               setRefresh((prevRefresh) => !prevRefresh);
@@ -705,7 +742,7 @@ const PosNewOrder = () => {
         delivery: selectDelivery,
         numberofperson: numberofperson,
       });
-      console.log(options);
+     // console.log(options);
 
       var posData = new FormData();
 
@@ -747,7 +784,7 @@ const PosNewOrder = () => {
           }).then((result) => {
             if (result.isConfirmed) {
               // Open your print modal here
-              console.log(res);
+             // console.log(res);
               openPrintModal(res.data);
             } else {
               setRefresh((prevRefresh) => !prevRefresh);
@@ -787,7 +824,7 @@ const PosNewOrder = () => {
         <div className="wraper shdw">
           <div
             className="table-responsive vh-70"
-            style={{ height: "300px", overflowY: "scroll" }}
+            style={{ overflowY: "scroll" }}
           >
             <table className="table ">
               <thead>
@@ -1446,7 +1483,7 @@ const PosNewOrder = () => {
                     className="form-control"
                   />
                 </div>
-                <ul
+                {/* <ul
                   className="nav nav-pills flex-columns shdw-lft "
                   id="myTab"
                   role="tablist"
@@ -1463,7 +1500,48 @@ const PosNewOrder = () => {
                       </a>
                     </li>
                   ))}
-                </ul>
+                </ul> */}
+                 {/* <div className="tab-scroll-container">
+      <div className="nav-buttons">
+        <button onClick={() => handleTabsClick(activeTab - 1)} disabled={activeTab === 0}>&lt;</button>
+        <button onClick={() => handleTabsClick(activeTab + 1)} disabled={activeTab === distinctCategories.length - 1}>&gt;</button>
+      </div>
+      <div className="nav-container">
+        <ul className="nav nav-pills flex-columns shdw-lft" id="myTab" role="tablist">
+          {distinctCategories.map((category, index) => (
+            <li className="nav-item" key={index}>
+              <a
+                className={`nav-item nav-link ${index === activeTab ? "active" : ""}`}
+                onClick={() => handleTabsClick(index)}
+              >
+                {category}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div> */}
+       <div className="tab-scroll-container">
+      {/* <div className="nav-buttons">
+        <button onClick={() => handleTabsClick(activeTab - 1)} disabled={activeTab === 0}>&lt;</button>
+        <button onClick={() => handleTabsClick(activeTab + 1)} disabled={activeTab === distinctCategories.length - 1}>&gt;</button>
+      </div> */}
+      <div className="nav-container">
+        <ul className="nav nav-pills flex-row shdw-lft" id="myTab" role="tablist">
+          {distinctCategories.map((category, index) => (
+            <li className="nav-item" key={index}>
+              <a
+                className={`nav-item nav-link ${index === activeTab ? "active" : ""}`}
+                onClick={() => handleTabsClick(index)}
+              >
+                {category}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+    
               </div>
 
               <div className="tab-content p-3" id="myTabContents">

@@ -59,6 +59,7 @@ ordernumber:{type:String},
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
+  billnumber:{type:String,default:null,},
 
 
 

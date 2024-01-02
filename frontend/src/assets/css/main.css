@@ -219,4 +219,22 @@ flex-columns {
 }
 
 
+.tab-scroll-container {
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .nav-buttons {
+    display: flex;
+  }
+  
+  .nav-buttons button {
+    margin: 5px;
+  }
+  
+  .nav-container {
+    display: inline-block;
+  }
+
+
 
