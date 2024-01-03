@@ -35,7 +35,7 @@ const PosNewOrder = () => {
  
 
   
-  const navigate = useNavigate();
+//  const navigate = useNavigate();
   const [tabEnabled, setTabEnabled] = useState({
     dineIn: false,
     takeaway: false,

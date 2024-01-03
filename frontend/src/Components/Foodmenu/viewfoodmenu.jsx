@@ -33,6 +33,27 @@ const ViewFoodMenu =() =>{
   {
   }
 
+  const handleExportCsv = async () => {
+    try {
+      // Make a request to the server to generate and send the CSV file
+      const response = await axios.get(`${apiConfig.baseURL}/api/foodmenu/exportfoodmenu`, {
+        responseType: 'blob', // Set the responseType to 'blob' for binary data
+      });
+
+      // Create a Blob from the response data
+      const blob = new Blob([response.data], { type: 'text/csv' });
+
+      // Create a link element and trigger a download
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'foodmenu.csv';
+      link.click();
+    } catch (error) {
+      console.error('Error exporting CSV:', error);
+      // Handle the error as needed
+    }
+  };
+
 
     return (
         <div className="container-scroller">
@@ -46,7 +67,17 @@ const ViewFoodMenu =() =>{
                   <div className="card-body">
                     <h4 className="card-title">Food Menu List</h4>
                     <div className="d-flex justify-content-end">
-                    <Link to="/addfoodmenu" className="btn btn-success">Add +</Link>
+                    <Link to="/addfoodmenu" className="btn btn-success">
+  Add +
+</Link>{' '}
+&nbsp;
+<button onClick={handleExportCsv} className="btn btn-success">
+  Export Foodmenu Csv
+</button> {' '}
+&nbsp;
+<Link to="/exportfoodmenu" className="btn btn-success">
+  Import Foodmenu Csv
+</Link>
                 </div>
                   
                 <table className="table table-hover"  id="example_table" style={{ width: "100%" }}>

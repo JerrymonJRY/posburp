@@ -85,11 +85,9 @@ const ViewPosOrder =() =>{
 
       <td>
         <Link to={`/posorderdetails/${order._id}`} className="btn btn-primary">
-          Edit
+          Print
         </Link>
-        <button onClick={(e) => handleDelete(order._id)} className="btn btn-danger">
-          Delete
-        </button>
+       
       </td>
     </tr>
   ))}

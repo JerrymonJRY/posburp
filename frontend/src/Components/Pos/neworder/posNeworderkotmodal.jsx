@@ -83,31 +83,27 @@ const PosNeworderKotModal =({isModalOpen,setModalOpen}) =>
 </div>
  
 
- {
-         filteredOrders.map((order) => (
-     <div className="col-md-3">
-         <div className="menu-boxs">
-         <div className="menu-div">
-           <h5 className="text-center">OrderID:<span>{order.ordernumber}</span></h5>
-        
-           <h6 className="text-center">Table:{order.table  ?order.table.tablename :'No Table'}</h6>
-           <h6 className="text-center">Table:{order.waiter.waitername}</h6>
-           <h6 className="text-center">Runningorder</h6>
+{
+  filteredOrders.map((order) => (
+    <div key={order._id} className="col-md-3">
+      <div className="menu-boxs">
+        <div className="menu-div">
+          <h5 className="text-center">OrderID: <span>{order.ordernumber}</span></h5>
+          <h6 className="text-center">Table: {order.table ? order.table.tablename : 'No Table'}</h6>
+          <h6 className="text-center">Waiter: {order.waiter.waitername}</h6>
+          <h6 className="text-center">Running order</h6>
 
-           <div class="row">
- 
-  <div className="d-inline mx-auto ">
-
-  <a class="btn btn-outline-primary" onClick={(e) => handlekot(order._id)} href="#">Print</a>
-   
-
-  </div>
-</div>
-         </div>
-         </div>
-     </div>
-
-))
+          <div className="row">
+            <div className="d-inline mx-auto">
+              <a className="btn btn-outline-primary" onClick={(e) => handlekot(order._id)} href="#">
+                Print
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  ))
 }
  
  </div>

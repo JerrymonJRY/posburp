@@ -189,47 +189,40 @@ const handleEdit =(id) =>
        </div>
         
      
-        {
-                filteredOrders.map((order) => (
-            <div className="col-md-3">
-                <div className="menu-boxs">
-                <div className="menu-div">
-                <div className="form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input text-right"
-                  id={`checkbox-${order._id}`}
-                  onChange={() => handleCheckboxChange(order._id)}
-                  checked={checkedOrders.includes(order._id)}
-                />
-    
-  </div>
+       {
+  filteredOrders.map((order) => (
+    <div key={order._id} className="col-md-3">
+      <div className="menu-boxs">
+        <div className="menu-div">
+          <div className="form-check">
+            <input
+              type="checkbox"
+              className="form-check-input text-right"
+              id={`checkbox-${order._id}`}
+              onChange={() => handleCheckboxChange(order._id)}
+              checked={checkedOrders.includes(order._id)}
+            />
+          </div>
 
- 
-                  <h5 className="text-center"><span>{order.ordernumber}</span></h5>
-               
-                  <h6 className="text-center">Table:{order.table  ?order.table.tablename :'No Table'}</h6>
-                  <h6 className="text-center">Table:{order.waiter.waitername}</h6>
-                  <h6 className="text-center">Runningorder</h6>
+          <h5 className="text-center"><span>{order.ordernumber}</span></h5>
+          <h6 className="text-center">Table: {order.table ? order.table.tablename : 'No Table'}</h6>
+          <h6 className="text-center">Table: {order.waiter.waitername}</h6>
+          <h6 className="text-center">Running order</h6>
 
-                  <div class="row">
-        
-         <div className="d-inline mx-auto ">
-
-             <a class="btn btn-outline-primary" onClick={(e) => handleComplete(order._id)} >Payment</a>
-             <a class="btn btn-outline-primary" onClick={(e) => handlekot(order._id)} >KOT</a>
-            
-             <Link to={`/posedit/${order._id}`} className="btn btn-outline-primary">Edit</Link>
-             <a class="btn btn-outline-primary" onClick={(e) => handlesplit(order._id)} >Split</a>
-    
-         </div>
-    </div>
-                </div>
-                </div>
+          <div className="row">
+            <div className="d-inline mx-auto">
+              <a className="btn btn-outline-primary" onClick={(e) => handleComplete(order._id)}>Payment</a>
+              <a className="btn btn-outline-primary" onClick={(e) => handlekot(order._id)}>KOT</a>
+              <Link to={`/posedit/${order._id}`} className="btn btn-outline-primary">Edit</Link>
+              <a className="btn btn-outline-primary" onClick={(e) => handlesplit(order._id)}>Split</a>
             </div>
-
-))
+          </div>
+        </div>
+      </div>
+    </div>
+  ))
 }
+
         
         </div>
  {/* Modal */}

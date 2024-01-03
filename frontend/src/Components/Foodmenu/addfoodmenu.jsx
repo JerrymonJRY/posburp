@@ -156,10 +156,9 @@ formData.append('bar', bar);
 
 
     
+console.log(formData);
 
-
-    axios
-    .post(`${apiConfig.baseURL}/api/foodmenu/creatfoodmenu`, formData, config)
+    axios.post(`${apiConfig.baseURL}/api/foodmenu/creatfoodmenu`, formData, config)
      .then(res => {
         console.log(res);
         navigate('/viewfoodmenu');

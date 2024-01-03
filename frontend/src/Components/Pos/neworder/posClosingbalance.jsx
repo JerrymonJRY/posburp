@@ -26,21 +26,33 @@ const PosClosingBalance = ({ isModalClosingBalance, setModalClosingBalance }) =>
     setShiftstoken(storetoken)
   }, []);
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    //axios.get(`${apiConfig.baseURL}/api/pos/closingBalance?shiftstoken=${encodeURIComponent(shiftstoken)}`)
-    fetch(`${apiConfig.baseURL}/api/pos/closingBalance?shiftstoken=${encodeURIComponent(shiftstoken)}`)
+  //   axios.get(`${apiConfig.baseURL}/api/pos/closingBalance?shiftstoken=${encodeURIComponent(shiftstoken)}`)
+  //  // axios.fetch(`${apiConfig.baseURL}/api/pos/closingBalance?shiftstoken=${encodeURIComponent(shiftstoken)}`)
      
-      .then((response) => response.json())
-      .then((data) => setPosCloseBalance(data))
-     .catch((error) => console.error(error));
+  //     .then((response) => response.json())
+  //     .then((data) => setPosCloseBalance(data))
+  //    .catch((error) => console.error(error));
   
-  }, []);
-  console.log(posclosebalance);
+  // }, []);
+  // console.log(posclosebalance);
 
   const handleCloseBalance = () => {
     setModalClosingBalance(false);
   }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${apiConfig.baseURL}/api/pos/closingBalance?shiftstoken=${encodeURIComponent(shiftstoken)}`);
+        setPosCloseBalance(response.data);
+      } catch (error) {
+        console.error('Error fetching closing balance:', error);
+      }
+    };
+  
+    fetchData();
+  }, []);
 
   const handleCloseShift = () => {
     Swal.fire({

@@ -4,6 +4,8 @@ const foodcategory =require('../models/foodcategoryModel');
 const Ingredients =require('../models/ingredientsModel');
 const vat =require('../models/vatModel');
 const { default: mongoose } = require("mongoose");
+const CsvParser =require('json2csv').Parser;
+var csv =require('csvtojson');
 
 
 const Schema = mongoose.Schema;
@@ -226,4 +228,87 @@ const updateFoodmenu =asyncHandler(async(req,res) =>{
 });
 
 
-module.exports = {getfoodCategory,getingredients,getvat,creatFoodmenu,getallfoods,editfoodmenu,updateFoodmenu};
+const exportfoodmenu = asyncHandler(async (req, res) => {
+  try {
+    let foods = [];
+
+    // Use await to ensure the data is retrieved before processing
+    var foodmenuData = await Foodmenu.find({});
+
+    foodmenuData.forEach((food) => {
+      const {
+        id,
+        foodmenuname,
+        foodcategoryId,
+        foodingredientId,
+        salesprice,
+        vatId,
+        description,
+        vegitem,
+        beverage,
+        bar,
+        photo,
+      } = food; // Corrected variable name from 'foods' to 'food'
+      foods.push({
+        id,
+        foodmenuname,
+        foodcategoryId,
+        foodingredientId,
+        salesprice,
+        vatId,
+        description,
+        vegitem,
+        beverage,
+        bar,
+        photo,
+      });
+    });
+
+    const csvFields = [
+      'Id',
+      'FoodmenuName',
+      'FoodCategoryId',
+      'FoodIngredientId',
+      'SalesPrice',
+      'VatId',
+      'Description',
+      'VegItem',
+      'Beverage',
+      'Bar',
+      'Photo',
+    ];
+    const csvParser = new CsvParser({ csvFields });
+    
+    // Use 'csvParser.parse()' instead of 'csvParser.push()'
+    const csvData = csvParser.parse(foods);
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename=foodmenu.csv'); 
+
+    // Send the CSV data in the response
+    res.status(200).send(csvData);
+  } catch (error) {
+    res.status(401).json({ status: 401, error });
+  }
+});
+
+const importFoodmenu =asyncHandler(async(req,res) =>{
+
+  try
+  {
+    csv()
+    .fromFile(req.file.path)
+    .then((response) =>{
+      console.log(response);
+    })
+  }
+  catch(error)
+  {
+    res.status(401).json({ status: 401, error });
+  }
+
+})
+
+
+
+module.exports = {getfoodCategory,getingredients,getvat,creatFoodmenu,getallfoods,editfoodmenu,updateFoodmenu,exportfoodmenu,importFoodmenu};
