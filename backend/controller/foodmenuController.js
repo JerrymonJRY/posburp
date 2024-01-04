@@ -296,10 +296,29 @@ const importFoodmenu =asyncHandler(async(req,res) =>{
 
   try
   {
+    var foodData =[];
     csv()
     .fromFile(req.file.path)
-    .then((response) =>{
-      console.log(response);
+    .then(async(response) =>{
+      
+      for(var x=0;x<response.length;x++)
+      {
+        const foodingredientId = JSON.parse(response[x].foodingredientId);
+        foodData.push({
+          foodmenuname:response[x].foodmenuname,
+          foodcategoryId:response[x].foodcategoryId,
+          foodingredientId:foodingredientId,
+          salesprice:response[x].salesprice,
+          vatId:response[x].vatId,
+          description:response[x].description,
+          vegitem:response[x].vegitem,
+          beverage:response[x].beverage,
+          bar:response[x].bar,
+          photo:response[x].photo,
+        })
+       
+      }
+      await Foodmenu.insertMany(foodData);
     })
   }
   catch(error)
