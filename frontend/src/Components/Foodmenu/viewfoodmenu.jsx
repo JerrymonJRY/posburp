@@ -75,7 +75,7 @@ const ViewFoodMenu =() =>{
   Export Foodmenu Csv
 </button> {' '}
 &nbsp;
-<Link to="/exportfoodmenu" className="btn btn-success">
+<Link to="/importfoodmenu" className="btn btn-success">
   Import Foodmenu Csv
 </Link>
                 </div>

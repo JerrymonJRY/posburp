@@ -74,6 +74,7 @@ import EditDesignation from './Components/Designation/editDesignation';
 import ViewExpenseInvoice from './Components/ExpenseInvoice/viewExpenseInvoice';
 import AddExpenseInvoice from './Components/ExpenseInvoice/addExpenseInvoice';
 import EditExpenseInvoice from './Components/ExpenseInvoice/editExpenseInvoice';
+import ImportFoodmenu from './Components/Foodmenu/importfoodmenu';
 
 function App() {
 
@@ -157,7 +158,7 @@ function App() {
               <Route path='/addfoodmenu' element={<RequireToken><AddFoodMenu /></RequireToken>}></Route>
               <Route path='/viewfoodmenu' element={<RequireToken><ViewFoodMenu /></RequireToken>}></Route>
               <Route path='/editfoodmenu/:id' element={<RequireToken><EditFoodMenu /></RequireToken>}></Route>
-            
+              <Route path='/importfoodmenu' element={<RequireToken><ImportFoodmenu /></RequireToken>}></Route>
               <Route path='/addWaiter' element={<RequireToken><AddWaiter /></RequireToken>}></Route>
               <Route path='/viewWaiter' element={<RequireToken><ViewWaiter /></RequireToken>}></Route>
               <Route path='/editWaiter/:id' element={<RequireToken><EditWaiter /></RequireToken>}></Route>
