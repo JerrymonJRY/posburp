@@ -292,41 +292,61 @@ const exportfoodmenu = asyncHandler(async (req, res) => {
   }
 });
 
-const importFoodmenu =asyncHandler(async(req,res) =>{
+const importFoodmenu = asyncHandler(async (req, res) => {
+  try {
+    const existingFoodNames = new Set();
+    const importedFoodmenu = [];
+    const duplicateFoodmenu = [];
 
-  try
-  {
-    var foodData =[];
     csv()
-    .fromFile(req.file.path)
-    .then(async(response) =>{
-      
-      for(var x=0;x<response.length;x++)
-      {
-        const foodingredientId = JSON.parse(response[x].foodingredientId);
-        foodData.push({
-          foodmenuname:response[x].foodmenuname,
-          foodcategoryId:response[x].foodcategoryId,
-          foodingredientId:foodingredientId,
-          salesprice:response[x].salesprice,
-          vatId:response[x].vatId,
-          description:response[x].description,
-          vegitem:response[x].vegitem,
-          beverage:response[x].beverage,
-          bar:response[x].bar,
-          photo:response[x].photo,
-        })
-       
-      }
-      await Foodmenu.insertMany(foodData);
-    })
-  }
-  catch(error)
-  {
+      .fromFile(req.file.path)
+      .then(async (response) => {
+        for (var x = 0; x < response.length; x++) {
+          const foodName = response[x].foodmenuname;
+
+          // Check if the food name already exists
+          if (existingFoodNames.has(foodName)) {
+            // Handle duplicate entry (skip or log an error)
+            console.log(`Duplicate entry found for food name: ${foodName}`);
+            duplicateFoodmenu.push({ foodmenuname: foodName, reason: 'Duplicate entry' });
+            continue;
+          }
+
+          existingFoodNames.add(foodName);
+
+          const existingFood = await Foodmenu.findOne({
+            foodmenuname: foodName,
+          });
+
+          if (!existingFood) {
+            // Food not found, insert into the database
+            const foodingredientId = JSON.parse(response[x].foodingredientId);
+            const newFood = new Foodmenu({
+              foodmenuname: foodName,
+              foodcategoryId: response[x].foodcategoryId,
+              foodingredientId: foodingredientId,
+              salesprice: response[x].salesprice,
+              vatId: response[x].vatId,
+              description: response[x].description,
+              vegitem: response[x].vegitem,
+              beverage: response[x].beverage,
+              bar: response[x].bar,
+              photo: response[x].photo,
+            });
+
+            const savedFood = await newFood.save();
+            importedFoodmenu.push(savedFood);
+          }
+        }
+
+        res.json(importedFoodmenu);
+      });
+  } catch (error) {
     res.status(401).json({ status: 401, error });
   }
+});
 
-})
+
 
 
 
