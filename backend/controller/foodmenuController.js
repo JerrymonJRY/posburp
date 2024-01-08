@@ -183,7 +183,7 @@ const updateFoodmenu =asyncHandler(async(req,res) =>{
 
   const { id } = req.params;
 
-  const {filename} = req.file;
+  const { filename } = req.file || {};
   const {foodmenuname,foodcategoryId,vatId,salesprice,description,vegitem,beverage,bar,foodingredientId} = req.body;
   
   // const upload = multer({ storage }).single("photo");
@@ -206,7 +206,10 @@ const updateFoodmenu =asyncHandler(async(req,res) =>{
       existingFoodmenu.beverage = beverage;
       existingFoodmenu.bar = bar;
       existingFoodmenu.foodingredientId = foodingredientId;
+     // existingFoodmenu.photo = filename;
+     if (filename) {
       existingFoodmenu.photo = filename;
+    }
   
       // Save the updated food menu
       const updatedFoodmenu = await existingFoodmenu.save();

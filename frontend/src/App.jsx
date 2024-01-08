@@ -1,6 +1,7 @@
 
 import React, { Suspense, lazy,useState,useEffect   } from 'react';
-import { BrowserRouter,Routes,Route,useNavigate} from 'react-router-dom'
+import { BrowserRouter,Routes,Route} from 'react-router-dom'
+
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Swal from 'sweetalert2';
 import "datatables.net-dt/js/dataTables.dataTables"
@@ -78,7 +79,7 @@ import ImportFoodmenu from './Components/Foodmenu/importfoodmenu';
 
 function App() {
 
-
+  //const navigate = useNavigate();
   
   const isLoggedIn = window.localStorage.getItem("loggedIn");
   const [isOpeningBalanceComplete, setIsOpeningBalanceComplete] = useState();

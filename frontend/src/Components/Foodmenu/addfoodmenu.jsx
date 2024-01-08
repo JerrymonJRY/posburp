@@ -140,7 +140,11 @@ console.log(photo);
     var formData = new FormData();
     formData.append("photo", photo);
     formData.append("foodmenuname", foodmenuname);
-    formData.append("foodingredientId", JSON.stringify(selectedValues.map(units => units.value)));
+    const selectedInfo = selectedValues.map((unit) => ({
+      label: unit.label,
+      value: unit.value,
+    }));
+    formData.append("foodingredientId", JSON.stringify(selectedInfo));
     formData.append('foodcategoryId', foodcategoryId);
 formData.append('vatId', vatId);
 formData.append('salesprice', salesprice);
