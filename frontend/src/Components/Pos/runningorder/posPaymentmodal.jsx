@@ -12,7 +12,7 @@ const RunningPaymentModal = ({ data, showModal, setShowModal }) => {
   const [processedIds, setProcessedIds] = useState([]);
   const [addedby, setuserid] = useState("");
   const [shiftstoken, setShiftstoken] = useState('');
-  const imageName = "burps.png";
+  const imageName = "taha.png";
 
   useEffect(() => {
     const storeid = localStorage.getItem("_id");
@@ -101,66 +101,65 @@ const RunningPaymentModal = ({ data, showModal, setShowModal }) => {
       printOrderDetails(data);
     });
 
+
+ 
     function getFormattedOrderDetails(data) {
       // Create an HTML structure to display the order details
-      let formattedDetails = "<div>";
-     
-      formattedDetails += `<p><strong>Bill Number:</strong> ${data.billnumber}</p>`;
-      formattedDetails += `<p><strong>Order Number:</strong> ${data.ordernumber}</p>`;
-      formattedDetails += `<p><strong>Customer:</strong> ${data.customers}</p>`;
-      formattedDetails += `<p><strong>Options:</strong> ${data.options}</p>`;
-  
-      // Loop through cart items
-     
-      formattedDetails += `<table className="table table-bordered">`;
-      formattedDetails += `<thead>`;
-      formattedDetails += `<tr>`;
-      formattedDetails += `<th>Item</th>`;
-      formattedDetails += `<th>Food Menu Name</th>`;
-      formattedDetails += `<th>Sales Price</th>`;
-      formattedDetails += `<th>Quantity</th>`;
-      formattedDetails += `</tr>`;
-      formattedDetails += `<tbody>`;
-  
+      let formattedDetails = `
+        <div style="font-family: Arial; text-align: center;">
+          <img  src="/assets/images/pos/${imageName}" alt="Logo" style="max-width: 100%; height: auto; margin-top: 10px;" />
+          <p style="margin-top: 10px;"><strong>Order Number:</strong> ${data.ordernumber}</p>
+         
+          <p><strong>Options:</strong> ${data.options}</p>
+       
+          <table style="width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left;">
+            <thead style="border-bottom: 1px solid #000;">
+              <tr><th>Item</th><th>Food Menu Name</th><th>Sales Price</th><th>Quantity</th></tr>
+            </thead>
+            <tbody>
+      `;
+    
       data.cart.forEach((item, index) => {
-        formattedDetails += `<tr>`;
-        formattedDetails += `<td>${index + 1}</td>`;
-  
-        formattedDetails += `<td>${item.foodmenuname}</td>`;
-        formattedDetails += `<td>${item.salesprice}</td>`;
-        formattedDetails += `<td>${item.quantity}</td>`;
-        formattedDetails += `</tr>`;
+        formattedDetails += `
+          <tr>
+            <td>${index + 1}</td>
+            <td className="capitalize-first-letter">${item.foodmenuname}</td>
+            <td>${item.salesprice}</td>
+            <td>${item.quantity}</td>
+          </tr>
+        `;
       });
-      formattedDetails += `</tbody>`;
-      formattedDetails += `</table>`;
-  
-      formattedDetails += `<p><strong>VAT Amount:</strong> ${data.vatAmount}</p>`;
-      formattedDetails += `<p><strong>Total Amount:</strong> ${data.total}</p>`;
-      formattedDetails += `<p><strong>Grand Total:</strong> ${data.grandTotal}</p>`;
-  
-      formattedDetails += "</div>";
-  
+    
+      formattedDetails += `
+            </tbody>
+          </table>
+          <p style="margin-top: 10px;"><strong>VAT Amount:</strong> ${data.vatAmount}</p>
+          <p><strong>Total Amount:</strong> ${data.total}</p>
+          <p><strong>Grand Total:</strong> ${data.grandTotal}</p>
+        </div>
+      `;
+    
       return formattedDetails;
     }
-  
+    
     function printOrderDetails(data) {
       const modalContent = getFormattedOrderDetails(data);
-    
+      
       // Create a hidden iframe
       const iframe = document.createElement("iframe");
       iframe.style.display = "none";
       document.body.appendChild(iframe);
-    
+      
       // Write the formatted order details to the iframe
       const iframeDocument = iframe.contentWindow.document;
       iframeDocument.write('<html><head><title>Order Details</title></head><body>');
       iframeDocument.write(modalContent);
       iframeDocument.write('</body></html>');
       iframeDocument.close();
-    
+      
       // Trigger the print operation
       iframe.contentWindow.print();
-    
+      
       // Remove the iframe after printing
       setTimeout(() => {
         document.body.removeChild(iframe);

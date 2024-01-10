@@ -573,3 +573,7 @@ span.right{
     opacity: 0.3;
     pointer-events: none;
 }
+
+td.capitalize-first-letter {
+    text-transform: capitalize;
+  }

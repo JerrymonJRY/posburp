@@ -23,6 +23,9 @@ const OpenningBalance = () => {
 
   const navigate = useNavigate();
 
+
+
+
   const handleSubmit = (event) => {
     event.preventDefault();
 

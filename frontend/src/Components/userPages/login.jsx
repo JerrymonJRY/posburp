@@ -61,7 +61,7 @@ function  Login() {
             <div className="row flex-grow">
               <div className="col-lg-4 mx-auto">
                 <div className="auth-form-light text-left p-5">
-                  <div className="brand-logo">
+                  <div className="brand-logo text-center">
                     <img src="assets/images/pos/burps.png" />
                   </div>
                  
@@ -77,7 +77,7 @@ function  Login() {
                     
                     </div>
                     <div className="mt-3">
-                      <input type='submit' onClick={handleLogin} className="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn" value="Sign in" />
+                      <input type='submit' onClick={handleLogin} className="btn btn-block btn-danger btn-lg font-weight-medium auth-form-btn" value="Sign in" />
                     </div>
                     <div className="my-2 d-flex justify-content-between align-items-center">
                       <div className="form-check">
