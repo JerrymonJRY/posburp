@@ -25,6 +25,7 @@ const PosOrderEdit = () => {
       .then((response) => {
         const data = response.data[0];
 
+<<<<<<< Updated upstream
         console.info({reponsedata: data})
 
         if (data && data.cart && Array.isArray(data.cart)) {
@@ -63,6 +64,25 @@ const PosOrderEdit = () => {
         // setTotalVat(data.vatAmount);
         // setTotalAmount(data.total);
         // setGrandTotal(data.grandTotal);
+=======
+       
+
+      if (data && data.vatAmount) {
+     console.log();
+       setTotalVat(data.vatAmount);
+      } else {
+      console.log("VAT amount not found in the data.");
+    }
+
+       console.log(response.data);
+        const foodmenuIds = orderData.map(order => (
+          order.cart.map(item => item.menuItemDetails._id)
+        )).flat();
+
+      
+        setMenu(foodmenuIds);
+       
+>>>>>>> Stashed changes
       })
       .catch((error) => {
         console.error(error);
