@@ -25,7 +25,6 @@ const PosOrderEdit = () => {
       .then((response) => {
         const data = response.data[0];
 
-<<<<<<< Updated upstream
         console.info({reponsedata: data})
 
         if (data && data.cart && Array.isArray(data.cart)) {
@@ -64,7 +63,6 @@ const PosOrderEdit = () => {
         // setTotalVat(data.vatAmount);
         // setTotalAmount(data.total);
         // setGrandTotal(data.grandTotal);
-=======
        
 
       if (data && data.vatAmount) {
@@ -82,7 +80,6 @@ const PosOrderEdit = () => {
       
         setMenu(foodmenuIds);
        
->>>>>>> Stashed changes
       })
       .catch((error) => {
         console.error(error);

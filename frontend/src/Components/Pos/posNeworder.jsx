@@ -1411,7 +1411,7 @@ printWindow.document.write('</body></html>');
           </div>
         </div>
       )} */}
-          {enableDinein && (
+         {enableDinein && (
             <div
               className="tab-pane"
               id="table"
@@ -1427,7 +1427,6 @@ printWindow.document.write('</body></html>');
               />
               <br />
               <div className="row">
-                
                 {filteredTables.map((tables, index) => (
                   <div
                     key={index}
@@ -1435,55 +1434,55 @@ printWindow.document.write('</body></html>');
                       }`}
                   >
                     <div className="card">
-                    
-                    <div 
-                      className={`menu-box ${selectTable ? "read-only" : "selectable"
-                        }`}
-                    >
-                      <h6>
-                        <SiTablecheck className="mr-2" />
-                        <br />
-                        {tables.tablename}
-                      </h6>
-                      <p>SeatCapacity:{tables.seatcapacity}</p>
-                      <p>Avilable Seat:{tables.availableSeat}</p>
-                    </div>
-                    
-                    <div className="card-footer">
-                    <div class="flex-row-container">
-                      <div class="flex-row-item">
-                        <input
-                          type="text"
-                          name="numberofperson"
-                          value={numberofperson}
-                          onChange={(e) => {
-                            setNumberofPerson(e.target.value);
-                            handleNumberofPersonChange(e);
-                          }}
-                          className="form-control"
-                          placeholder="No Of Person"
-                          readOnly={tables.availableSeat === 0}
-                        />
+
+                      <div
+                        className={`menu-box ${selectTable ? "read-only" : "selectable"
+                          }`}
+                      >
+                        <h6>
+                          <SiTablecheck className="mr-2" />
+                          <br />
+                          {tables.tablename}
+                        </h6>
+                        <p>SeatCapacity:{tables.seatcapacity}</p>
+                        <p>Avilable Seat:{tables.availableSeat}</p>
                       </div>
-                      <div class="flex-row-item">
-                        <a
-                          className={`btn btn-outline-primary ${!isValidNumber() ||
-                              tables.availableSeat === 0 ||
-                              parseInt(numberofperson) >
-                              parseInt(tables.seatcapacity)
-                              ? "disabled"
-                              : ""
-                            }`}
-                          onClick={(e) => {
-                            setSelectTable(tables);
-                            handleTable(tables);
-                          }}
-                        >
-                          Add
-                        </a>
+
+                      <div className="card-footer">
+                        <div class="flex-row-container">
+                          <div class="flex-row-item">
+                            <input
+                              type="text"
+                              name="numberofperson"
+                              value={numberofperson[tables._id]}
+                              onChange={(e) => {
+                                // setNumberofPerson(e.target.value);
+                                handleNumberofPersonChange(e, tables._id);
+                              }}
+                              className="form-control"
+                              placeholder="No Of Person"
+                              readOnly={tables.availableSeat === 0}
+                            />
+                          </div>
+                          <div class="flex-row-item">
+                            <a
+                              className={`btn btn-outline-primary ${!isValidNumber(tables._id) ||
+                                tables.availableSeat === 0 ||
+                                parseInt(numberofperson[tables._id]) >
+                                parseInt(tables.seatcapacity)
+                                ? "disabled"
+                                : ""
+                                }`}
+                              onClick={(e) => {
+                                setSelectTable(tables);
+                                handleTable(tables);
+                              }}
+                            >
+                              Add
+                            </a>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    </div>
                     </div>
                   </div>
                 ))}
