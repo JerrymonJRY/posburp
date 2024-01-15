@@ -101,16 +101,14 @@ const Sidebar =() =>{
           </a>
           <div className="collapse" id="ui-master">
             <ul className="nav flex-column sub-menu">
-               <li className="nav-item"> <Link className=" nav-link" to="/viewCustomer"> Customer</Link></li>
-               <li className="nav-item"> <Link className=" nav-link" to="/viewDesignation">Designation</Link></li>
-               <li className="nav-item"> <Link className=" nav-link" to="/viewExpense">Expense Category</Link></li>
+        
+           
                <li className="nav-item"> <Link className=" nav-link" to="/viewfoodcategory"> Food Category</Link></li>
                <li className="nav-item"> <Link className=" nav-link" to="/viewfoodmenu"> Food Menu</Link></li>
                <li className="nav-item"><Link className=" nav-link" to="/viewingredientfoodcategory"> Ingredient Category</Link>  </li>
               <li className="nav-item"> <Link className=" nav-link" to="/viewingredientunit"> Ingredient Unit</Link></li>
               <li className="nav-item"> <Link className=" nav-link" to="/viewingredients"> Ingredients</Link></li>
-              <li className="nav-item"><Link className=" nav-link" to="/viewTable"> Table</Link> </li>
-              <li className="nav-item"><Link className=" nav-link" to="/viewVat"> Vat</Link> </li>
+     
               
               
              
@@ -118,6 +116,37 @@ const Sidebar =() =>{
             </ul>
           </div>
         </li>
+
+
+        <li className="nav-item">
+          <a className="nav-link" data-bs-toggle="collapse" href="#ui-settings" aria-expanded="false" aria-controls="ui-master">
+            <span className="menu-title">Settings</span>
+            <i className="menu-arrow"></i>
+            <i className="mdi mdi-contacts menu-icon"></i>
+          </a>
+          <div className="collapse" id="ui-settings">
+            <ul className="nav flex-column sub-menu">
+               <li className="nav-item"> <Link className=" nav-link" to="/viewCustomer"> Customer</Link></li>
+               <li className="nav-item"> <Link className=" nav-link" to="/viewDesignation">Designation</Link></li>
+               <li className="nav-item"> <Link className=" nav-link" to="/viewExpense">Expense Category</Link></li>
+             
+               <li className="nav-item"><Link className=" nav-link" to="/viewTable"> Table</Link> </li>
+               <li className="nav-item"><Link className=" nav-link" to="/viewuser"> User</Link> </li>
+              <li className="nav-item"><Link className=" nav-link" to="/viewVat"> Vat</Link> </li>
+
+              
+              
+              
+             
+
+            </ul>
+          </div>
+        </li>
+
+
+
+
+
 
         <li className="nav-item">
             <a className="nav-link" data-bs-toggle="collapse" href="#general-inventory" aria-expanded="false" aria-controls="general-inventory">

@@ -19,7 +19,7 @@ import { LiaFileInvoiceSolid } from "react-icons/lia";
 import { SiTablecheck } from "react-icons/si";
 import { IoFastFoodSharp } from "react-icons/io5";
 import { CiDeliveryTruck } from "react-icons/ci";
-import ReactToPrint from "react-to-print";
+
 import { MdBookOnline } from "react-icons/md";
 import { FaUserAlt } from "react-icons/fa";
 import { MdDeliveryDining } from "react-icons/md";
@@ -31,6 +31,8 @@ import PosInvoiceReport from "./neworder/posinvoiceReport";
 import PosClosingBalance from "./neworder/posClosingbalance";
 import PosOrderPrint from "./print/posOrderPrint";
 import { useReactToPrint } from 'react-to-print';
+
+import PrintComponent from "./print/posPrint";
 const PosNewOrder = () => {
  
 
@@ -401,6 +403,8 @@ const PosNewOrder = () => {
     setCart(addQuantity);
   };
 
+
+  const [response, setResponse] = useState(null);
   const handlePlaceorder = async (event) => {
     event.preventDefault();
     if (!selectWaiter) {
@@ -467,12 +471,13 @@ const PosNewOrder = () => {
       }
   
       const config = { headers: { 'Content-Type': 'application/json' } };
-  
+    //  let response;
       try {
         // Your existing code...
   
         const response = await axios.post(`${apiConfig.baseURL}/api/pos/createpos`, posData, config);
   
+        setResponse(response);
         Swal.fire({
           title: 'Success!',
           text: 'Do you want to print the order?',
@@ -483,17 +488,7 @@ const PosNewOrder = () => {
         }).then((result) => {
           if (result.isConfirmed) {
 
-            const data = response.data;
-           console.log(data._id);
-          
-           openPrintModal(response.data);
-
-
-            // openPrintModal();
-            // setOrderData(data.\);
-            // setShowPrintModal(true);
-
-           // console.info(orderData);
+            printOrderDetails(response.data);
             setCart([]);
             setTabEnabled({
               dineIn: true,
@@ -511,9 +506,105 @@ const PosNewOrder = () => {
       }
     }
   };
+
+  const imagePaths = "/assets/images/pos/taha.png";
+
+
+  const printOrderDetails = (orderData) => {
+    const printWindow = window;
+    printWindow.document.write('<html><head><title>Order Details</title>');
+    // Add style for center alignment and table styling
+    printWindow.document.write(`
+      <style>
+        body { text-align: center; }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+         
+        }
+        th, td {
+          border: 1px solid #ddd;
+          padding: 8px;
+          text-align: left;
+        }
+        th {
+          background-color: #f2f2f2;
+        }
+        td
+        {
+          font-size:13px;
+          text-transform: capitalize;
+        }
+        .order-info {
+          font-size:13px;
+          text-transform: capitalize;
+        }
+      </style>
+    `);
+    printWindow.document.write('</head><body>');
+    
+    // Include order details and image in the print window
+    
+    printWindow.document.write(`<img src="${imagePaths}" alt="Logo" style="max-width: 100%;" onload="window.print(); location.reload();">`);
+    printWindow.document.write(`<p>Order ID: ${orderData.ordernumber}</p>`);
+    const orderDate = new Date(orderData.date);
+const formattedDate = `${orderDate.getDate().toString().padStart(2, '0')}-${(orderDate.getMonth() + 1).toString().padStart(2, '0')}-${orderDate.getFullYear()}`;
+printWindow.document.write(`<p>Date: ${formattedDate}</p>`);
+   
+    
+if (orderData.cart && orderData.cart.length > 0) {
+  printWindow.document.write(`
+    <table>
+      <thead>
+        <tr>
+          <th>Food Name</th>
+          <th>Qty</th>
+          <th>Total Price</th>
+        </tr>
+      </thead>
+      <tbody>
+  `);
+  
+  let subtotal = 0;
+
+  orderData.cart.forEach((item) => {
+    const totalPrice = item.quantity * item.salesprice;
+    subtotal += totalPrice;
+
+    printWindow.document.write(`
+      <tr>
+        <td>${item.foodmenuname}</td>
+        <td>${item.quantity}</td>
+        <td>${totalPrice}</td>
+      </tr>
+    `);
+  });
+
+  // Calculate VAT amount and overall total
+  const vatPercentValue = 5;
+  const vatAmounts = (subtotal * vatPercentValue) / 100;
+  const overallTotal = subtotal + vatAmount;
+  const subTotals = subtotal - vatAmounts;
+
+  printWindow.document.write('</tbody></table>');
+  
+  printWindow.document.write(`<p>VAT Amount: ${vatAmounts}</p>`);
+  printWindow.document.write(`<p>Subtotal: ${subTotals}</p>`);
+  printWindow.document.write(`<p>Overall Total: ${subtotal}</p>`);
+}
+
+printWindow.document.write('</body></html>');
+};
+
+  const componentRef = useRef(null);
+
+  // Use the hook to enable printing
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
   
 
-  const componentRef = React.useRef();
+  // const componentRef = React.useRef();
 
   const handleClosePrint = () => {
       setShowPrintModal(false);
@@ -538,94 +629,7 @@ const PosNewOrder = () => {
   }, [orderData]); 
  
 
-  // const openPrintModal = () => {
-   
-  //   setShowPrintModal(true);
-  // };
 
-  function openPrintModal(data) {
-    // Create a modal dialog or use a library like Swal
-    Swal.fire({
-      title: "Order Details",
-     // html: getFormattedOrderDetails(data), // Call a function to format the data
-     html: getFormattedOrderDetails(data) + '<button id="printButton">Print</button>',
-      icon: "success",
-      confirmButtonText: "OK",
-    }).then((result) => {
-      if (result.isConfirmed) {
-      }
-    });
-
-    document.getElementById("printButton").addEventListener("click", () => {
-      printOrderDetails(data);
-    });
-  }
-
-  // useEffect(() => { }, [refresh]);
-
-  function getFormattedOrderDetails(data) {
-    // Create an HTML structure to display the order details
-    let formattedDetails = "<div>";
-    formattedDetails += `<p><strong>Order Number:</strong> ${data.ordernumber}</p>`;
-    formattedDetails += `<p><strong>Customer:</strong> ${data.customers}</p>`;
-    formattedDetails += `<p><strong>Options:</strong> ${data.options}</p>`;
-
-    // Loop through cart items
-    formattedDetails += "<p><strong>Cart:</strong></p>";
-    formattedDetails += `<table className="table table-bordered">`;
-    formattedDetails += `<thead>`;
-    formattedDetails += `<tr>`;
-    formattedDetails += `<th>Item</th>`;
-    formattedDetails += `<th>Food Menu Name</th>`;
-    formattedDetails += `<th>Sales Price</th>`;
-    formattedDetails += `<th>Quantity</th>`;
-    formattedDetails += `</tr>`;
-    formattedDetails += `<tbody>`;
-
-    data.cart.forEach((item, index) => {
-      formattedDetails += `<tr>`;
-      formattedDetails += `<td>${index + 1}</td>`;
-
-      formattedDetails += `<td>${item.foodmenuname}</td>`;
-      formattedDetails += `<td>${item.salesprice}</td>`;
-      formattedDetails += `<td>${item.quantity}</td>`;
-      formattedDetails += `</tr>`;
-    });
-    formattedDetails += `</tbody>`;
-    formattedDetails += `</table>`;
-
-    formattedDetails += `<p><strong>VAT Amount:</strong> ${data.vatAmount}</p>`;
-    formattedDetails += `<p><strong>Total Amount:</strong> ${data.total}</p>`;
-    formattedDetails += `<p><strong>Grand Total:</strong> ${data.grandTotal}</p>`;
-
-    formattedDetails += "</div>";
-
-    return formattedDetails;
-  }
-
-  function printOrderDetails(data) {
-    const modalContent = getFormattedOrderDetails(data);
-  
-    // Create a hidden iframe
-    const iframe = document.createElement("iframe");
-    iframe.style.display = "none";
-    document.body.appendChild(iframe);
-  
-    // Write the formatted order details to the iframe
-    const iframeDocument = iframe.contentWindow.document;
-    iframeDocument.write('<html><head><title>Order Details</title></head><body>');
-    iframeDocument.write(modalContent);
-    iframeDocument.write('</body></html>');
-    iframeDocument.close();
-  
-    // Trigger the print operation
-    iframe.contentWindow.print();
-  
-    // Remove the iframe after printing
-    setTimeout(() => {
-      document.body.removeChild(iframe);
-    }, 1000); // Adjust the timeout value as needed
-  }
 
   // console.info({filteredTables})
   const handleHold = (event) => {
@@ -769,7 +773,7 @@ const PosNewOrder = () => {
       if (selectWaiter && selectWaiter._id) {
         posData.append("waiterId", selectWaiter._id);
       }
-      posData.append("addedby", addedby);
+      posData.append('addedby', addedby);
       const config = { headers: { "Content-Type": "application/json" } };
       axios
         .post(`${apiConfig.baseURL}/api/pos/createQuickpay`, posData, config)
@@ -785,7 +789,9 @@ const PosNewOrder = () => {
             if (result.isConfirmed) {
               // Open your print modal here
              // console.log(res);
-              openPrintModal(res.data);
+            // printQuickDetails(res.data)
+            printQuickDetails(res.data.newEntry, res.data.updatedDocuments);
+            //  window.location.reload();
             } else {
               setRefresh((prevRefresh) => !prevRefresh);
             }
@@ -794,6 +800,94 @@ const PosNewOrder = () => {
         .catch((err) => console.log(err));
     }
   };
+
+  const printQuickDetails = (newEntry, updatedDocuments) => {
+    const printWindow = window;
+    printWindow.document.write('<html><head><title>Order Details</title>');
+    
+    // Add style for center alignment and table styling
+    printWindow.document.write(`
+      <style>
+        body { text-align: center; }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        th, td {
+          border: 1px solid #ddd;
+          padding: 8px;
+          text-align: left;
+        }
+        th {
+          background-color: #f2f2f2;
+        }
+        td {
+          font-size: 11px;
+          text-transform: capitalize;
+        }
+        .order-info {
+          display: flex;
+          justify-content: space-between;
+        }
+      </style>
+    `);
+  
+    printWindow.document.write('</head><body>');
+    
+    // Include order details and image in the print window
+    printWindow.document.write(`<img src="${imagePaths}" alt="Logo" style="max-width: 100%;" onload="window.print(); location.reload();">`);
+    printWindow.document.write(`<p>Bill Number: ${updatedDocuments.billnumber}</p>`);
+    printWindow.document.write(`<p>Order ID: ${newEntry.ordernumber}</p>`);
+    
+    const orderDate = new Date(newEntry.date);
+    const formattedDate = `${orderDate.getDate().toString().padStart(2, '0')}-${(orderDate.getMonth() + 1).toString().padStart(2, '0')}-${orderDate.getFullYear()}`;
+    printWindow.document.write(`<p>Date: ${formattedDate}</p>`);
+    
+    // Print details of each item in the cart in a table
+    if (newEntry.cart && newEntry.cart.length > 0) {
+      printWindow.document.write(`
+        <table>
+          <thead>
+            <tr>
+              <th>Food Name</th>
+              <th>Qty</th>
+              <th>Total Price</th>
+            </tr>
+          </thead>
+          <tbody>
+      `);
+      
+      let subtotal = 0;
+  
+      newEntry.cart.forEach((item) => {
+        const totalPrice = item.quantity * item.salesprice;
+        subtotal += totalPrice;
+  
+        printWindow.document.write(`
+          <tr>
+            <td>${item.foodmenuname}</td>
+            <td>${item.quantity}</td>
+            <td>${totalPrice}</td>
+          </tr>
+        `);
+      });
+  
+      // Calculate VAT amount and overall total
+      const vatPercentValue = 5;
+      const vatAmounts = (subtotal * vatPercentValue) / 100;
+      const overallTotal = subtotal + vatAmount;
+      const subTotals = subtotal - vatAmounts;
+  
+      printWindow.document.write('</tbody></table>');
+      
+      printWindow.document.write(`<p>VAT Amount: ${vatAmounts}</p>`);
+      printWindow.document.write(`<p>Subtotal: ${subTotals}</p>`);
+      printWindow.document.write(`<p>Overall Total: ${subtotal}</p>`);
+    }
+  
+    printWindow.document.write('</body></html>');
+  };
+  
   const handleTabClick = () => {
     setModalOpen(true);
   };
@@ -818,9 +912,10 @@ const PosNewOrder = () => {
     setModalClosingBalance(true);
   }
 
+
   return (
     <div className="row">
-      <div className="col-sm-4 col-lg-auto">
+      <div className="col-sm-4 col-lg-4">
         <div className="wraper shdw">
           <div
             className="table-responsive vh-70"
@@ -943,7 +1038,7 @@ const PosNewOrder = () => {
           </div>
         </div>
       </div>
-      <div className="col-lg-auto" style={{ background: "white" }}>
+      <div className="col-lg-1" style={{ background: "white" }}>
         <div
           class="nav flex-column nav-pills"
           id="v-pills-tab"
@@ -951,7 +1046,7 @@ const PosNewOrder = () => {
           aria-orientation="vertical"
         >
           <a
-            class="nav-link active text-center navleft"
+            class="nav-link  text-center navleft"
             id="v-pills-home-tab"
             data-toggle="pill"
             href="#v-pills-home"
@@ -1186,7 +1281,7 @@ const PosNewOrder = () => {
             )}
           </ul>
         </div>
-        <div className="tab-content mt-3">
+        <div className="tab-content mt-3" style={{ maxHeight: '800px', overflowY: 'scroll' }}>
           <div
             className="tab-pane active"
             id="waiter"
@@ -1639,6 +1734,10 @@ const PosNewOrder = () => {
       setModalClosingBalance={setModalClosingBalance}
     />
 
+
+
+{/* <PrintComponent ref={componentRef} response={response} /> */}
+
     {/* <PosOrderPrint 
      orderData={orderData} 
       showPrintModal={showPrintModal} 
@@ -1694,3 +1793,4 @@ const PosNewOrder = () => {
 };
 
 export default PosNewOrder;
+

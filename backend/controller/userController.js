@@ -122,5 +122,14 @@ const logout = asyncHandler(async (req, res) => {
     res.sendStatus(204); // forbidden
   });
 
+  const getallUsers = asyncHandler(async (req, res) => {
+    try {
+      const getUsers = await User.find();
+      res.json(getUsers);
+    } catch (error) {
+      throw new Error(error);
+    }
+  });
 
-module.exports={ createUser,loginUserController,logout,dashboard,vertifyUser};
+
+module.exports={ createUser,loginUserController,logout,dashboard,vertifyUser,getallUsers};

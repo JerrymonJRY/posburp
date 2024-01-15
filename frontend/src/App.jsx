@@ -1,6 +1,7 @@
 
 import React, { Suspense, lazy,useState,useEffect   } from 'react';
-import { BrowserRouter,Routes,Route,useNavigate} from 'react-router-dom'
+import { BrowserRouter,Routes,Route} from 'react-router-dom'
+
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Swal from 'sweetalert2';
 import "datatables.net-dt/js/dataTables.dataTables"
@@ -75,10 +76,12 @@ import ViewExpenseInvoice from './Components/ExpenseInvoice/viewExpenseInvoice';
 import AddExpenseInvoice from './Components/ExpenseInvoice/addExpenseInvoice';
 import EditExpenseInvoice from './Components/ExpenseInvoice/editExpenseInvoice';
 import ImportFoodmenu from './Components/Foodmenu/importfoodmenu';
-
+import ImportFoodCategory from './Components/Foodcategory/importFoodcategory';
+import ViewUser from './Components/userPages/users';
+import AddUser from './Components/userPages/addUser';
 function App() {
 
-
+  //const navigate = useNavigate();
   
   const isLoggedIn = window.localStorage.getItem("loggedIn");
   const [isOpeningBalanceComplete, setIsOpeningBalanceComplete] = useState();
@@ -154,6 +157,7 @@ function App() {
               <Route path='/addfoodcategory' element={<RequireToken><AddFoodCategory /></RequireToken>}></Route>
               <Route path='/editfoodcategory/:id' element={<RequireToken><EditFoodCategory /></RequireToken>}></Route>
               <Route path='/viewfoodcategory' element={<RequireToken><ViewFoodCategory /></RequireToken>}></Route>
+              <Route path='/importfoodcategory' element={<RequireToken><ImportFoodCategory /></RequireToken>}></Route>
              
               <Route path='/addfoodmenu' element={<RequireToken><AddFoodMenu /></RequireToken>}></Route>
               <Route path='/viewfoodmenu' element={<RequireToken><ViewFoodMenu /></RequireToken>}></Route>
@@ -228,6 +232,11 @@ function App() {
               <Route path='/viewDesignation' element={<RequireToken><ViewDesignation /></RequireToken>}></Route>
               <Route path='/addDesignation' element={<RequireToken><AddDesignation /></RequireToken>}></Route>
               <Route path='/editDesignation/:id' element={<RequireToken><EditDesignation /></RequireToken>}></Route>
+
+
+              <Route path='/viewuser' element={<RequireToken><ViewUser /></RequireToken>}></Route>
+              <Route path='/adduser' element={<RequireToken><AddUser /></RequireToken>}></Route>
+     
      
 
      
