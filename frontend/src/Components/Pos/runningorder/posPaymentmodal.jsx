@@ -4,15 +4,18 @@ import axios from 'axios';
 import apiConfig from '../../layouts/base_url';
 import Swal from 'sweetalert2';
 import { useNavigate, useParams } from "react-router-dom";
+import { useReactToPrint } from 'react-to-print';
 const RunningPaymentModal = ({ data, showModal, setShowModal }) => {
 
   const navigate = useNavigate();
 
-  const [payments, setPays] = useState();
+  const [payments, setPays] = useState('');
+  const [paymentError, setPaymentError] = useState('');
   const [processedIds, setProcessedIds] = useState([]);
   const [addedby, setuserid] = useState("");
   const [shiftstoken, setShiftstoken] = useState('');
   const imageName = "taha.png";
+  const [itemTotalPrices, setItemTotalPrices] = useState([]);
 
   useEffect(() => {
     const storeid = localStorage.getItem("_id");
@@ -29,7 +32,7 @@ const RunningPaymentModal = ({ data, showModal, setShowModal }) => {
 
   const handlePays = (event) => {
     setPays(event.target.value);
-
+    setPaymentError('');
     //  alert({svat});
   }
 
@@ -39,6 +42,16 @@ const RunningPaymentModal = ({ data, showModal, setShowModal }) => {
     if (!order || order?.grandTotal == null) {
       // Handle the case where order is null or grandTotal is not available
       console.error("Invalid order data");
+      return;
+    }
+
+    if (!payments) {
+      setPaymentError('Please select a payment option'); // Set the validation error message
+      Swal.fire({
+        icon: 'error',
+        title: 'Validation Error',
+        text: 'Please select a payment option.',
+      });
       return;
     }
 
@@ -72,7 +85,7 @@ const RunningPaymentModal = ({ data, showModal, setShowModal }) => {
           if (result.isConfirmed) {
             // Open your print modal here
             console.log(res);
-            openPrintModal(res.data);
+            printOrderDetails(res.data);
             navigate('/runningorder');
             // openPrintModal(res.data);
           } else {
@@ -84,91 +97,108 @@ const RunningPaymentModal = ({ data, showModal, setShowModal }) => {
       .catch(err => console.log(err));
   }
 
-  function openPrintModal(data) {
-    // Create a modal dialog or use a library like Swal
-    Swal.fire({
-      title: "Order Details",
-     // html: getFormattedOrderDetails(data), // Call a function to format the data
-     html: getFormattedOrderDetails(data) + '<button className="btn btn-outline-primary" id="printButton">Print</button>',
-      icon: "success",
-      confirmButtonText: "OK",
-    }).then((result) => {
-      if (result.isConfirmed) {
-      }
-    });
 
-    document.getElementById("printButton").addEventListener("click", () => {
-      printOrderDetails(data);
-    });
+  const imagePaths = "/assets/images/pos/taha.png";
 
 
- 
-    function getFormattedOrderDetails(data) {
-      // Create an HTML structure to display the order details
-      let formattedDetails = `
-        <div style="font-family: Arial; text-align: center;">
-          <img  src="/assets/images/pos/${imageName}" alt="Logo" style="max-width: 100%; height: auto; margin-top: 10px;" />
-          <p style="margin-top: 10px;"><strong>Order Number:</strong> ${data.ordernumber}</p>
+
+  const printOrderDetails = (orderData) => {
+    const printWindow = window;
+    printWindow.document.write('<html><head><title>Order Details</title>');
+    // Add style for center alignment and table styling
+    printWindow.document.write(`
+      <style>
+        body { text-align: center; }
+        table {
+          width: 100%;
+          border-collapse: collapse;
          
-          <p><strong>Options:</strong> ${data.options}</p>
-       
-          <table style="width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left;">
-            <thead style="border-bottom: 1px solid #000;">
-              <tr><th>Item</th><th>Food Menu Name</th><th>Sales Price</th><th>Quantity</th></tr>
-            </thead>
-            <tbody>
-      `;
+        }
+        th, td {
+          border: 1px solid #ddd;
+          padding: 8px;
+          text-align: left;
+        }
+        th {
+          background-color: #f2f2f2;
+        }
+        td
+        {
+          font-size:13px;
+          text-transform: capitalize;
+        }
+        .order-info {
+          font-size:13px;
+          text-transform: capitalize;
+        }
+      </style>
+    `);
+    printWindow.document.write('</head><body>');
     
-      data.cart.forEach((item, index) => {
-        formattedDetails += `
-          <tr>
-            <td>${index + 1}</td>
-            <td className="capitalize-first-letter">${item.foodmenuname}</td>
-            <td>${item.salesprice}</td>
-            <td>${item.quantity}</td>
-          </tr>
-        `;
-      });
+    // Include order details and image in the print window
     
-      formattedDetails += `
-            </tbody>
-          </table>
-          <p style="margin-top: 10px;"><strong>VAT Amount:</strong> ${data.vatAmount}</p>
-          <p><strong>Total Amount:</strong> ${data.total}</p>
-          <p><strong>Grand Total:</strong> ${data.grandTotal}</p>
-        </div>
-      `;
+    printWindow.document.write(`<img src="${imagePaths}" alt="Logo" style="max-width: 100%;" onload="window.print(); location.reload();">`);
+    printWindow.document.write(`<p>Bill Number: ${orderData.billnumber}</p>`);
+    printWindow.document.write(`<p>Order ID: ${orderData.ordernumber}</p>`);
+    const orderDate = new Date(orderData.date);
+const formattedDate = `${orderDate.getDate().toString().padStart(2, '0')}-${(orderDate.getMonth() + 1).toString().padStart(2, '0')}-${orderDate.getFullYear()}`;
+printWindow.document.write(`<p>Date: ${formattedDate}</p>`);
+   
     
-      return formattedDetails;
-    }
-    
-    function printOrderDetails(data) {
-      const modalContent = getFormattedOrderDetails(data);
-      
-      // Create a hidden iframe
-      const iframe = document.createElement("iframe");
-      iframe.style.display = "none";
-      document.body.appendChild(iframe);
-      
-      // Write the formatted order details to the iframe
-      const iframeDocument = iframe.contentWindow.document;
-      iframeDocument.write('<html><head><title>Order Details</title></head><body>');
-      iframeDocument.write(modalContent);
-      iframeDocument.write('</body></html>');
-      iframeDocument.close();
-      
-      // Trigger the print operation
-      iframe.contentWindow.print();
-      
-      // Remove the iframe after printing
-      setTimeout(() => {
-        document.body.removeChild(iframe);
-      }, 1000); // Adjust the timeout value as needed
-    }
+if (orderData.cart && orderData.cart.length > 0) {
+  printWindow.document.write(`
+    <table>
+      <thead>
+        <tr>
+          <th>Food Name</th>
+          <th>Qty</th>
+          <th>Total Price</th>
+        </tr>
+      </thead>
+      <tbody>
+  `);
+  
+  let subtotal = 0;
+
+  orderData.cart.forEach((item) => {
+    const totalPrice = item.quantity * item.salesprice;
+    subtotal += totalPrice;
+
+    printWindow.document.write(`
+      <tr>
+        <td>${item.foodmenuname}</td>
+        <td>${item.quantity}</td>
+        <td>${totalPrice}</td>
+      </tr>
+    `);
+  });
+
+  // Calculate VAT amount and overall total
+  const vatPercentValue = 5;
+  const vatAmounts = (subtotal * vatPercentValue) / 100;
+  const overallTotal = subtotal + vatAmounts;
+  const subTotals = subtotal - vatAmounts;
+
+  printWindow.document.write('</tbody></table>');
+  
+  printWindow.document.write(`<p>VAT Amount: ${vatAmounts}</p>`);
+  printWindow.document.write(`<p>Subtotal: ${subTotals}</p>`);
+  printWindow.document.write(`<p>Overall Total: ${subtotal}</p>`);
+}
+
+printWindow.document.write('</body></html>');
+};
+
+  const componentRef = useRef(null);
+
+  // Use the hook to enable printing
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
 
 
 
-  }
+  
 
   const closeModal = () => {
     setShowModal(false);
@@ -207,6 +237,7 @@ const RunningPaymentModal = ({ data, showModal, setShowModal }) => {
                       <tbody>
 
                         {order.cart.map((cartItem, key) => (
+                          
                           <tr key={cartItem.foodmenuId}>
                             <td>{key + 1}</td>
                             <td>{cartItem.menuItemDetails.foodmenuname}</td>
@@ -228,8 +259,8 @@ const RunningPaymentModal = ({ data, showModal, setShowModal }) => {
                     <div className="form-group row">
                       <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Select Payment</label>
                       <div className="col-sm-9">
-                        <select className="form-control" onChange={handlePays} value={payments}>
-                          <option>Select Payment</option>
+                        <select className="form-control" onChange={handlePays} value={payments} required>
+                          <option value="">Select Payment</option>
                           {payment.map(option => (
                             <option key={option.value} value={option.value}>
                               {option.label}
