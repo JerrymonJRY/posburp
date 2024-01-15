@@ -29,6 +29,11 @@ var userSchema = new mongoose.Schema({
         required:true,
         unique:true,
     },
+    userrole:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Pos'
+       
+    },
     password:{
         type:String,
         required:true,
