@@ -11,6 +11,9 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
   const [selectedSplitValue, setSelectedSplitValue] = useState('');
   const [textInputs, setTextInputs] = useState([]);
   const [foodtextInputs, setFoodTextInputs] = useState({});
+  const [overallTotal, setOverallTotalPrice] = useState(0);
+  const [overallvat, setOverallVat] = useState(0);
+  const [overallsubtotal, setOverallSubtotal] = useState(0);
 
   // const totalGrandTotal = Array.isArray(splitdata)
   //   ? splitdata.reduce((total, order) => {
@@ -52,44 +55,116 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
     setSelectedCard(index);
   };
 
+  // const handleQuantityDecrease = (orderIndex, cartItemIndex) => {
+  //   if (selectedCard !== null && selectedSplitValue > 0) {
+  //     const updatedSplitData = [...splitdata];
+  //     const order = updatedSplitData[orderIndex];
+
+  //     // if (selectedCard === selectedCard) {
+  //       const cartItem = order.cart[cartItemIndex];
+      
+  //       if (cartItem.quantity > 0) {
+  //         cartItem.quantity = Math.max(0, cartItem.quantity - 1);
+  //         const updatedFoodTextInputs = {...foodtextInputs};
+  //         const price = cartItem.salesprice;
+  //         console.log(order);
+  //         // console.info({up: updatedFoodTextInputs[selectedCard].reduce(items => items.foodmenuname == order.cart[cartItemIndex].menuItemDetails.foodmenuname)})
+  //       // updatedFoodTextInputs[selectedCard] = updatedFoodTextInputs[selectedCard] ? [...updatedFoodTextInputs[selectedCard],order.cart[cartItemIndex]] : [order.cart[cartItemIndex]]
+  //       updatedFoodTextInputs[selectedCard] = !updatedFoodTextInputs[selectedCard] ? [{foodmenuname: order.cart[cartItemIndex].menuItemDetails.foodmenuname, quantity: 1}] : updatedFoodTextInputs[selectedCard].filter(items => items.foodmenuname == order.cart[cartItemIndex].menuItemDetails.foodmenuname).length > 0 ?
+  //        updatedFoodTextInputs[selectedCard].map(items => {
+  //         if (items.foodmenuname == order.cart[cartItemIndex].menuItemDetails.foodmenuname) {
+  //           return {...items, quantity: parseInt(items.quantity) + 1}
+            
+         
+  //         } else {
+  //           return items
+  //         }
+  //       }): [...updatedFoodTextInputs[selectedCard], {foodmenuname: order.cart[cartItemIndex].menuItemDetails.foodmenuname, quantity: 1,price:order.cart[cartItemIndex].menuItemDetails.salesprice}]
+  //       // updatedFoodTextInputs[selectedCard] = updatedFoodTextInputs[selectedCard].find((item) => item.foodmenuname == order.cart[cartItemIndex].menuItemDetails.foodmenuname).length > 0 ? updatedFoodTextInputs[selectedCard] : [...updatedFoodTextInputs[selectedCard], {foodmenuname: order.cart[cartItemIndex].menuItemDetails.foodmenuname, quantity: 1}]
+  //       setFoodTextInputs(updatedFoodTextInputs);
+  //       setSplitData(updatedSplitData)
+  //       }
+
+  //       // const updatedTextInputs = [...textInputs];
+  //       // updatedTextInputs[cartItemIndex] = Math.max(0, updatedTextInputs[cartItemIndex] - 1);
+  //       // setTextInputs(updatedTextInputs);
+
+  //       // const updatedFoodTextInputs = [...foodtextInputs];
+  //       // updatedFoodTextInputs[cartItemIndex] = Math.max(0, updatedFoodTextInputs[cartItemIndex] - 1);
+  //       // setFoodTextInputs(updatedFoodTextInputs);
+        
+  //       // setSplitData(updatedSplitData);
+        
+  //     // }
+  //   }
+  // };
   const handleQuantityDecrease = (orderIndex, cartItemIndex) => {
     if (selectedCard !== null && selectedSplitValue > 0) {
       const updatedSplitData = [...splitdata];
       const order = updatedSplitData[orderIndex];
-
-      // if (selectedCard === selectedCard) {
-        const cartItem = order.cart[cartItemIndex];
-        if (cartItem.quantity > 0) {
-          cartItem.quantity = Math.max(0, cartItem.quantity - 1);
-          const updatedFoodTextInputs = {...foodtextInputs};
-          // console.info({up: updatedFoodTextInputs[selectedCard].reduce(items => items.foodmenuname == order.cart[cartItemIndex].menuItemDetails.foodmenuname)})
-        // updatedFoodTextInputs[selectedCard] = updatedFoodTextInputs[selectedCard] ? [...updatedFoodTextInputs[selectedCard],order.cart[cartItemIndex]] : [order.cart[cartItemIndex]]
-        updatedFoodTextInputs[selectedCard] = !updatedFoodTextInputs[selectedCard] ? [{foodmenuname: order.cart[cartItemIndex].menuItemDetails.foodmenuname, quantity: 1}] : updatedFoodTextInputs[selectedCard].filter(items => items.foodmenuname == order.cart[cartItemIndex].menuItemDetails.foodmenuname).length > 0 ?
-         updatedFoodTextInputs[selectedCard].map(items => {
-          if (items.foodmenuname == order.cart[cartItemIndex].menuItemDetails.foodmenuname) {
-            return {...items, quantity: parseInt(items.quantity) + 1}
-          } else {
-            return items
-          }
-        }): [...updatedFoodTextInputs[selectedCard], {foodmenuname: order.cart[cartItemIndex].menuItemDetails.foodmenuname, quantity: 1}]
-        // updatedFoodTextInputs[selectedCard] = updatedFoodTextInputs[selectedCard].find((item) => item.foodmenuname == order.cart[cartItemIndex].menuItemDetails.foodmenuname).length > 0 ? updatedFoodTextInputs[selectedCard] : [...updatedFoodTextInputs[selectedCard], {foodmenuname: order.cart[cartItemIndex].menuItemDetails.foodmenuname, quantity: 1}]
-        setFoodTextInputs(updatedFoodTextInputs);
-        setSplitData(updatedSplitData)
+      const cartItem = order.cart[cartItemIndex];
+  
+      if (cartItem.quantity > 0) {
+        cartItem.quantity = Math.max(0, cartItem.quantity - 1);
+  
+        const updatedFoodTextInputs = { ...foodtextInputs };
+  
+        if (!updatedFoodTextInputs[selectedCard]) {
+          updatedFoodTextInputs[selectedCard] = [];
         }
-
-        // const updatedTextInputs = [...textInputs];
-        // updatedTextInputs[cartItemIndex] = Math.max(0, updatedTextInputs[cartItemIndex] - 1);
-        // setTextInputs(updatedTextInputs);
-
-        // const updatedFoodTextInputs = [...foodtextInputs];
-        // updatedFoodTextInputs[cartItemIndex] = Math.max(0, updatedFoodTextInputs[cartItemIndex] - 1);
-        // setFoodTextInputs(updatedFoodTextInputs);
+  
+        const existingItem = updatedFoodTextInputs[selectedCard].find(
+          (item) => item.foodmenuname === cartItem.menuItemDetails.foodmenuname
+        );
+  
+        if (existingItem) {
+          existingItem.quantity += 1;
+          existingItem.totalPrice = existingItem.quantity * cartItem.salesprice;
+        } else {
+          updatedFoodTextInputs[selectedCard].push({
+            foodmenuname: cartItem.menuItemDetails.foodmenuname,
+            quantity: 1,
+            price: cartItem.menuItemDetails.salesprice,
+            totalPrice: cartItem.menuItemDetails.salesprice,
+          });
+        }
+  
+        setFoodTextInputs(updatedFoodTextInputs);
+        setSplitData(updatedSplitData);
+  
+        // Calculate overall total price
+        let total = 0;
+        updatedFoodTextInputs[selectedCard].forEach((item) => {
+          total += item.quantity * item.price;
+        });
+  
+        const vatPercentValue = 5;
+        const vatAmounts = (total * vatPercentValue) / 100;
         
-        // setSplitData(updatedSplitData);
-        
-      // }
+        // Declare subtotal before the forEach loop
+        let subtotal = 0;
+  
+        updatedFoodTextInputs[selectedCard].forEach((item) => {
+          subtotal += item.quantity * item.price;
+        });
+
+        const subtotals =subtotal -vatAmounts;
+  
+        // Calculate overall total with VAT
+        const overallTotalWithVAT = subtotals + vatAmounts;
+  
+        setOverallVat(vatAmounts);
+        setOverallSubtotal(subtotals);
+  
+        // Set the overall total price state
+        setOverallTotalPrice(overallTotalWithVAT);
+
+     
+      }
     }
   };
+  
+  
 
 
   console.log(foodtextInputs);
@@ -161,6 +236,7 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
                             ))}
 
                           </tbody>
+                        
                         </table>
 
 
@@ -202,6 +278,7 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
                                   <th>Si No</th>
                                   <th>Food Name</th>
                                   <th>Quantity</th>
+                                <th>Price</th>
                                 </thead>
                                 <tbody>
                                   {
@@ -213,9 +290,30 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
                                         <td>{value.foodmenuname}</td>
                                         {/* Display the quantity only for the selected split order */}
                                         <td>{value.quantity}</td>
+                                        <td>{value.totalPrice}</td>
+                                        
                                       </tr>
-                                    ))}
+                                    ))
+                                    
+                                    
+                                    }
+                                    
                                 </tbody>
+                                <tfoot>
+ 
+  <tr>
+  <td colSpan="3">Vat Amount</td>
+    <td>{overallvat}</td>
+  </tr>
+  <tr>
+  <td colSpan="3">Sub Total</td>
+    <td>{overallsubtotal}</td>
+  </tr>
+  <tr>
+    <td colSpan="3">Overall Total</td>
+    <td>{overallTotal}</td>
+  </tr>
+</tfoot>
                               </table>
                             </div>
                           </div>
