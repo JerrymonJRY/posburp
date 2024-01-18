@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { redirect, useNavigate, Link } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import Swal from "sweetalert2";
 const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitModal }) => {
 
 
@@ -148,7 +149,7 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
           subtotal += item.quantity * item.price;
         });
 
-        const subtotals =subtotal -vatAmounts;
+        const subtotals =subtotal - vatAmounts;
   
         // Calculate overall total with VAT
         const overallTotalWithVAT = subtotals + vatAmounts;
@@ -185,6 +186,24 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
     setShowSplitModal(false);
 
   };
+
+  const handleSubmit =(event) =>{
+
+    event.preventDefault();
+    console.log(foodtextInputs);
+
+ if (!foodtextInputs) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Cart is empty',
+        text: 'Please add items to your cart before placing an order.',
+      });
+    }  else {
+
+    }
+
+   
+  }
 
 
   console.log(selectedCard);
@@ -266,7 +285,7 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
                         className={`col-md-6 card-container ${selectedCard === index ? 'selected-card' : ''}`}
                         key={index}
                         onClick={() => handleCardClick(index)}
-                      >
+                      ><form onSubmit={handleSubmit}>
                         <div key={index} className="card">
                           <div className="">
                             <div className="card-header">
@@ -315,11 +334,14 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
   </tr>
 </tfoot>
                               </table>
+                              <button type="submit" className="btn btn-gradient-primary me-2">Submit</button>
                             </div>
                           </div>
                         </div>
+                        </form>
                       </div>
                     ))}
+                    
                   </div>
                 </div>
               </div>

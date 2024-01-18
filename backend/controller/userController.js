@@ -53,6 +53,7 @@ const loginUserController =asyncHandler(async(req,res) =>{
             mobile:findUser?.mobile,
             token:generateToken(findUser?._id),
             shifttoken: shiftToken,
+            userrole:findUser?.userrole,
 
 
 

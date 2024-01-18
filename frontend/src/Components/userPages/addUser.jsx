@@ -9,7 +9,7 @@ import apiConfig from '../layouts/base_url';
 const AddUser =() =>{
 
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [userrole,setUserRole] =useState();
+  const [userrole,setUserRole] =useState('');
 
     const [values,setValues] = useState({
 
@@ -18,7 +18,8 @@ const AddUser =() =>{
         email:'',
         mobile:'',
         password:'',
-        confirmPassword: '',
+       
+        userrole: ''
        
 
     })
@@ -174,7 +175,8 @@ const AddUser =() =>{
       className="form-control"
       name="confirmPassword"
       id="exampleInputUsername2"
-      onChange={(e) => setConfirmPassword(e.target.value)}
+     // onChange={(e) => setConfirmPassword(e.target.value)}
+     onChange={e =>setValues({...values, confirmPassword: e.target.value})}
       placeholder=""
     />
     {errors.confirmPassword && <span className="error">{errors.confirmPassword}</span>}
@@ -184,7 +186,7 @@ const AddUser =() =>{
 <div className="form-group row">
                         <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">User Roles</label>
                         <div className="col-sm-9">
-                        <select name="beverage" className="form-control"  onChange={handleUserRole}  value={userrole}>
+                        <select name="beverage" className="form-control"   onChange={e =>setValues({...values, userrole: e.target.value})}  value={userrole}>
                         <option value="">Select User Role</option>
       {UserRoles.map(option => (
         <option key={option.value} value={option.value}>

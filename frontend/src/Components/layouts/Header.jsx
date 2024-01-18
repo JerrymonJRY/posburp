@@ -30,6 +30,9 @@ const Header =() =>{
 const storedFirstname = localStorage.getItem('firstname');
 const storedLastname = localStorage.getItem('lastname');
 const storedtoken = localStorage.getItem('shifttoken');
+const userRole  =localStorage.getItem('userrole');
+
+//console.log(userRole);
 
 setFirstname(storedFirstname);
 setLastname(storedLastname);
@@ -40,7 +43,7 @@ setShiftsTokens(storedtoken);
   const imageName = "burps.png";
   const faceimage ="face1.jpg"
 
-  console.log(shiftstokens);
+  //console.log(shiftstokens);
 
     return (
         <nav className="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">

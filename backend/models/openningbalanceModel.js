@@ -10,7 +10,7 @@ var openningBalanceSchema = new mongoose.Schema({
     amount: {
         type: String,
         required: true,
-        unique: true,
+     
       
     },
     shiftstoken:{

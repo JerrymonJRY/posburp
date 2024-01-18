@@ -30,8 +30,7 @@ var userSchema = new mongoose.Schema({
         unique:true,
     },
     userrole:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Pos'
+       type:String
        
     },
     password:{

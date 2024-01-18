@@ -83,34 +83,7 @@ function App() {
 
   //const navigate = useNavigate();
   
-  const isLoggedIn = window.localStorage.getItem("loggedIn");
-  const [isOpeningBalanceComplete, setIsOpeningBalanceComplete] = useState();
-  const [openingBalanceAmount, setOpeningBalanceAmount] = useState(0);
-  const [lastOpeningBalanceDate, setLastOpeningBalanceDate] = useState(null);
 
-  useEffect(() => {
-    axios.get(`${apiConfig.baseURL}/api/openningbalance/opennigbalance`)
-      .then((response) => {
-        const { hasOpeningBalance, openingBalance } = response.data;
-
-        const today = new Date().toDateString();
-        const openingBalanceDate = new Date(openingBalance.date).toDateString();
-
-        console.log(openingBalanceDate);
-
-        setIsOpeningBalanceComplete(hasOpeningBalance && openingBalanceDate === today);
-        setOpeningBalanceAmount(openingBalance.amount || 0);
-        setLastOpeningBalanceDate(new Date(openingBalance.date));
-      })
-      .catch((error) => {
-        console.error('Error checking opening balance:', error);
-        setIsOpeningBalanceComplete(false);
-        setOpeningBalanceAmount(0);
-        setLastOpeningBalanceDate(null);
-      });
-  }, []);
-
-  console.log(lastOpeningBalanceDate);
   const Spinner = () => {
     return <div>Loading...</div>;
   };
@@ -166,7 +139,7 @@ function App() {
               <Route path='/addWaiter' element={<RequireToken><AddWaiter /></RequireToken>}></Route>
               <Route path='/viewWaiter' element={<RequireToken><ViewWaiter /></RequireToken>}></Route>
               <Route path='/editWaiter/:id' element={<RequireToken><EditWaiter /></RequireToken>}></Route>
-              <Route
+              {/* <Route
       path="/pos"
       element={
         isOpeningBalanceComplete ? (
@@ -179,7 +152,10 @@ function App() {
           </RequireToken>
         )
       }
-    />
+    /> */}
+
+              <Route path='/pos' element={<RequireToken><Pos /></RequireToken>}></Route>
+              <Route path='/openningbalance' element={<RequireToken><OpenningBalance /></RequireToken>}></Route>
                
               <Route path='/posedit/:id' element={<RequireToken><PosEdit /></RequireToken>}></Route>
               <Route path='/runningorder' element={<RequireToken><OngoingOrder /></RequireToken>}></Route>
