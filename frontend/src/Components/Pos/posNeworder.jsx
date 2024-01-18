@@ -787,11 +787,9 @@ printWindow.document.write('</body></html>');
             cancelButtonText: "No",
           }).then((result) => {
             if (result.isConfirmed) {
-              // Open your print modal here
-             // console.log(res);
-            // printQuickDetails(res.data)
+            
             printQuickDetails(res.data.newEntry, res.data.updatedDocuments);
-            //  window.location.reload();
+           
             } else {
               setRefresh((prevRefresh) => !prevRefresh);
             }
