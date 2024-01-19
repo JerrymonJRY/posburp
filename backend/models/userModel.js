@@ -44,6 +44,7 @@ var userSchema = new mongoose.Schema({
         type: String,
         
     },
+    shiftacess:{ type: String, default: 'null'},
   status: { type: String, default: 'Active' },
 });
 

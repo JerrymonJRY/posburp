@@ -36,7 +36,7 @@ const Sidebar = () => {
       });
   }, []);
 
-  console.log(lastOpeningBalanceDate);
+  //console.log(lastOpeningBalanceDate);
   const Spinner = () => {
     return <div>Loading...</div>;
   };

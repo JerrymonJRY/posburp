@@ -54,6 +54,7 @@ const loginUserController =asyncHandler(async(req,res) =>{
             token:generateToken(findUser?._id),
             shifttoken: shiftToken,
             userrole:findUser?.userrole,
+            shiftacess:findUser?.shiftacess,
 
 
 

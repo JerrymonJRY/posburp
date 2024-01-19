@@ -17,8 +17,10 @@ var openningBalanceSchema = new mongoose.Schema({
         type: String,
         
     },
+    shiftacess:{type: String,},
      status: { type: String, default: 'Active' },
     date: { type: Date, default: Date.now },
+   closingamount:{type: String, default: 'null' }
 
 });
 

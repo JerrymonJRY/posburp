@@ -45,11 +45,60 @@ const PosNewOrder = () => {
   });
 
   const [addedby, setuserid] = useState("");
+  const [shiftstoken, setShiftstoken] = useState('');
+
   const { id } = useParams();
   useEffect(() => {
     const storeid = localStorage.getItem("_id");
+    const storetoken = localStorage.getItem('shifttoken');
+    const storeaccess = localStorage.getItem('shiftacess');
     setuserid(storeid);
+    setShiftstoken(storetoken);
+   
+
+
   }, []);
+
+
+  //const [shiftacess, setShiftacess] = useState([]);
+
+  const [shiftAccess, setShiftAccess] = useState('');
+
+  const dit = shiftAccess.shiftacess; 
+
+  console.log(dit);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const id = localStorage.getItem('_id');
+
+        if (!id) {
+          // Handle the case when storeid is not available in localStorage
+          console.error('Store ID not found in localStorage');
+          return;
+        }
+
+        //const response = await axios.get(`${apiConfig.baseURL}/api/pos/getShiftAccess?storeid=${storeid}`);
+       const response = await axios.get(`${apiConfig.baseURL}/api/pos/getShiftAccess`, {
+          params: {
+            id: id,
+          },
+        });
+       // console.log(response.data);
+
+        // Assuming response.data contains the shiftAccess data
+        setShiftAccess(response.data);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  
+//console.log();
+
 
   const [designationname, setDesignationName] = useState("");
 
@@ -469,6 +518,8 @@ const PosNewOrder = () => {
       if (selectWaiter && selectWaiter._id) {
         posData.append('waiterId', selectWaiter._id);
       }
+     
+    //  posData.append('shiftstoken','shiftstoken');
   
       const config = { headers: { 'Content-Type': 'application/json' } };
     //  let response;
@@ -774,6 +825,7 @@ printWindow.document.write('</body></html>');
         posData.append("waiterId", selectWaiter._id);
       }
       posData.append('addedby', addedby);
+      posData.append('shiftstoken','shiftstoken');
       const config = { headers: { "Content-Type": "application/json" } };
       axios
         .post(`${apiConfig.baseURL}/api/pos/createQuickpay`, posData, config)
@@ -787,7 +839,13 @@ printWindow.document.write('</body></html>');
             cancelButtonText: "No",
           }).then((result) => {
             if (result.isConfirmed) {
+
+
+              handlequickPrint({
+                data: res.data,// Pass any data you want to the PrintComponent
+              });
             
+              
             printQuickDetails(res.data.newEntry, res.data.updatedDocuments);
            
             } else {
@@ -798,6 +856,11 @@ printWindow.document.write('</body></html>');
         .catch((err) => console.log(err));
     }
   };
+
+  const printComponentRef = useRef();
+  const handlequickPrint = useReactToPrint({
+    content: () => printComponentRef.current,
+  });
 
   const printQuickDetails = (newEntry, updatedDocuments) => {
     const printWindow = window;
@@ -1000,6 +1063,16 @@ printWindow.document.write('</body></html>');
             </table>
           </div>
 
+          {shiftAccess && (
+  <div>
+   
+    <div>
+      <p>Firstname: {shiftAccess.firstname}</p>
+      <p>Email: {shiftAccess.shiftacess}</p>
+      {/* Add more properties as needed */}
+    </div>
+  </div>
+)}
           <div className="row">
             <div className="col-lg-6">
               <button type="button" className="btn btn-danger w-100 mb-2 p-2">
@@ -1280,6 +1353,7 @@ printWindow.document.write('</body></html>');
           </ul>
         </div>
         <div className="tab-content mt-3" style={{ maxHeight: '800px', overflowY: 'scroll' }}>
+        
           <div
             className="tab-pane active"
             id="waiter"
@@ -1316,6 +1390,10 @@ printWindow.document.write('</body></html>');
                 </div>
               ))}
             </div>
+
+         
+        
+            
             {/* } */}
           </div>
           {/* <div className="tab-pane " id="table" role="tabpanel" aria-labelledby="duck-tab">

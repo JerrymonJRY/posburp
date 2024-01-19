@@ -1,11 +1,17 @@
-import React from "react";
-const PosQuickorderPrint = ({ quickentry }) => {
+import React, { forwardRef } from 'react';
+
+const PrintComponent = forwardRef(({ data }, ref) => {
+  // Your print component content using the props.data
+
+  console.log('PrintComponent Data:', data);
   return (
-    <div ref={ref} className="p-5">
-      <h1>React {quickentry.newEntry.ordernumber}</h1>
-    
+    <div ref={ref}>
+      {/* Access data as needed */}
+      <h1>Efff</h1>
+      {/* ... */}
     </div>
   );
-};
+});
 
-export default PosQuickorderPrint;
+export default PrintComponent;
+
