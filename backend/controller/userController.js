@@ -134,4 +134,53 @@ const logout = asyncHandler(async (req, res) => {
   });
 
 
-module.exports={ createUser,loginUserController,logout,dashboard,vertifyUser,getallUsers};
+  const editUser =asyncHandler(async(req,res) =>{
+
+    const { id } =req.params;
+   
+    //console.log(id);
+    try
+    {
+         const getuser =await User.findById(id);
+         res.json(getuser);
+   
+    }catch(error)
+    {
+     throw new Error(error);
+    }
+  });
+
+
+  const updateUser =asyncHandler(async(req,res)=>{
+     
+    const { id } =req.params;
+   
+    try
+    {
+        const updateUser =await User.findByIdAndUpdate(id,{
+          firstname:req?.body?.firstname,
+          lastname:req?.body?.lastname,
+          email:req?.body?.email,
+          mobile:req?.body?.mobile,
+          userrole:req?.body?.userrole,
+        
+          
+  
+        },
+        {
+            new:true,
+        }
+        );
+  
+        res.json(updateUser);
+    }
+    catch(error)
+    {
+        throw new Error(error);
+    }
+  
+  
+  });
+
+
+module.exports={ createUser,loginUserController,logout,dashboard,vertifyUser,getallUsers,editUser,updateUser};

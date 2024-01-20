@@ -51,6 +51,7 @@ const ViewUser =() =>{
                           <th>Name</th>
                           <th>Email</th>
                         <th>Mobile</th>
+                        <th>Action</th>
                        
                         </tr>
                       </thead>
@@ -66,6 +67,11 @@ const ViewUser =() =>{
                                
                                 <td>
                                 {d.mobile}
+                                </td>
+
+                                <td>
+                                <Link to={`/edituser/${d._id}`} className="btn btn-primary">Edit</Link>
+                                  
                                 </td>
 
                             </tr>

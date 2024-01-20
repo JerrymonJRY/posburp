@@ -109,35 +109,54 @@ const handlePrints = () => {
                     </thead>
                     <tbody>
                        
-  {
-   Array.isArray(posTodayorder) && posTodayorder.length > 0 ? ( 
-   posTodayorder.map((order,key) => (
-    <tr key={order._id}>
-     <td>{key + 1}</td>
-      <td>{order.options}</td>
+                    {
+  Array.isArray(posTodayorder) && posTodayorder.length > 0 ? (
+    posTodayorder.map((order,key) => {
+      const subtotal = order.total;
+      const vat = 5;
+      const vatamounts = (subtotal * vat) / 100;
+      const subtotalAfterVat = subtotal - vatamounts;
 
-      <td>{order.waiter ? order.waiter.waitername : 'N/A'}</td>
-      <td>{order.total}</td>
-      <td>{order.vatAmount}</td>
-    
-      <td>{order.user ? `${order.user.firstname} ${order.user.lastname || ''}` : 'N/A'}</td>
-      <td>{order.grandTotal}</td>
-
-      <td>
-        <a onClick={(e) => handleComplete(order._id)} className="btn btn-primary" data-toggle="tooltip" data-placement="right" title="Print">
-        <i className="mdi mdi-cloud-print-outline"></i>
-        </a>
-        <a onClick={(e) => handlekot(order._id)} className="btn btn-danger" data-toggle="tooltip" data-placement="right" title="Kitchen Order">
-          <i className="mdi mdi-food-variant"></i>
-        </a>
-      </td>
-    </tr>
-  ))
-  ):(
+      return (
+        <tr key={order._id}>
+           <td>{key + 1}</td>
+          <td>{order.options}</td>
+          <td>{order.waiter ? order.waiter.waitername : 'N/A'}</td>
+          <td>{subtotalAfterVat}</td>
+          <td>{vatamounts}</td>
+          <td>{order.user ? `${order.user.firstname} ${order.user.lastname || ''}` : 'N/A'}</td>
+          <td>{order.grandTotal}</td>
+          <td>
+            <a
+              onClick={(e) => handleComplete(order._id)}
+              className="btn btn-primary"
+              data-toggle="tooltip"
+              data-placement="right"
+              title="Print"
+            >
+              <i className="mdi mdi-cloud-print-outline"></i>
+            </a>
+            <a
+              onClick={(e) => handlekot(order._id)}
+              className="btn btn-danger"
+              data-toggle="tooltip"
+              data-placement="right"
+              title="Kitchen Order"
+            >
+              <i className="mdi mdi-food-variant"></i>
+            </a>
+          </td>
+        </tr>
+      );
+    })
+  ) : (
     <tr>
-    <td colSpan="7">No data available</td>
-  </tr>
-  )}
+      <td colSpan="7">No data available</td>
+    </tr>
+  )
+}
+
+
                        
                     </tbody>
                     <tfoot>

@@ -79,6 +79,7 @@ import ImportFoodmenu from './Components/Foodmenu/importfoodmenu';
 import ImportFoodCategory from './Components/Foodcategory/importFoodcategory';
 import ViewUser from './Components/userPages/users';
 import AddUser from './Components/userPages/addUser';
+import EditUser from './Components/userPages/editUser';
 function App() {
 
   //const navigate = useNavigate();
@@ -212,6 +213,7 @@ function App() {
 
               <Route path='/viewuser' element={<RequireToken><ViewUser /></RequireToken>}></Route>
               <Route path='/adduser' element={<RequireToken><AddUser /></RequireToken>}></Route>
+              <Route path='/edituser/:id' element={<RequireToken><EditUser /></RequireToken>}></Route>
      
      
 
