@@ -144,6 +144,7 @@ const PosClosingBalance = ({ isModalClosingBalance, setModalClosingBalance }) =>
 
   let overallTotal = 0;
   let overallTotals =0;
+  let dropops ='';
 
 
   return (
@@ -182,21 +183,17 @@ const PosClosingBalance = ({ isModalClosingBalance, setModalClosingBalance }) =>
         </thead>
         <tbody>
           {order.payments
-            .filter((payment) => payment.status === "Paid")
+            .filter((payment) => payment.status === "Paid" && payment.opentoken === shiftaccess)
             .map((payment, index) => {
               const paymentTotal = parseFloat(payment.grandTotal) || 0;
               overallTotal += paymentTotal;
 
               return (
-                <React.Fragment key={payment._id}>
-                  {payment.opentoken === shiftaccess && (
-                    <tr>
-                      <td>{index + 1}</td>
-                      <td>{payment.bilnumber}</td>
-                      <td>{payment.grandTotal}</td>
-                    </tr>
-                  )}
-                </React.Fragment>
+                <tr key={payment._id}>
+                  <td>{index + 1}</td>
+                  <td>{payment.bilnumber}</td>
+                  <td>{payment.grandTotal}</td>
+                </tr>
               );
             })}
         </tbody>
@@ -212,6 +209,7 @@ const PosClosingBalance = ({ isModalClosingBalance, setModalClosingBalance }) =>
 ) : (
   <p>No data available</p>
 )}
+
            </>
 
            <>
@@ -228,23 +226,25 @@ const PosClosingBalance = ({ isModalClosingBalance, setModalClosingBalance }) =>
           </tr>
         </thead>
         <tbody>
-          {order.cashdrops.map((payment, index) => {
-            const paymentTotal = parseFloat(payment.amount) || 0;
-            overallTotals += paymentTotal;
+          {order.cashdrops
+            .filter((payment) => payment.opentoken === shiftaccess)
+            .map((payment, index) => {
+              const paymentTotal = parseFloat(payment.amount) || 0;
+              const drops = payment.dropout;
+              overallTotals += paymentTotal;
+              dropops +=drops; 
+              
+            
 
-            return (
-              <React.Fragment key={payment._id}>
-                {payment.opentoken === shiftaccess && (
-                  <tr>
-                    <td>{index + 1}</td>
-                    <td>{payment.dropout}</td>
-                    <td>{payment.amount}</td>
-                    <td>{payment.notes}</td>
-                  </tr>
-                )}
-              </React.Fragment>
-            );
-          })}
+              return (
+                <tr key={payment._id}>
+                  <td>{index + 1}</td>
+                  <td>{payment.dropout}</td>
+                  <td>{payment.amount}</td>
+                  <td>{payment.notes}</td>
+                </tr>
+              );
+            })}
         </tbody>
         <tfoot>
           <tr>
@@ -256,22 +256,13 @@ const PosClosingBalance = ({ isModalClosingBalance, setModalClosingBalance }) =>
     </div>
   </React.Fragment>
 ) : (
- <o></o>
+ <p></p>
 )}
 
+
            </>
-        {/* <ul>
-          <h3>Cash Drop Amount</h3>
-          {order.cashdrops.map((drop) => (
-            <React.Fragment key={drop._id}>
-              {drop.opentoken === shiftaccess && (
-                <li>
-                  Amount: {drop.amount}
-                </li>
-              )}
-            </React.Fragment>
-          ))}
-        </ul> */}
+     
+     
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-outline-primary" onClick={handleCloseShift}>Shift Close</button>
@@ -283,11 +274,12 @@ const PosClosingBalance = ({ isModalClosingBalance, setModalClosingBalance }) =>
         <p>No data available</p>
       )}
 
+
+
+
                 </div>
 
               </div>
-
-
 
 
 

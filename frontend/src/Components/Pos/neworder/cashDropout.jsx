@@ -19,8 +19,8 @@ const PosCashDrop = ({ isModalCashDrop, setModalCashDrop }) => {
   };
 
   const drop = [
-    { value: 'Drop', label: 'Drop' },
-    { value: 'Out', label: 'Out' },
+    { value: 'Cashin', label: 'Cash In' },
+    { value: 'Cashout', label: 'Cash Out' },
 
   ];
   const handleCash = (event) => {
