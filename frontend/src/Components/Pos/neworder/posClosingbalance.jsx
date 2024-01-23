@@ -145,6 +145,7 @@ const PosClosingBalance = ({ isModalClosingBalance, setModalClosingBalance }) =>
   let overallTotal = 0;
   let overallTotals =0;
   let dropops ='';
+  let openningbalance =0;
 
 
   return (
@@ -164,6 +165,8 @@ const PosClosingBalance = ({ isModalClosingBalance, setModalClosingBalance }) =>
                 <div className="row">
                 {posclosebalance.length > 0 ? (
         posclosebalance.map((order) => (
+
+         
           <React.Fragment key={order.id}>
             <div>
               <h3>Openning Balance Amount: {order.amount}</h3>
@@ -259,7 +262,12 @@ const PosClosingBalance = ({ isModalClosingBalance, setModalClosingBalance }) =>
  <p></p>
 )}
 
+<td>{dropops}</td>
+<td>{order.amount}</td>
 
+<td>{overallTotals}</td>
+
+<td>{overallTotal}</td>
            </>
      
      
