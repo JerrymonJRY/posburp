@@ -80,6 +80,9 @@ import ImportFoodCategory from './Components/Foodcategory/importFoodcategory';
 import ViewUser from './Components/userPages/users';
 import AddUser from './Components/userPages/addUser';
 import EditUser from './Components/userPages/editUser';
+import PaidOrders from './Components/Orders/viewPaidorders';
+import CancelOrders from './Components/Orders/viewCancelorders';
+import NotPaidorders from './Components/Orders/viewNotpaidorders';
 function App() {
 
   //const navigate = useNavigate();
@@ -168,6 +171,9 @@ function App() {
               <Route path='/posorder' element={<RequireToken><ViewPosOrder /></RequireToken>}></Route>
               <Route path='/pos/neworder' element={<RequireToken><PosNewOrder /></RequireToken>}></Route>
               <Route path='/posorderdetails/:id' element={<RequireToken><ViewPosOrderdetails /></RequireToken>}></Route>
+              <Route path='/paidorders' element={<RequireToken><PaidOrders /></RequireToken>}></Route>
+              <Route path='/cancelorders' element={<RequireToken><CancelOrders /></RequireToken>}></Route>
+              <Route path='/runningorders' element={<RequireToken><NotPaidorders /></RequireToken>}></Route>
         
            
               <Route path='/viewCustomer' element={<RequireToken><ViewCustomer /></RequireToken>}></Route>

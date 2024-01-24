@@ -139,6 +139,9 @@ const Sidebar = () => {
                 <ul className="nav flex-column sub-menu">
                   {/* <li className="nav-item"> <a className="nav-link" href="">Designation </a></li> */}
                   <li className="nav-item"> <Link className="nav-link" to="/posorder"> Pos Order</Link> </li>
+                  <li className="nav-item"> <Link className="nav-link" to="/paidorders"> Paid Order</Link> </li>
+                  <li className="nav-item"> <Link className="nav-link" to="/cancelorders"> Cancel Order</Link> </li>
+                  <li className="nav-item"> <Link className="nav-link" to="/runningorders"> Running Order</Link> </li>
 
                 </ul>
               </div>
@@ -259,6 +262,9 @@ const Sidebar = () => {
                   <ul className="nav flex-column sub-menu">
                     {/* <li className="nav-item"> <a className="nav-link" href="">Designation </a></li> */}
                     <li className="nav-item"> <Link className="nav-link" to="/posorder"> Pos Order</Link> </li>
+                    <li className="nav-item"> <Link className="nav-link" to="/paidorders"> Paid Order</Link> </li>
+                    <li className="nav-item"> <Link className="nav-link" to="/cancelorders"> Cancel Order</Link> </li>
+                    <li className="nav-item"> <Link className="nav-link" to="/runningorders"> Running Order</Link> </li>
 
                   </ul>
                 </div>
@@ -379,6 +385,9 @@ const Sidebar = () => {
                   <ul className="nav flex-column sub-menu">
                     {/* <li className="nav-item"> <a className="nav-link" href="">Designation </a></li> */}
                     <li className="nav-item"> <Link className="nav-link" to="/posorder"> Pos Order</Link> </li>
+                    <li className="nav-item"> <Link className="nav-link" to="/paidorders"> Paid Order</Link> </li>
+                    <li className="nav-item"> <Link className="nav-link" to="/cancelorders"> Cancel Order</Link> </li>
+                    <li className="nav-item"> <Link className="nav-link" to="/runningorders"> Running Order</Link> </li>
 
                   </ul>
                 </div>
