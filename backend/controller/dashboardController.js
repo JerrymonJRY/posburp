@@ -7,6 +7,7 @@ const todayOrder =asyncHandler(async(req,res) =>{
         const today = new Date().toISOString().split('T')[0];
         
         const count = await Pos.countDocuments({
+          paymentstatus: "paid",
             date: { $gte: new Date(today), $lt: new Date(today + 'T23:59:59.999Z') }
         });
     
@@ -27,23 +28,88 @@ const totalOrder =asyncHandler(async(req,res) =>{
       }
 });
 
-const todaynotpaidsales = asyncHandler(async (req, res) => {
-    try {
-      // Fetch grandTotal values from the "Pos" collection
-      const grandTotals = await Pos.find();
-  
-      // Calculate the sum of the "grandTotal" field
-      const sum = grandTotals.reduce((acc, pos) => acc + pos.grandTotal, 0);
-  
-      // Split the digits and calculate their sum
-      const digitSum = String(sum).split('').map(Number).reduce((a, b) => a + b, 0);
-  
-      res.json({ sum: digitSum });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+const todaypaidsales = asyncHandler(async (req, res) => {
+  try {
+   
+    const today = new Date().toISOString().split('T')[0];
+
+   
+    const result = await Pos.aggregate([
+      {
+        $match: {
+          paymentstatus: "paid",
+          date: { $gte: new Date(today), $lt: new Date(today + 'T23:59:59.999Z') }
+        }
+      },
+      {
+        $group: {
+          _id: "$_id",
+          grandTotal: { $sum: { $toDouble: "$grandTotal" } }
+        }
+      }
+    ]).exec(); 
+
+  //  console.log(result);
+
+    let sum = 0;
+    if (result.length > 0) {
+      sum = result.reduce((acc, curr) => acc + curr.grandTotal, 0);
     }
-  });
+    else{
+      sum = 0;
+    }
+
+  
+    res.json({ sum });
+  } catch (err) {
+    // Handle any errors
+    console.error('Error executing query', err);
+    res.status(500).json({ error: 'An error occurred' });
+  }
+});
+
+const oveallsales =asyncHandler(async(req,res) =>{
+
+  try {
+   
   
 
-module.exports ={todayOrder,totalOrder,todaynotpaidsales}
+   
+    const result = await Pos.aggregate([
+      {
+        $match: {
+          paymentstatus: "paid",
+          
+        }
+      },
+      {
+        $group: {
+          _id: "$_id",
+          grandTotal: { $sum: { $toDouble: "$grandTotal" } }
+        }
+      }
+    ]).exec(); 
+
+   // console.log(result);
+
+    let sum = 0; // Change const to let
+
+    if (result.length > 0) {
+      sum = result.reduce((acc, curr) => acc + curr.grandTotal, 0);
+    } else {
+      sum = 0;
+    }
+
+  
+    res.json({ sum });
+  } catch (err) {
+    // Handle any errors
+    console.error('Error executing query', err);
+    res.status(500).json({ error: 'An error occurred' });
+  }
+
+});
+
+
+
+module.exports ={todayOrder,totalOrder,todaypaidsales,oveallsales}

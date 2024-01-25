@@ -6,6 +6,8 @@ import Footer from '../layouts/Footer';
 import axios from 'axios'
 import { redirect, useNavigate,useParams } from "react-router-dom";
 import apiConfig from '../layouts/base_url';
+import Chart from 'chart.js/auto';
+import DashboardGraph from './dashboardGraph';
 
 //import jwtDecode from 'jwt-decode';
 const Dashboard =() =>{
@@ -22,7 +24,9 @@ const cardBodyStyle = {
 
 const [todayordercount, setTodayorderCount] = useState(0);
 const [totalordercount, setTotalorderCount] = useState(0);
-const [todaynotpaidcount,setNotpaidCount] =useState(0);
+const [todaypaidcount,setpaidCount] =useState(0);
+const [totalpaidamount,setTotalpaidamount] =useState(0);
+
 
 useEffect(() => {
  fetch(`${apiConfig.baseURL}/api/dashboard/todayorder`)
@@ -38,12 +42,24 @@ useEffect(() => {
      .catch((error) => console.error(error));
  }, []);
 
+
+
  useEffect(() => {
-  fetch(`${apiConfig.baseURL}/api/dashboard/todaynotpaidsales`)
-     .then((response) => response.json())
-     .then((data) => setNotpaidCount(data.count))
-     .catch((error) => console.error(error));
- }, []);
+  fetch(`${apiConfig.baseURL}/api/dashboard/todaypaidsales`)
+    .then((response) => response.json())
+    .then((data) => setpaidCount(data.sum))
+    .catch((error) => console.error(error));
+}, []);
+
+useEffect(() => {
+  fetch(`${apiConfig.baseURL}/api/dashboard/oveallsales`)
+    .then((response) => response.json())
+    .then((data) => setTotalpaidamount(data.sum))
+    .catch((error) => console.error(error));
+}, []);
+
+
+
 
 
 
@@ -87,7 +103,7 @@ useEffect(() => {
                     <img src="assets/images/dashboard/circle.svg" className="card-img-absolute" alt="circle-image" />
                     <h4 className="font-weight-normal mb-3">Today Sales <i className="mdi mdi-bookmark-outline mdi-24px float-right"></i>
                     </h4>
-                    <h2 className="mb-5">{todaynotpaidcount}</h2>
+                    <h2 className="mb-5">{todaypaidcount}</h2>
                    
                   </div>
                 </div>
@@ -109,34 +125,13 @@ useEffect(() => {
                     <img src="assets/images/dashboard/circle.svg" className="card-img-absolute" alt="circle-image" />
                     <h4 className="font-weight-normal mb-3">Total Sales  <i className="mdi mdi-diamond mdi-24px float-right"></i>
                     </h4>
-                    <h2 className="mb-5">95,5741</h2>
+                    <h2 className="mb-5">{totalpaidamount}</h2>
                    
                   </div>
                 </div>
               </div>
             </div>
-            <div className="row">
-              <div className="col-md-7 grid-margin stretch-card">
-                <div className="card">
-                  <div className="card-body">
-                    <div className="clearfix">
-                      <h4 className="card-title float-left">Visit And Sales Statistics</h4>
-                      <div id="visit-sale-chart-legend" className="rounded-legend legend-horizontal legend-top-right float-right"></div>
-                    </div>
-                    <canvas id="visit-sale-chart" className="mt-4"></canvas>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-5 grid-margin stretch-card">
-                <div className="card">
-                  <div className="card-body">
-                    <h4 className="card-title">Traffic Sources</h4>
-                    <canvas id="traffic-chart"></canvas>
-                    <div id="traffic-chart-legend" className="rounded-legend legend-vertical legend-bottom-left pt-4"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+         <DashboardGraph />
             <div className="row">
               <div className="col-12 grid-margin">
                 <div className="card">
