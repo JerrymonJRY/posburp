@@ -2,7 +2,7 @@ const User =require('../models/userModel');
 const asyncHandler =require('express-async-handler');
 const { generateRefreshToken }=require('../config/refreshToken');
 const { generateToken } = require('../config/jwToken');
-
+const bcrypt =require('bcrypt');
 const createUser =asyncHandler(async(req,res) =>{
 
     const email =req.body.email;
@@ -183,4 +183,32 @@ const logout = asyncHandler(async (req, res) => {
   });
 
 
-module.exports={ createUser,loginUserController,logout,dashboard,vertifyUser,getallUsers,editUser,updateUser};
+
+  const changePassword = asyncHandler(async (req, res) => {
+    const { userId, currentPassword, newPassword } = req.body;
+
+    try {
+        const user = await User.findById(userId);
+
+        // Check if user exists and verify the current password
+        if (!user || !(await user.isPasswordMatched(currentPassword))) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
+
+        // Hash the new password
+        //const hashedPassword = await bcrypt.hash(newPassword, 8);
+
+        // Update the password
+        user.password = newPassword;
+        await user.save();
+
+        res.status(200).json({ message: 'Password updated successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
+
+module.exports={ createUser,loginUserController,logout,dashboard,vertifyUser,getallUsers,editUser,updateUser,changePassword};

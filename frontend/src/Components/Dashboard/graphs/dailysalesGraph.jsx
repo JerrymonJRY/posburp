@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState,useEffect } from 'react'
 import axios from 'axios'
-import apiConfig from '../layouts/base_url';
+import apiConfig from '../../layouts/base_url';
 import Chart from 'chart.js/auto';
 
 const Dailysalesgraphs =() =>{

@@ -5,6 +5,10 @@ const Pos = require("../models/posModels");
 
 const monthlyGraphsales = asyncHandler(async (req, res) => {
     try {
+
+      
+
+
       const result = await Pos.aggregate([
         {
           $match: {
@@ -69,6 +73,9 @@ const monthlyGraphsales = asyncHandler(async (req, res) => {
     }
   });
 
+
+
+
   const weeklyGraphsales = asyncHandler(async (req, res) => {
     try {
         const currentDate = new Date();
@@ -98,8 +105,6 @@ const monthlyGraphsales = asyncHandler(async (req, res) => {
             }
         ]).exec();
 
-       /// console.log(result);
-
         const weeklySalesData = {};
 
         result.forEach(entry => {
@@ -111,7 +116,11 @@ const monthlyGraphsales = asyncHandler(async (req, res) => {
 
             const weekKey = `${weekStartDate.toISOString()} - ${weekEndDate.toISOString()}`;
 
-            weeklySalesData[weekKey] = { weekStartDate, weekEndDate, sales: weeklySales };
+            if (!weeklySalesData[weekKey]) {
+                weeklySalesData[weekKey] = { weekStartDate, weekEndDate, sales: weeklySales };
+            } else {
+                weeklySalesData[weekKey].sales += weeklySales;
+            }
         });
 
         res.json({ weeklySalesData });
@@ -129,19 +138,16 @@ const monthlyGraphsales = asyncHandler(async (req, res) => {
 
 
 
+
+
   const monthlyWeeklyGraphsales = asyncHandler(async (req, res) => {
     try {
-        // Get the current date
+      
         const currentDate = new Date();
         
-        // Set the timezone (if needed)
-        // currentDate.setTimeZone("YourTimeZone");
-
-        // Get the first and last days of the current month
+       
         const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
         const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-
-        ///console.log(lastDayOfMonth);
 
         const result = await Pos.aggregate([
             {
@@ -170,11 +176,11 @@ const monthlyGraphsales = asyncHandler(async (req, res) => {
             }
         ]).exec();
 
-      ///  console.log(result);
+    
 
         res.json({ monthlyWeeklySalesData: result });
     } catch (err) {
-        // Handle any errors
+       
         console.error('Error executing query', err);
         res.status(500).json({ error: 'An error occurred' });
     }
@@ -230,12 +236,126 @@ const dailyHighestSales = asyncHandler(async (req, res) => {
       res.json(posinvoice);
   } catch (error) {
       console.error('Error fetching "notpaid" orders:', error);
-      // Handle the error appropriately
+  
+  }
+});
+
+
+const highestSales = asyncHandler(async (req, res) => {
+  const { period } = req.params;
+  let startDate, endDate;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Calculate start and end dates based on period
+  switch (period) {
+    case 'daily':
+      startDate = new Date();
+      startDate.setHours(0, 0, 0, 0);
+      endDate = new Date(startDate);
+      endDate.setDate(startDate.getDate() + 1);
+      break;
+    case 'weekly':
+      // Calculate start and end of current week
+      startDate = new Date();
+      startDate.setDate(startDate.getDate() - startDate.getDay()); // Adjust to start of current week (Sunday)
+      endDate = new Date(startDate);
+      endDate.setDate(endDate.getDate() + 7); // End of current week (next Sunday)
+      break;
+    case 'monthly':
+      // Calculate start and end of current month
+      startDate = new Date();
+      startDate.setDate(1); // Start of current month
+      endDate = new Date(startDate);
+      endDate.setMonth(endDate.getMonth() + 1); // End of current month (start of next month)
+      break;
+      case 'quarterly':
+      // Calculate start and end of current quarter
+      startDate = new Date();
+      startDate.setMonth(Math.floor(startDate.getMonth() / 3) * 3); // Start of current quarter
+      startDate.setDate(1); // Start of the month
+      endDate = new Date(startDate);
+      endDate.setMonth(startDate.getMonth() + 3); // End of current quarter (start of next quarter)
+      break;
+    case 'halfyearly':
+      // Calculate start and end of current half-year
+      startDate = new Date();
+      startDate.setMonth(Math.floor(startDate.getMonth() / 6) * 6); // Start of current half-year
+      startDate.setDate(1); // Start of the month
+      endDate = new Date(startDate);
+      endDate.setMonth(startDate.getMonth() + 6); // End of current half-year (start of next half-year)
+      break;
+    case 'fullyearly':
+      // Calculate start and end of current year
+      startDate = new Date();
+      startDate.setMonth(0); // Start of the year
+      startDate.setDate(1); // Start of the month
+      endDate = new Date(startDate);
+      endDate.setFullYear(startDate.getFullYear() + 1); // End of current year (start of next year)
+      break;
+    default:
+      return res.status(400).json({ error: 'Invalid period' });
+  }
+
+  try {
+    // Query MongoDB for sales data within the specified period
+
+
+    const posinvoice = await Pos.aggregate([
+      {
+          $match: {
+              paymentstatus: "paid",
+              date: { $gte: startDate, $lt: endDate },
+          },
+      },
+      {
+          $lookup: {
+              from: "waiters",
+              localField: "waiterId",
+              foreignField: "_id",
+              as: "waiter",
+          },
+      },
+      {
+          $unwind: "$waiter",
+      },
+      {
+          $unwind: "$cart",
+      },
+      {
+          $group: {
+              _id: "$cart.foodmenuId",
+              foodmenuname: { $first: "$cart.foodmenuname" },
+              totalQuantity: { $sum: { $toInt: "$cart.quantity" } }, // Sum of quantities for each food menu item
+          },
+      },
+      {
+          $sort: { totalQuantity: -1 },
+      },
+      {
+          $match: { totalQuantity: { $gt: 1 } } // Filter out items with totalQuantity less than or equal to 5
+      }
+  ]);
+
+    res.json(posinvoice);
+  } catch (error) {
+    console.error('Error fetching sales data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
 
 
+
+
+
+
+
+
+
+
+
   
   
   
@@ -248,5 +368,5 @@ const dailyHighestSales = asyncHandler(async (req, res) => {
 
 
   
-module.exports ={monthlyGraphsales,dailyGraphSales,weeklyGraphsales,monthlyWeeklyGraphsales,dailyHighestSales}
+module.exports ={monthlyGraphsales,dailyGraphSales,weeklyGraphsales,monthlyWeeklyGraphsales,dailyHighestSales,highestSales}
   

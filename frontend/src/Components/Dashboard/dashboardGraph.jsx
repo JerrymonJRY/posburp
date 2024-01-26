@@ -3,11 +3,15 @@ import { useState,useEffect } from 'react'
 import axios from 'axios'
 import apiConfig from '../layouts/base_url';
 import Chart from 'chart.js/auto';
-import SalesGraph from './monthlyChart';
-import Monthlywisechart from './monthlywiseChart';
-import Dailysalesgraphs from './dailysalesGraph';
-import Weeklysalesgraphs from './weeklysaleGraph';
-import HighestSalesgraph from './highestsalesGraph';
+import SalesGraph from '../Dashboard/graphs/monthlyChart';
+import Monthlywisechart from '../Dashboard/graphs/monthlywiseChart';
+import Dailysalesgraphs from '../Dashboard/graphs/dailysalesGraph';
+import Weeklysalesgraphs from '../Dashboard/graphs/weeklysaleGraph';
+import HighestSalesgraph from '../Dashboard/graphs/highestsalesGraph';
+import FoodOptionsGraph from '../Dashboard/graphs/dashboardoptionGraph';
+import HighSales from '../Dashboard/graphs/dashboardhighSales';
+import YearlySalesChart from '../Dashboard/graphs/yearlywiseGraph';
+
 
 //import { Line } from 'react-chartjs-2';
 
@@ -101,8 +105,8 @@ const DashboardGraph  =() =>{
                 <div className="card">
                   <div className="card-body">
                     <h4 className="card-title">Traffic Sources</h4>
-                    <SalesGraph salesData={salesData} />
-                   
+                    {/* <SalesGraph salesData={salesData} /> */}
+                   <FoodOptionsGraph />
                     <div id="traffic-chart-legend" className="rounded-legend legend-vertical legend-bottom-left pt-4"></div>
                   </div>
                 </div>
@@ -117,7 +121,8 @@ const DashboardGraph  =() =>{
                       <h4 className="card-title float-left">Highest Sales Food Items </h4>
                      
                     </div>
-                    <HighestSalesgraph />
+                    {/* <HighestSalesgraph /> */}
+                    <HighSales />
                     
                   </div>
                 </div>
@@ -126,7 +131,7 @@ const DashboardGraph  =() =>{
                 <div className="card">
                   <div className="card-body">
                     <h4 className="card-title">Traffic Sources</h4>
-                
+                <YearlySalesChart />
                     <div id="traffic-chart-legend" className="rounded-legend legend-vertical legend-bottom-left pt-4"></div>
                   </div>
                 </div>
