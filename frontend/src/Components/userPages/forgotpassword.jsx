@@ -4,66 +4,33 @@ import axios from 'axios'
 import { redirect, useNavigate,Link } from "react-router-dom";
 import apiConfig from '../layouts/base_url';
 import Swal from 'sweetalert2';
-import { setToken,setfirstNames,setlastNames,setUserId,setShiftToken,setUserRole,setUserAccess } from '../routes/PrivateRoutes';
-function Login() {
+
+function Forgotpassword() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleForgotpassword = async (e) => {
+
     e.preventDefault();
 
-    // Show loading state
     setLoading(true);
-
-    try {
-      const response = await axios.post(`${apiConfig.baseURL}/api/user/login`, {
-        email,
-        password,
-      });
-
-      if (response.data && response.data.token) {
-        const data = response.data;
-    
-        setToken(data.token);
-        setfirstNames(data.firstname);
-        setlastNames(data.lastname);
-        setUserId(data._id);
-        setShiftToken(data.shifttoken);
-        setUserRole(data.userrole);
-        setUserAccess(data.shiftacess)
-
-        Swal.fire({
-          icon: 'success',
-          title: 'Login Successful',
-          showConfirmButton: false,
-          timer: 1500,
-        });
-
-        // Redirect after a short delay
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 1500);
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Login Failed',
-          text: 'Invalid email or password',
-        });
-      }
-    } catch (error) {
-      console.error('Login error:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Login Error',
-        text: 'An error occurred during login',
-      });
-    } finally {
-      // Hide loading state after login process is complete
-      setLoading(false);
+    try
+    {
+        const response = await axios.post(`${apiConfig.baseURL}/api/user/forgotpassword`, {
+            email,
+           
+          });
     }
-  };
+    catch(error)
+    {
+        console.error('Login error:', error);
+    }
+
+  }
+
+
 
   return (
     <div className="container-scroller">
@@ -88,23 +55,13 @@ function Login() {
                       autoComplete="username"
                     />
                   </div>
-                  <div className="form-group">
-                    <input
-                      type="password"
-                      name="password"
-                      className="form-control form-control-lg"
-                      id="exampleInputPassword1"
-                      placeholder="Password"
-                      onChange={(e) => setPassword(e.target.value)}
-                      autoComplete="current-password"
-                    />
-                  </div>
+                  
                   <div className="mt-3">
                     <input
                       type="submit"
-                      onClick={handleLogin}
+                      onClick={handleForgotpassword}
                       className="btn btn-block btn-danger btn-lg font-weight-medium auth-form-btn"
-                      value={loading ? 'Signing in...' : 'Sign in'}
+                      value={loading ? 'Forgot Password...' : 'Forgot Password'}
                       disabled={loading}
                     />
                   </div>
@@ -119,8 +76,9 @@ function Login() {
                       </label>
                     </div>
                   
-                    <Link className="auth-link text-black" to="/forgotpassword"> Forgot password?</Link>
+                    <Link className="auth-link text-black" to="/"> Login </Link>
                   </div>
+                  
                 </form>
               </div>
             </div>
@@ -131,4 +89,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Forgotpassword;

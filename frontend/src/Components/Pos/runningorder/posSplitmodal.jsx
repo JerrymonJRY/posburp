@@ -136,9 +136,13 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
         // Calculate overall total price
         let total = 0;
         updatedFoodTextInputs[selectedCard].forEach((item) => {
+
+
+
           total += item.quantity * item.price;
+         
         });
-  
+
         const vatPercentValue = 5;
         const vatAmounts = (total * vatPercentValue) / 100;
         
@@ -153,12 +157,16 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
   
         // Calculate overall total with VAT
         const overallTotalWithVAT = subtotals + vatAmounts;
+
+        
+      setOverallVat(vatAmounts);
+      setOverallSubtotal(subtotals);
+
+      // Set the overall total price state
+      setOverallTotalPrice(overallTotalWithVAT);
   
-        setOverallVat(vatAmounts);
-        setOverallSubtotal(subtotals);
+       
   
-        // Set the overall total price state
-        setOverallTotalPrice(overallTotalWithVAT);
 
      
       }

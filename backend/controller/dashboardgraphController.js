@@ -58,7 +58,7 @@ const monthlyGraphsales = asyncHandler(async (req, res) => {
         }
       ]).exec();
   
-      console.log(result);
+      // console.log(result);
   
       const dailySalesData = result.map(entry => ({
         day: entry._id,

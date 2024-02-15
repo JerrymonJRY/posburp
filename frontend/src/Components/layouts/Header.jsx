@@ -130,6 +130,12 @@ setUserId(storeid)
                 <i className="mdi mdi-power"></i>
               </a>
             </li>
+
+            <li className="nav-item nav-logout d-none d-lg-block">
+              <a className="nav-link"  >
+               
+              </a>
+            </li>
            
           </ul>
           <button className="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
