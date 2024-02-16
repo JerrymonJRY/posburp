@@ -3,11 +3,12 @@ import Header from '../layouts/Header';
 import Sidebar from '../layouts/Sidebar';
 import Footer from '../layouts/Footer';
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import apiConfig from '../layouts/base_url';
 import Select from 'react-select';
-
+import Swal from 'sweetalert2';
 const EditPurchase = () => {
+  const navigate = useNavigate();
   const [suppliers, setSupplier] = useState([]);
   const [ingredients, setIngredient] = useState([]);
   const [selectIngredient, setSelectIngredient] = useState(null);
@@ -182,6 +183,57 @@ const EditPurchase = () => {
     console.log('Selected Supplier ID:', selectOption.value);
   };
 
+  const handleSubmit = (event) => {
+
+    event.preventDefault();
+
+    const postData = {
+      cart: cart.map((item) => ({
+        ingredientId: item.value,
+        ingredientname: item.label,
+        quantity: item.quantity,
+        expirydate:item.date,
+        purchaseprice:item.purchaseprice,
+        unit:item.unit,
+        total: calculateTotal(item.quantity, item.purchaseprice),
+      })),
+      paidAmount: paidAmount,
+      grandTotal: calculateGrandTotal(),
+      dueAmount:calculateDueAmount(),
+      supplierId: selectSupplier ? selectSupplier.value : null,
+      suppliername:selectSupplier ? selectSupplier.label : null,
+      invoiceDate: invoiceDate, 
+    };
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    };
+
+    axios
+      .put(`${apiConfig.baseURL}/api/purchase/update/${id}`, postData, config)
+      .then((res) => {
+        console.log(res);
+        Swal.fire({
+          icon: 'success',
+          title: 'Purchase Updated!',
+          text: 'Your Purchase has been Updated successfully.',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        }).then(() => {
+          navigate('/viewPurchase');
+        });
+      })
+      .catch((err) => console.log(err));
+
+  }
+
   return (
     <div className="container-scroller">
       <Header />
@@ -311,7 +363,7 @@ const EditPurchase = () => {
                           </tfoot>
                         </table>
                       </div>
-                      <button type="submit" className="btn btn-gradient-primary me-2">Submit</button>
+                      <button type="submit" onClick={handleSubmit} className="btn btn-gradient-primary me-2">Submit</button>
                     </form>
                   </div>
                 </div>
