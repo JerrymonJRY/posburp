@@ -211,11 +211,13 @@ const handleCancelSubmit = (id, order) => {
                     <thead>
                         <tr>
                             <th>SI No</th>
+                            <th>Bill Number</th>
+                            <th>Order Number</th>
                             <th>Select Option</th>
                             <th>Waiter</th>
                             <th>Total</th>
                             <th>Vat Amount</th>
-                            
+                            <th>Date & Time</th>
                             <th>Added By</th>
                             <th>Grand Total</th>
                             <th>Action</th>
@@ -230,14 +232,28 @@ const handleCancelSubmit = (id, order) => {
       const vat = 5;
       const vatamounts = (subtotal * vat) / 100;
       const subtotalAfterVat = subtotal - vatamounts;
+      const orderDate = new Date(order.updatedAt);
+      const formattedDate = `${orderDate.getDate().toString().padStart(2, '0')}-${(orderDate.getMonth() + 1).toString().padStart(2, '0')}-${orderDate.getFullYear()}`;
+      const formattedTime = `${orderDate.getHours().toString().padStart(2, '0')}:${orderDate.getMinutes().toString().padStart(2, '0')}:${orderDate.getSeconds().toString().padStart(2, '0')}`;
+    
+
+      const datetime = `${formattedDate} ${formattedTime}`;
+      
 
       return (
         <tr key={order._id}>
            <td>{key + 1}</td>
+
+
+
+          
+          <td>{order.billnumber}</td>
+          <td>{order.ordernumber}</td>
           <td>{order.options}</td>
           <td>{order.waiter ? order.waiter.waitername : 'N/A'}</td>
           <td>{subtotalAfterVat}</td>
           <td>{vatamounts}</td>
+          <td>{datetime}</td>
           <td>{order.user ? `${order.user.firstname} ${order.user.lastname || ''}` : 'N/A'}</td>
           <td>{order.grandTotal}</td>
           <td>
@@ -277,7 +293,7 @@ const handleCancelSubmit = (id, order) => {
     })
   ) : (
     <tr>
-      <td colSpan="7">No data available</td>
+      <td colSpan="8">No data available</td>
     </tr>
   )
 }
@@ -287,7 +303,7 @@ const handleCancelSubmit = (id, order) => {
                     </tbody>
                     <tfoot>
         <tr>
-          <td colSpan="5"></td>
+          <td colSpan="8"></td>
           <td>Total Grand Total:</td>
           <td>{totalGrandTotal}</td>
         </tr>

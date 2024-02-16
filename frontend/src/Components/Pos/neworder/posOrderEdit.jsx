@@ -263,10 +263,10 @@ cart.forEach(icart => {
             cancelButtonText: 'No',
           }).then((result) => {
 
-            console.log(res.data.modifiedData)
+            console.log(res.data.existingEntry)
 
-          printOrderDetails(res.data.modifiedData);
-          navigate('/pos');
+      printOrderDetails(res.data.differences,res.data.updatePos);
+         navigate('/pos');
           });
         })
         .catch(err => console.log(err));
@@ -275,91 +275,113 @@ cart.forEach(icart => {
      // console.log(posData);
      const imagePaths = "/assets/images/pos/taha.png";
 
-     const printOrderDetails = (orderData) => {
+     const printOrderDetails = (differences,updatePos) => {
+
       const printWindow = window;
-      printWindow.document.write('<html><head><title>Order Details</title>');
-      // Add style for center alignment and table styling
-      printWindow.document.write(`
-        <style>
-          body { text-align: center; }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-           
-          }
-          th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-          }
-          th {
-            background-color: #f2f2f2;
-          }
-          td
-          {
-            font-size:13px;
-            text-transform: capitalize;
-          }
-          .order-info {
-            font-size:13px;
-            text-transform: capitalize;
-          }
-        </style>
-      `);
-      printWindow.document.write('</head><body>');
-      
-      // Include order details and image in the print window
-      
-      printWindow.document.write(`<img src="${imagePaths}" alt="Logo" style="max-width: 100%;" onload="window.print(); location.reload();">`);
-      printWindow.document.write(`<p>Order ID: ${orderData.ordernumber}</p>`);
-      const orderDate = new Date(orderData.date);
-  const formattedDate = `${orderDate.getDate().toString().padStart(2, '0')}-${(orderDate.getMonth() + 1).toString().padStart(2, '0')}-${orderDate.getFullYear()}`;
-  printWindow.document.write(`<p>Date: ${formattedDate}</p>`);
-     
-      
-  if (orderData.cart && orderData.cart.length > 0) {
+    printWindow.document.write('<html><head><title>Order Details</title>');
+    // Add style for center alignment and table styling
     printWindow.document.write(`
-      <table>
-        <thead>
-          <tr>
-            <th>Food Name</th>
-            <th>Qty</th>
-            <th>Total Price</th>
-          </tr>
-        </thead>
-        <tbody>
+      <style>
+        body { text-align: center; }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+         
+        }
+        th, td {
+          border: 1px solid #ddd;
+          padding: 8px;
+          text-align: left;
+        }
+        th {
+          background-color: #f2f2f2;
+        }
+        td
+        {
+          font-size:13px;
+          text-transform: capitalize;
+        }
+        .order-info {
+          font-size:13px;
+          text-transform: capitalize;
+        }
+      </style>
     `);
+    printWindow.document.write('</head><body>');
     
-    let subtotal = 0;
+    // Include order details and image in the print window
+    
+    printWindow.document.write(`<img src="${imagePaths}" alt="Logo" style="max-width: 100%;" onload="window.print(); location.reload();">`);
+   
+    if (updatePos) {
+      printWindow.document.write(`<p>Order ID: ${updatePos.ordernumber}</p>`);
+      const orderDate = new Date(updatePos.updatedAt);
+      const formattedDate = `${orderDate.getDate().toString().padStart(2, '0')}-${(orderDate.getMonth() + 1).toString().padStart(2, '0')}-${orderDate.getFullYear()}`;
+      const formattedTime = `${orderDate.getHours().toString().padStart(2, '0')}:${orderDate.getMinutes().toString().padStart(2, '0')}:${orderDate.getSeconds().toString().padStart(2, '0')}`;
+      printWindow.document.write(`<p>Date and Time: ${formattedDate} ${formattedTime}</p>`);
+    }
+   
+    
+if (differences && differences.length > 0) {
   
-    orderData.cart.forEach((item) => {
+  printWindow.document.write(`
+    <table>
+      <thead>
+        <tr>
+          <th>Food Name</th>
+          <th>Qty</th>
+          <th>Total Price</th>
+        </tr>
+      </thead>
+      <tbody>
+  `);
+  
+  let subtotal = 0;
+  let subTotals = 0;
+  let vatAmounts = 0;
+
+  differences.forEach(item => {
+    if (item.quantity !== 0) {
+
       const totalPrice = item.quantity * item.salesprice;
       subtotal += totalPrice;
-  
-      printWindow.document.write(`
-        <tr>
-          <td>${item.foodmenuname}</td>
-          <td>${item.quantity}</td>
-          <td>${totalPrice}</td>
-        </tr>
-      `);
-    });
-  
-    // Calculate VAT amount and overall total
-    const vatPercentValue = 5;
-    const vatAmounts = (subtotal * vatPercentValue) / 100;
-    const overallTotal = subtotal + vatAmount;
-    const subTotals = subtotal - vatAmounts;
-  
-    printWindow.document.write('</tbody></table>');
+      vatAmounts =(subtotal * 5)/100;
+      subTotals = subtotal-vatAmounts;
+
+
+     
+    printWindow.document.write(`
+    <tr>
+    <td>${item.foodmenuname}</td>
+    <td>${item.quantity}</td>
+    <td>${totalPrice}</td>
+</tr>
+    `);
+
     
-    printWindow.document.write(`<p>VAT Amount: ${vatAmounts}</p>`);
+
+    
+
+    }
+  });
+  printWindow.document.write('</tbody></table>');
+   
     printWindow.document.write(`<p>Subtotal: ${subTotals}</p>`);
+    printWindow.document.write(`<p>VAT Amount: ${vatAmounts}</p>`);
     printWindow.document.write(`<p>Overall Total: ${subtotal}</p>`);
-  }
-  
-  printWindow.document.write('</body></html>');
+
+ 
+
+
+ 
+}
+
+
+
+printWindow.document.write('</body></html>');
+
   };
+  
   
     const componentRef = useRef(null);
   
