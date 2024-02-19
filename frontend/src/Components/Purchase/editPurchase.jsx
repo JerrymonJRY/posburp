@@ -24,6 +24,7 @@ const EditPurchase = () => {
         const response = await axios.get(`${apiConfig.baseURL}/api/purchase/edit/${id}`);
         const itemData = response.data;
 
+        
         if(itemData && itemData.invoiceDate)
         {
           setInvoiceDate(itemData.invoiceDate)
@@ -33,11 +34,7 @@ const EditPurchase = () => {
           setCart(itemData.cart);
 
           itemData.cart.forEach(item => {
-            // console.log("Food Item: " + item.ingredientname);
-            // console.log("Quantity: " + item.quantity);
-            // console.log("Sales Price: " + item.expirydate);
-            // console.log("Sales Price: " + item.total);
-            // console.log("--------------");
+          
           });
         } else {
           console.log("Cart data is not available or is in an unexpected format.");
@@ -48,13 +45,33 @@ const EditPurchase = () => {
           setPaidAmount(itemData.paidAmount);
         }
 
-        if (itemData && itemData.supplierId && Array.isArray(itemData.supplierId)) {
-          setSupplier(itemData.supplierId);
+        // if (itemData && itemData.supplierId && Array.isArray(itemData.supplierId)) {
+        //   setSupplier(itemData.supplierId);
 
-          const options = response.data.map(supplier => ({
+        //   const options = response.data.map(supplier => ({
+        //     value: supplier._id,
+        //     label: supplier.suppliername,
+        //   }));
+        // } else {
+        //   console.log("Supplier data is not available or is in an unexpected format.");
+        // }
+
+        const suppliersResponse = await axios.get(`${apiConfig.baseURL}/api/purchase/getSupplier`);
+        const suppliersData = suppliersResponse.data;
+        if (Array.isArray(suppliersData)) {
+          const supplierOptions = suppliersData.map(supplier => ({
             value: supplier._id,
             label: supplier.suppliername,
           }));
+          setSupplierOptions(supplierOptions);
+  
+          // Set selectedSupplier based on itemData.supplierId
+          if (itemData && itemData.supplierId) {
+            const selectedSupplier = supplierOptions.find(option => option.value === itemData.supplierId);
+            if (selectedSupplier) {
+              setSelectedSupplier(selectedSupplier);
+            }
+          }
         } else {
           console.log("Supplier data is not available or is in an unexpected format.");
         }
@@ -234,6 +251,10 @@ const EditPurchase = () => {
 
   }
 
+  const getIngredientName = (ingredientId) => {
+    const ingredient = ingredients.find(ingredient => ingredient._id === ingredientId);
+    return ingredient ? ingredient.name : 'N/A'; // Assuming 'name' is the property for the ingredient name
+  };
   return (
     <div className="container-scroller">
       <Header />
@@ -312,7 +333,12 @@ const EditPurchase = () => {
                             {cart.map((selectedIngredient, index) => (
                               <tr key={index}>
                                 <td>{index + 1}</td>
-                                <td>{selectedIngredient.ingredientname}</td>
+                                {selectedIngredient.ingredientId ? (
+  <td style={{ display: 'table-cell' }}>{getIngredientName(selectedIngredient.ingredientId)}</td>
+) : (
+  <td>{selectedIngredient.label}</td>
+)}
+
                                 <td>{selectedIngredient.purchaseprice}</td>
                                 <td>
                                   <input
