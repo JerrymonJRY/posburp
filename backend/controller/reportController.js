@@ -18,7 +18,8 @@ const deliveryReports =asyncHandler(async(req,res) =>{
         };
       }
       if (deliveryId) {
-        matchCriteria.deliveryId = deliveryId;
+        //matchCriteria.deliveryId = deliveryId;
+        matchCriteria.deliveryId = new mongoose.Types.ObjectId(deliveryId);
       }
         const orders = await Pos.aggregate([
           {
@@ -70,7 +71,8 @@ const customerReports =asyncHandler(async(req,res) =>{
         };
       }
       if (customerId) {
-        matchCriteria.customerId = customerId;
+        // matchCriteria.customerId = customerId;
+        matchCriteria.customerId = new mongoose.Types.ObjectId(customerId);
       }
   
         const customerorders = await Pos.aggregate([
@@ -108,12 +110,11 @@ const getCustomer =asyncHandler(async(req,res) =>{
       }
 });
 
-
 const waiterReport = asyncHandler(async (req, res) => {
   try {
     const { startDateFilter, endDateFilter, waiterId } = req.query;
 
-    const matchCriteria = {}; // Initialize matchCriteria
+    const matchCriteria = {};
 
     if (startDateFilter && endDateFilter) {
       matchCriteria.date = {
@@ -121,8 +122,9 @@ const waiterReport = asyncHandler(async (req, res) => {
         $lt: new Date(new Date(endDateFilter).setHours(23, 59, 59, 999)),
       };
     }
+
     if (waiterId) {
-      matchCriteria.waiterId = waiterId;
+      matchCriteria.waiterId = new mongoose.Types.ObjectId(waiterId);
     }
 
     const waiterorders = await Pos.aggregate([
@@ -145,11 +147,13 @@ const waiterReport = asyncHandler(async (req, res) => {
     ]);
 
     res.json(waiterorders);
+    console.log(waiterorders);
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 
 const getWaiter =asyncHandler(async(req,res) =>{
