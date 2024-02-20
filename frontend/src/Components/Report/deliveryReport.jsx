@@ -99,7 +99,7 @@ const DeliveryReport = () => {
     const formattedEndDate = endDateFilter ? endDateFilter.toISOString().split('T')[0] : '';
     const deliveryId = deliveryNameFilter ? deliveryNameFilter.value : '';
 
-    fetch(`${apiConfig.baseURL}/api/reports/deliveryreports?startDateFilter=${formattedStartDate}&endDateFilter=${formattedEndDate}&deliveryId=${deliveryId}`)
+    fetch(`${apiConfig.baseURL}/api/reports/deliveryreports?startDateFilter=${formattedStartDate}&endDateFilter=${formattedEndDate}&delivery=${deliveryId}`)
     .then((response) => response.json())
     .then((data) => {
       setData(data);

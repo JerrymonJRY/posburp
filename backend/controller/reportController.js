@@ -8,7 +8,7 @@ const Waiter =require('../models/waiterModel');
 const deliveryReports =asyncHandler(async(req,res) =>{
 
     try {
-      const { startDateFilter, endDateFilter, deliveryId } = req.query;
+      const { startDateFilter, endDateFilter, delivery } = req.query;
       const matchCriteria = {}; // Initialize matchCriteria
 
       if (startDateFilter && endDateFilter) {
@@ -17,9 +17,9 @@ const deliveryReports =asyncHandler(async(req,res) =>{
           $lt: new Date(new Date(endDateFilter).setHours(23, 59, 59, 999)),
         };
       }
-      if (deliveryId) {
+      if (delivery) {
         //matchCriteria.deliveryId = deliveryId;
-        matchCriteria.deliveryId = new mongoose.Types.ObjectId(deliveryId);
+        matchCriteria.delivery = new mongoose.Types.ObjectId(delivery);
       }
         const orders = await Pos.aggregate([
           {
@@ -61,7 +61,7 @@ const deliveryPerson =asyncHandler(async(req,res) =>
 const customerReports =asyncHandler(async(req,res) =>{
     try {
 
-      const { startDateFilter, endDateFilter, customerId } = req.query;
+      const { startDateFilter, endDateFilter, customers } = req.query;
       const matchCriteria = {}; // Initialize matchCriteria
 
       if (startDateFilter && endDateFilter) {
@@ -70,9 +70,9 @@ const customerReports =asyncHandler(async(req,res) =>{
           $lt: new Date(new Date(endDateFilter).setHours(23, 59, 59, 999)),
         };
       }
-      if (customerId) {
+      if (customers) {
         // matchCriteria.customerId = customerId;
-        matchCriteria.customerId = new mongoose.Types.ObjectId(customerId);
+        matchCriteria.customers = new mongoose.Types.ObjectId(customers);
       }
   
         const customerorders = await Pos.aggregate([
