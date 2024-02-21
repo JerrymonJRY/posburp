@@ -266,7 +266,7 @@ printWindow.document.write('</body></html>');
           <h6>Options: {order.options}</h6>
           <h6>Customer Name: {order.customerDetails ? order.customerDetails.customername : 'N/A'}</h6>
           <h6>Table: {order.tableDetails ? order.tableDetails.tablename : 'N/A'}</h6>
-          <h6>Waiter: {order.waiterDetails ? order.waiterDetails.waitername : 'N/A'}</h6>
+          <h6>Waiter: {order.waiterDetails ? order.waiterDetails.firstname : 'N/A'} {order.waiterDetails ? order.waiterDetails.lastname : ''}</h6>
 
 
 

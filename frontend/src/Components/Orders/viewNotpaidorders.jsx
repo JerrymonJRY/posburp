@@ -78,7 +78,7 @@ const formattedTime = dateObject.toLocaleTimeString();
     <tr key={order._id}>
       <td>{order.ordernumber}</td>
       <td>{order.options}</td>
-      <td>{order.waiter.waitername}</td>
+      <td>{order.waiter.firstname}</td>
       <td>{formattedDate} {formattedTime}</td>
      
       <td>{subtotalAfterVat}</td>

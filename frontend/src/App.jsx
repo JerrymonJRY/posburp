@@ -85,6 +85,9 @@ import CancelOrders from './Components/Orders/viewCancelorders';
 import NotPaidorders from './Components/Orders/viewNotpaidorders';
 import Forgotpassword from './Components/userPages/forgotpassword';
 import EditSupplier from './Components/Supplier/editSupplier';
+import AddRole from './Components/Roles/addRole';
+import ViewRole from './Components/Roles/viewRole';
+import EditRole from './Components/Roles/editRole';
 function App() {
 
   //const navigate = useNavigate();
@@ -224,6 +227,12 @@ function App() {
               <Route path='/viewuser' element={<RequireToken><ViewUser /></RequireToken>}></Route>
               <Route path='/adduser' element={<RequireToken><AddUser /></RequireToken>}></Route>
               <Route path='/edituser/:id' element={<RequireToken><EditUser /></RequireToken>}></Route>
+
+
+              {/* Roles */}
+              <Route path='/addroles' element={<RequireToken><AddRole /></RequireToken>}></Route>
+              <Route path='/viewroles' element={<RequireToken><ViewRole /></RequireToken>}></Route>
+              <Route path='editroles/:id' element={<RequireToken><EditRole /></RequireToken>}></Route>
      
      
 

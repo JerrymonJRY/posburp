@@ -50,7 +50,7 @@ const todayDelivery =asyncHandler(async(req,res) =>
       },
       {
         $lookup: {
-          from: 'waiters',
+          from: 'users',
           localField: 'waiterId',
           foreignField: '_id',
           as: 'waiter',
@@ -74,7 +74,7 @@ const todayDelivery =asyncHandler(async(req,res) =>
 
       {
         $lookup: {
-          from: 'deliveries',
+          from: 'users',
           localField: 'delivery',
           foreignField: '_id',
           as: 'deliveryperson',

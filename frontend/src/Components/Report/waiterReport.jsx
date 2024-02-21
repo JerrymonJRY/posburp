@@ -46,7 +46,7 @@ const WaiterReport = () => {
 
   const options = waiter.map((delivery) => ({
     value: delivery._id,
-    label: delivery.waitername,
+    label: `${delivery.firstname} ${delivery.lastname}`,
   }));
 
   const handleSearch = () => {
@@ -81,7 +81,7 @@ const WaiterReport = () => {
       selector: (row) => (
         <React.Fragment key={row._id}>
           {row.waiterInfo.map((waiter) => (
-            <div key={waiter._id}>{waiter.waitername}</div>
+            <div key={waiter._id}>{waiter.firstname}{waiter.lastname}</div>
           ))}
         </React.Fragment>
       ),

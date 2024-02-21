@@ -4,6 +4,7 @@ const Pos =require('../models/posModels');
 const Delivery =require('../models/deliveryModel');
 const Customer =require('../models/customerModel');
 const Waiter =require('../models/waiterModel');
+const User =require('../models/userModel');
 
 const deliveryReports =asyncHandler(async(req,res) =>{
 
@@ -27,7 +28,7 @@ const deliveryReports =asyncHandler(async(req,res) =>{
           },
           {
             $lookup: {
-              from: 'deliveries', 
+              from: 'users', 
               localField: 'delivery', 
               foreignField: '_id',
               as: 'deliveryInfo'
@@ -50,7 +51,8 @@ const deliveryReports =asyncHandler(async(req,res) =>{
 const deliveryPerson =asyncHandler(async(req,res) =>
 {
     try {
-        const getDelivery = await Delivery.find();
+       // const getDelivery = await Delivery.find();
+       const getDelivery = await User.find({ userrole: "Delivery" });
         res.json(getDelivery);
       } catch (error) {
         throw new Error(error);
@@ -133,7 +135,7 @@ const waiterReport = asyncHandler(async (req, res) => {
       },
       {
         $lookup: {
-          from: 'waiters',
+          from: 'users',
           localField: 'waiterId',
           foreignField: '_id',
           as: 'waiterInfo',
@@ -158,7 +160,7 @@ const waiterReport = asyncHandler(async (req, res) => {
 
 const getWaiter =asyncHandler(async(req,res) =>{
     try {
-        const getWaiter = await Waiter.find();
+      const getWaiter = await User.find({ userrole: "Waiter" });
         res.json(getWaiter);
       } catch (error) {
         throw new Error(error);
@@ -167,7 +169,8 @@ const getWaiter =asyncHandler(async(req,res) =>{
 
 
 
-module.exports ={deliveryReports,
+module.exports ={
+    deliveryReports,
     deliveryPerson,
     customerReports,
     getCustomer,

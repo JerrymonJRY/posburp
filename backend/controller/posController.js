@@ -10,6 +10,7 @@ const Delivery = require("../models/deliveryModel");
 const OrderTable = require("../models/ordertableModel");
 const Payment = require("../models/paymentModel");
 const Transaction = require("../models/acctransactionModel");
+const User =require('../models/userModel');
 
 //Food Category
 const getposCategory = asyncHandler(async (req, res) => {
@@ -22,9 +23,17 @@ const getposCategory = asyncHandler(async (req, res) => {
 });
 
 //Waiter Modal
+// const getPosWaiter = asyncHandler(async (req, res) => {
+//   try {
+//     const getWaiter = await Waiter.find();
+//     res.json(getWaiter);
+//   } catch (error) {
+//     throw new Error(error);
+//   }
+// });
 const getPosWaiter = asyncHandler(async (req, res) => {
   try {
-    const getWaiter = await Waiter.find();
+    const getWaiter = await User.find({ userrole: "Waiter" });
     res.json(getWaiter);
   } catch (error) {
     throw new Error(error);
@@ -51,7 +60,8 @@ const getTable = asyncHandler(async (req, res) => {
 
 const getDelivery = asyncHandler(async (req, res) => {
   try {
-    const getDelivery = await Delivery.find();
+    //const getDelivery = await Delivery.find();
+    const getDelivery = await User.find({ userrole: "Delivery" });
     res.json(getDelivery);
   } catch (error) {
     throw new Error(error);
@@ -365,7 +375,7 @@ const getHold = asyncHandler(async (req, res) => {
       },
       {
         $lookup: {
-          from: "waiters",
+          from: "users",
           localField: "waiterId",
           foreignField: "_id",
           as: "waiter",
@@ -418,7 +428,7 @@ const todayOrder = asyncHandler(async (req, res) => {
       },
       {
         $lookup: {
-          from: "waiters",
+          from: "users",
           localField: "waiterId",
           foreignField: "_id",
           as: "waiter",

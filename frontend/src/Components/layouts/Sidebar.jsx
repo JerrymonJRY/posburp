@@ -178,8 +178,9 @@ const Sidebar = () => {
                   <li className="nav-item"> <Link className=" nav-link" to="/viewCustomer"> Customer</Link></li>
                   <li className="nav-item"> <Link className=" nav-link" to="/viewDesignation">Designation</Link></li>
                   <li className="nav-item"> <Link className=" nav-link" to="/viewExpense">Expense Category</Link></li>
-
+                  {/* <li className="nav-item"><Link className=" nav-link" to="/viewroles"> Roles</Link> </li> */}
                   <li className="nav-item"><Link className=" nav-link" to="/viewTable"> Table</Link> </li>
+
                   <li className="nav-item"><Link className=" nav-link" to="/viewuser"> User</Link> </li>
                   <li className="nav-item"><Link className=" nav-link" to="/viewVat"> Vat</Link> </li>
 

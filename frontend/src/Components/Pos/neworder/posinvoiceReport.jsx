@@ -57,7 +57,12 @@ const PosInvoiceReport = ({isModalInvoiceReport,setModalInvoiceReport}) =>{
   const columns = [
     { name: "SI No", selector: "siNo", sortable: true },
     { name: "Select Option", selector: "options", sortable: true },
-    { name: "Waiter", selector: "waiter.waitername", sortable: true },
+    // { name: "Waiter", selector: "waiter.firstname", sortable: true },
+    { 
+      name: "Waiter Name", 
+      selector: row => `${row.waiter.firstname} ${row.waiter.lastname}`, 
+      sortable: true 
+  },
     {
         name: "Date",
         selector: "date",
@@ -65,7 +70,14 @@ const PosInvoiceReport = ({isModalInvoiceReport,setModalInvoiceReport}) =>{
         cell: (row) => new Date(row.date).toLocaleDateString(),
     },
    
-   
+    { 
+      name: "Time", 
+      selector: "time",
+      sortable: true,
+    
+      cell: (row) => new Date(row.date).toLocaleTimeString(),
+  },
+     
    
     { 
         name: "Subtotal", 
@@ -91,7 +103,12 @@ const PosInvoiceReport = ({isModalInvoiceReport,setModalInvoiceReport}) =>{
 
      },
     { name: "Grand Total", selector: "grandTotal", sortable: true },
-    { name: "Added By", selector: "user.firstname", sortable: true },
+    // { name: "Added By", selector: "user.firstname", sortable: true },
+    { 
+      name: "Added By", 
+      selector: row => `${row.user.firstname} ${row.user.lastname}`, 
+      sortable: true 
+  },
 ];
 
 

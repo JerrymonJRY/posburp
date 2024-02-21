@@ -35,11 +35,13 @@ const PosDeliverySession =() =>{
                     <thead>
                         <tr>
                             <th>SI No</th>
+                            <th>Bill Number</th>
+                            <th>Order Number</th>
                             <th>Select Option</th>
                             <th>Waiter</th>
                             <th>Total</th>
                             <th>Vat Amount</th>
-                            
+                            <th>Date & Time</th>
                             <th>Added By</th>
                             <th>Deliverd By</th>
                             <th>Grand Total</th>
@@ -50,17 +52,32 @@ const PosDeliverySession =() =>{
                        
   {
    Array.isArray(posTodaydelivery) && posTodaydelivery.length > 0 ? ( 
-    posTodaydelivery.map((order,key) => (
+    posTodaydelivery.map((order,key) => {
+
+      const subtotal = order.total;
+      const vat = 5;
+      const vatamounts = (subtotal * vat) / 100;
+      const subtotalAfterVat = subtotal - vatamounts;
+      const orderDate = new Date(order.updatedAt);
+      const formattedDate = `${orderDate.getDate().toString().padStart(2, '0')}-${(orderDate.getMonth() + 1).toString().padStart(2, '0')}-${orderDate.getFullYear()}`;
+      const formattedTime = `${orderDate.getHours().toString().padStart(2, '0')}:${orderDate.getMinutes().toString().padStart(2, '0')}:${orderDate.getSeconds().toString().padStart(2, '0')}`;
+    
+
+      const datetime = `${formattedDate} ${formattedTime}`;
+
+      return (
     <tr key={order._id}>
      <td>{key + 1}</td>
+     <td>{order.billnumber}</td>
+          <td>{order.ordernumber}</td>
       <td>{order.options}</td>
 
-      <td>{order.waiter ? order.waiter.waitername : 'N/A'}</td>
-      <td>{order.total}</td>
-      <td>{order.vatAmount}</td>
-    
+      <td>{order.waiter ? order.waiter.firstname : 'N/A'} {order.waiter ? order.waiter.lastname : 'N/A'}</td>
+      <td>{subtotalAfterVat}</td>
+          <td>{vatamounts}</td>
+          <td>{datetime}</td>
       <td>{order.user ? `${order.user.firstname} ${order.user.lastname || ''}` : 'N/A'}</td>
-      <td>{order.deliveryperson ? order.deliveryperson.dliveryname : 'N/A'  }</td>
+      <td>{order.deliveryperson ? order.deliveryperson.firstname : 'N/A'  }{order.deliveryperson ? order.deliveryperson.lastname : 'N/A'}</td>
       <td>{order.grandTotal}</td>
 
       <td>
@@ -72,17 +89,18 @@ const PosDeliverySession =() =>{
         </a>
       </td>
     </tr>
-  ))
+      )
+})
   ):(
     <tr>
-    <td colSpan="7">No data available</td>
+    <td colSpan="8">No data available</td>
   </tr>
   )}
                        
                     </tbody>
                     <tfoot>
         <tr>
-          <td colSpan="6"></td>
+          <td colSpan="9"></td>
           <td>Total Grand Total:</td>
           <td>{totalGrandTotal}</td>
         </tr>

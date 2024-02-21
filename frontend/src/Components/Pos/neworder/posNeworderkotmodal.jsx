@@ -33,7 +33,7 @@ const PosNeworderKotModal =({isModalOpen,setModalOpen}) =>
         const searchTermLower = searchKotTerm.toLowerCase();
         const orderNumberIncludes = order.ordernumber.toLowerCase().includes(searchTermLower);
         const tableNameIncludes = order.table && order.table.tablename.toLowerCase().includes(searchTermLower);
-        const waiterNameIncludes = order.waiter.waitername.toLowerCase().includes(searchTermLower);
+        const waiterNameIncludes = order.waiter.firstname.toLowerCase().includes(searchTermLower);
       
         return orderNumberIncludes || (tableNameIncludes && waiterNameIncludes);
       });
@@ -90,7 +90,7 @@ const PosNeworderKotModal =({isModalOpen,setModalOpen}) =>
         <div className="menu-div">
           <h5 className="text-center">OrderID: <span>{order.ordernumber}</span></h5>
           <h6 className="text-center">Table: {order.table ? order.table.tablename : 'No Table'}</h6>
-          <h6 className="text-center">Waiter: {order.waiter.waitername}</h6>
+          <h6 className="text-center">Waiter: {order.waiter.firstname}{order.waiter.lastname}</h6>
           <h6 className="text-center">Running order</h6>
 
           <div className="row">

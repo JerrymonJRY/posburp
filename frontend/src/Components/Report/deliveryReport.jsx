@@ -46,7 +46,7 @@ const DeliveryReport = () => {
 
   const options = deliveryperson.map((delivery) => ({
     value: delivery._id,
-    label: delivery.dliveryname,
+    label: `${delivery.firstname} ${delivery.lastname}`,
   }));
 
   const columns = [
@@ -57,7 +57,7 @@ const DeliveryReport = () => {
       selector: (row) => (
         <React.Fragment key={row._id}>
           {row.deliveryInfo.map((delivery) => (
-            <div key={delivery._id}>{delivery.dliveryname}</div>
+            <div key={delivery._id}>{delivery.firstname}{delivery.lastname}</div>
           ))}
         </React.Fragment>
       ),
@@ -68,7 +68,7 @@ const DeliveryReport = () => {
       selector: (row) => (
         <React.Fragment key={row._id}>
           {row.deliveryInfo.map((delivery) => (
-            <div key={delivery._id}>{delivery.deliverymobile}</div>
+            <div key={delivery._id}>{delivery.mobile}</div>
           ))}
         </React.Fragment>
       ),
@@ -80,6 +80,13 @@ const DeliveryReport = () => {
       sortable: true,
       cell: (row) => new Date(row.date).toLocaleDateString(),
     },
+    { 
+      name: "Time", 
+      selector: "time",
+      sortable: true,
+    
+      cell: (row) => new Date(row.date).toLocaleTimeString(),
+  },
     { name: "Grand Total", selector: "grandTotal", sortable: true },
    
   ];

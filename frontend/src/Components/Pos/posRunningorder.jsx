@@ -53,7 +53,7 @@ const PosRunningOrder = ()=>{
       const searchTermLower = searchTerm.toLowerCase();
       const orderNumberIncludes = order.ordernumber.toLowerCase().includes(searchTermLower);
       const tableNameIncludes = order.table && order.table.tablename.toLowerCase().includes(searchTermLower);
-      const waiterNameIncludes = order.waiter.waitername.toLowerCase().includes(searchTermLower);
+      const waiterNameIncludes = order.waiter.firstname.toLowerCase().includes(searchTermLower);
     
       return orderNumberIncludes || (tableNameIncludes && waiterNameIncludes);
     });
@@ -208,7 +208,7 @@ const handleEdit =(id) =>
 
           <h5 className="text-center"><span>{order.ordernumber}</span></h5>
           <h6 className="text-center">Table: {order.table ? order.table.tablename : 'No Table'}</h6>
-          <h6 className="text-center">Table: {order.waiter.waitername}</h6>
+          <h6 className="text-center">WaiterName: {order.waiter.firstname}{order.waiter.lastname}</h6>
           <h6 className="text-center">Running order</h6>
 
           <div className="row">

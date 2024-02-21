@@ -48,7 +48,7 @@ const getAllPos =asyncHandler(async(req,res) =>{
         },
         {
           $lookup: {
-            from: "waiters",
+            from: "users",
             localField: "waiterId",
             foreignField: "_id",
             as: "waiterDetails"
@@ -182,7 +182,7 @@ const getAllPos =asyncHandler(async(req,res) =>{
         },
         {
           $lookup: {
-            from: "waiters",
+            from: "users",
             localField: "waiterId",
             foreignField: "_id",
             as: "waiterDetails"
@@ -294,7 +294,7 @@ const getAllPos =asyncHandler(async(req,res) =>{
         },
         {
           $lookup: {
-            from: 'waiters',
+            from: 'users',
             localField: 'waiterId',
             foreignField: '_id',
             as: 'waiter',
@@ -370,7 +370,7 @@ const getAllPos =asyncHandler(async(req,res) =>{
         },
         {
           $lookup: {
-            from: 'waiters',
+            from: 'users',
             localField: 'waiterId',
             foreignField: '_id',
             as: 'waiter',
@@ -458,7 +458,7 @@ const getAllPos =asyncHandler(async(req,res) =>{
         },
         {
           $lookup: {
-            from: 'waiters',
+            from: 'users',
             localField: 'waiterId',
             foreignField: '_id',
             as: 'waiter',

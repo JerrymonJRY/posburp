@@ -180,9 +180,13 @@ const PosNewOrder = () => {
 
     // navigate("/pos");
   };
+  // const filteredWaiters = waiter.filter((wait) =>
+  //   wait.waitername.toLowerCase().includes(searchWaiter.toLowerCase())
+  // );
   const filteredWaiters = waiter.filter((wait) =>
-    wait.waitername.toLowerCase().includes(searchWaiter.toLowerCase())
-  );
+  wait.firstname.toLowerCase().includes(searchWaiter.toLowerCase()) ||
+  wait.lastname.toLowerCase().includes(searchWaiter.toLowerCase())
+);
   const handleSearchTable = (e) => {
     setSearchTable(e.target.value);
   };
@@ -204,9 +208,10 @@ const PosNewOrder = () => {
   };
 
   const filteredDelivery = delivery.filter((delivery) =>
-    delivery.dliveryname
-      .toLowerCase()
-      .includes(searchDeliveryPerson.toLowerCase())
+
+
+      delivery.firstname.toLowerCase().includes(searchDeliveryPerson.toLowerCase()) ||
+      delivery.lastname.toLowerCase().includes(searchDeliveryPerson.toLowerCase())
   );
 
   console.info({ table });
@@ -1423,7 +1428,7 @@ printWindow.document.write('</body></html>');
                   >
                     <h6>
                       <TbChefHat className="mr-2" /> <br />
-                      {wait.waitername}
+                      {wait.firstname}{wait.lastname}
                     </h6>
                   </div>
                 </div>
@@ -1668,7 +1673,8 @@ printWindow.document.write('</body></html>');
                     <h6>
                       <MdDeliveryDining className="mr-2" />
                       <br />
-                      {delivery.dliveryname}
+                      {delivery.firstname}{delivery.lastname}
+                      
                     </h6>
                   </div>
                 </div>

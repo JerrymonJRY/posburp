@@ -54,7 +54,7 @@ const getCancel =asyncHandler(async(req,res) =>{
         },
         {
           $lookup: {
-            from: "waiters",
+            from: "users",
             localField: "waiterId",
             foreignField: "_id",
             as: "waiterDetails"

@@ -30,6 +30,10 @@ const AddUser =() =>{
       { value: 'Cashier', label: 'Cashier' },
       { value: 'Delivery', label: 'Delivery' },
       { value: 'Waiter', label: 'Waiter' },
+      { value: 'Cleaners', label: 'Cleaners' },
+      { value: 'Chef', label: 'Chef' },
+      { value: 'Security', label: 'Security' },
+      { value: 'Valet Driver', label: 'Valet Driver' },
 
      
      

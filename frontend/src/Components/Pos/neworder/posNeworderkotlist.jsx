@@ -51,7 +51,7 @@ kotdata.map((order) => {
                <h6>Options: {order.options}</h6>
                <h6>Customer Name:{order.customerDetails ? order.customerDetails.customername : 'N/A'}</h6>
       <h6>Table:{order.tableDetails ? order.tableDetails.tablename : 'N/A'}</h6>
-      <h6>Waiter {order.waiterDetails ? order.waiterDetails.waitername : 'N/A'}</h6>
+      <h6>Waiter {order.waiterDetails ? order.waiterDetails.firstname : 'N/A'}</h6>
       <h6>Date & Time:{formattedDate} {formattedTime}</h6>
                 <table className="table   table-bordered">
                 <thead>

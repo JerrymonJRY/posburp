@@ -78,8 +78,10 @@ const formattedTime = dateObject.toLocaleTimeString();
     <tr key={order._id}>
       <td>{order.ordernumber}</td>
       <td>{order.options}</td>
-      <td>{order.waiter.waitername}</td>
-
+   
+      <td>
+  {order.waiter ? `${order.waiter.firstname} ${order.waiter.lastname}` : 'N/A'}
+</td>
       <td>{formattedDate} {formattedTime}</td>
       <td>{subtotalAfterVat}</td>
       <td>{vatamounts}</td>
