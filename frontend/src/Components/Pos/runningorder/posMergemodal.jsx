@@ -8,6 +8,8 @@ const PosMergemodal = ({ mergdata, mergeModal,setMergeModal }) =>{
 
   const calculateTotals = () => {
     if (mergdata && mergdata.length > 0) {
+
+
       const totalAmount = mergdata.reduce((acc, order) => acc + parseInt(order.total, 10), 0);
       const totalVat = mergdata.reduce((acc, order) => acc + parseFloat(order.vatAmount), 0);
       const totalGrandTotal = mergdata.reduce((acc, order) => acc + parseInt(order.grandTotal, 10), 0);
@@ -19,6 +21,13 @@ const PosMergemodal = ({ mergdata, mergeModal,setMergeModal }) =>{
   };
 
   const { totalAmount, totalVat, totalGrandTotal } = calculateTotals();
+  const vatPercentValue = 5;
+  const vatAmount = (totalAmount * vatPercentValue) / 100;
+const Subtotal = totalAmount - vatAmount;
+
+const totalAmountWithoutVat = totalAmount - vatAmount;
+
+const vatPercent = (vatAmount / totalAmountWithoutVat) * 100;
   
 
   const [payments,setPayments] =useState();
@@ -69,16 +78,25 @@ const PosMergemodal = ({ mergdata, mergeModal,setMergeModal }) =>{
                              <th>Grand Total</th>
                            </thead>
                            <tbody>
-      { mergdata ? (mergdata.map((order,key) => (
+      { mergdata ? (mergdata.map((order,key) => {
+      const subtotal =order.total
+      const vatPercentValue = 5;
+      const vatAmount = (subtotal * vatPercentValue) / 100;
+      const subTotals = subtotal - vatAmount;
+      const grandTotal =subTotals + vatAmount;
+
+
+
+        return (
        <tr key={order._id}>
              <td>{key + 1}</td>
              <td>{order.ordernumber}</td>
-             <td>{order.total}</td>
-             <td>{order.vatAmount}</td>
+             <td>{subTotals}</td>
+             <td>{vatAmount}</td>
              <td>{order.grandTotal}</td>
          </tr>
                 
-                   ))
+        )  })
                    ):(
                      <p>No data dddd</p>
                     
@@ -88,8 +106,8 @@ const PosMergemodal = ({ mergdata, mergeModal,setMergeModal }) =>{
                            <tfoot>
                   <tr>
                     <td colSpan="2">Totals:</td>
-                    <td>{totalAmount}</td>
-                    <td>{totalVat}</td>
+                    <td>{Subtotal}</td>
+                    <td>{vatAmount}</td>
                     <td>{totalGrandTotal}</td>
                   </tr>
                 </tfoot>

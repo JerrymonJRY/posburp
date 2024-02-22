@@ -348,7 +348,7 @@ const getedit =asyncHandler(async(req,res) =>{
       },
       {
         $lookup: {
-          from: "waiters",
+          from: "users",
           localField: "waiterId",
           foreignField: "_id",
           as: "waiterDetails"
@@ -374,7 +374,7 @@ const getedit =asyncHandler(async(req,res) =>{
       },
       {
         $lookup: {
-          from: "delivery",
+          from: "users",
           localField: "delivery",
           foreignField: "_id",
           as: "deliveryDetails"
