@@ -56,6 +56,7 @@ const loginUserController =asyncHandler(async(req,res) =>{
             shifttoken: shiftToken,
             userrole:findUser?.userrole,
             shiftacess:findUser?.shiftacess,
+            
 
 
 
@@ -152,19 +153,25 @@ const logout = asyncHandler(async (req, res) => {
   });
 
 
-  const updateUser =asyncHandler(async(req,res)=>{
-     
-    const { id } =req.params;
-   
+  const updateUser = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+  
     try
     {
         const updateUser =await User.findByIdAndUpdate(id,{
+          
           firstname:req?.body?.firstname,
           lastname:req?.body?.lastname,
           email:req?.body?.email,
           mobile:req?.body?.mobile,
           userrole:req?.body?.userrole,
-        
+          basicSalary:req?.body?.basicSalary,
+          otherAllowance:req?.body?.otherAllowance,
+          netSalary:req?.body?.netSalary,
+          joiningdate:req?.body?.joiningdate,
+          contactperson:req?.body?.contactperson,
+          contactnumber:req?.body?.contactnumber,
+          address:req?.body?.address,
           
   
         },
@@ -174,14 +181,70 @@ const logout = asyncHandler(async (req, res) => {
         );
   
         res.json(updateUser);
+    } catch (error) {
+      // Handle errors appropriately (e.g., logging, sending error response)
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  });
+
+
+
+  const deactivate =asyncHandler(async(req,res) =>{
+
+    const { id } =req.params;
+
+    try
+    {
+      let status = "DeActive";
+      const updateResult = await User.updateOne(
+        { _id: id },
+        {
+          $set: {
+            status: status,
+          
+          },
+        }
+      );
+  
+        res.json(updateResult);
     }
     catch(error)
     {
         throw new Error(error);
     }
-  
-  
+    
+
   });
+
+
+  const activate =asyncHandler(async(req,res) =>{
+
+    const { id } =req.params;
+
+
+    try
+    {
+      let status = "Active";
+      const updateResult = await User.updateOne(
+        { _id: id },
+        {
+          $set: {
+            status: status,
+          
+          },
+        }
+      );
+  
+        res.json(updateResult);
+    }
+    catch(error)
+    {
+        throw new Error(error);
+    }
+
+  });
+  
 
 
 
@@ -278,4 +341,7 @@ module.exports={ createUser,
   editUser,
   updateUser,
   changePassword,
-  forgotpassword};
+  forgotpassword,
+  deactivate,
+  activate
+};

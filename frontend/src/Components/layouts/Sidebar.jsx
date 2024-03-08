@@ -95,21 +95,7 @@ const Sidebar = () => {
         {(userRole === 'Admin' || userRole === 'SuperAdmin') ?
 
           <>
-            <li className="nav-item">
-              <a className="nav-link" data-bs-toggle="collapse" href="#general-pages" aria-expanded="false" aria-controls="general-pages">
-                <span className="menu-title">Employee</span>
-                <i className="menu-arrow"></i>
-                <i className="mdi mdi-medical-bag menu-icon"></i>
-              </a>
-              <div className="collapse" id="general-pages">
-                <ul className="nav flex-column sub-menu">
-                  {/* <li className="nav-item"> <a className="nav-link" href="">Designation </a></li> */}
-                  <li className="nav-item"> <Link className="nav-link" to="/viewWaiter"> Waiter</Link> </li>
-                  <li className="nav-item"> <Link className="nav-link" to="/viewDelivery">Delivery</Link> </li>
-
-                </ul>
-              </div>
-            </li>
+          
 
            
             {  isOpeningBalanceComplete ? ( 
@@ -181,7 +167,6 @@ const Sidebar = () => {
                   {/* <li className="nav-item"><Link className=" nav-link" to="/viewroles"> Roles</Link> </li> */}
                   <li className="nav-item"><Link className=" nav-link" to="/viewTable"> Table</Link> </li>
 
-                  <li className="nav-item"><Link className=" nav-link" to="/viewuser"> User</Link> </li>
                   <li className="nav-item"><Link className=" nav-link" to="/viewVat"> Vat</Link> </li>
 
                 </ul>
@@ -222,6 +207,24 @@ const Sidebar = () => {
                   <li className="nav-item"> <Link className="nav-link" to="/dailveryReport"> Delivery Report</Link></li>
                   <li className="nav-item"> <Link className="nav-link" to="/customerReport"> Customer Report</Link></li>
                   <li className="nav-item"> <Link className="nav-link" to="/waiterReport"> Waiter Report</Link> </li>
+
+                </ul>
+              </div>
+            </li>
+
+            <li className="nav-item">
+              <a className="nav-link" data-bs-toggle="collapse" href="#general-human" aria-expanded="false" aria-controls="general-inventory">
+                <span className="menu-title">Human Resource</span>
+                <i className="menu-arrow"></i>
+                <i className="mdi mdi-medical-bag menu-icon"></i>
+              </a>
+              <div className="collapse" id="general-human">
+                <ul className="nav flex-column sub-menu">
+                  
+                <li className="nav-item"><Link className=" nav-link" to="/viewuser"> User</Link> </li>
+                  <li className="nav-item"> <Link className="nav-link" to="/dailveryReport">Attendance</Link></li>
+                  <li className="nav-item"> <Link className="nav-link" to="/customerReport">Payrol</Link></li>
+                  <li className="nav-item"> <Link className="nav-link" to="/waiterReport">Timesheet</Link> </li>
 
                 </ul>
               </div>

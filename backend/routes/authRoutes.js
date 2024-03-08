@@ -11,7 +11,9 @@ const {
     editUser,
     updateUser,
     changePassword,
-    forgotpassword
+    forgotpassword,
+    deactivate,
+    activate
 } =require('../controller/userController');
 
 router.post('/register',createUser);
@@ -24,5 +26,7 @@ router.get('/edituser/:id',editUser);
 router.put('/updateuser/:id',updateUser);
 router.post('/changePassword',changePassword);
 router.post('/forgotpassword',forgotpassword);
+router.put('/deactivate/:id',deactivate);
+router.put('/activate/:id',activate);
 
 module.exports =router;

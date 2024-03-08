@@ -4,14 +4,18 @@ import Header from '../layouts/Header';
 import Sidebar from '../layouts/Sidebar';
 import Footer from '../layouts/Footer';
 import axios from "axios";
-import { redirect, useNavigate,Link } from "react-router-dom";
+import { redirect, useNavigate,Link,useParams } from "react-router-dom";
 import apiConfig from '../layouts/base_url';
+import DataTable from "react-data-table-component";
+import Swal from 'sweetalert2';
 const ViewUser =() =>{
 
 
     
   const [data , setData] =useState([]);
+  const [searchText, setSearchText] = useState('');
   const navigate = useNavigate();
+  const {id} =useParams()
   useEffect( ()=>{
 
       axios.get(`${apiConfig.baseURL}/api/user/getusers`)
@@ -27,6 +31,141 @@ const ViewUser =() =>{
   }, []);
 
 
+  const handleDeactivate = (id) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.put(`${apiConfig.baseURL}/api/user/deactivate/${id}`)
+          .then((res) => {
+            Swal.fire({
+              icon: 'success',
+              title: 'DeActivate!',
+              text: 'User  has been Deactivated.',
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              }
+            });
+            // Refresh data after successful delete
+            axios.get(`${apiConfig.baseURL}/api/user/getusers`)
+              .then((response) => {
+                setData(response.data);
+              })
+              .catch((error) => console.error(error));
+          })
+          .catch((err) => console.log(err));
+      }
+    });
+  };
+
+
+  const handleActivate = (id) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.put(`${apiConfig.baseURL}/api/user/activate/${id}`)
+          .then((res) => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Activate!',
+              text: 'User  has been Activated.',
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              }
+            });
+            // Refresh data after successful delete
+            axios.get(`${apiConfig.baseURL}/api/user/getusers`)
+              .then((response) => {
+                setData(response.data);
+              })
+              .catch((error) => console.error(error));
+          })
+          .catch((err) => console.log(err));
+      }
+    });
+  };
+
+  const columns = [
+    {
+      name: 'S.No',
+      cell: (row, index) => index + 1,
+      sortable: false,
+    },
+    {
+      name: 'Name',
+      selector: 'fullname',
+      sortable: true,
+      cell: row => <div>{row.firstname} {row.lastname}</div>
+    },
+    {
+      name: 'Email',
+      selector: 'email',
+      sortable: true,
+    },
+    {
+      name: 'Mobile',
+      selector: 'mobile',
+      sortable: true,
+    },
+    {
+      name: 'UserRole',
+      selector: 'userrole',
+      sortable: true,
+    },
+    {
+      name: 'Action',
+      cell: row => (
+        <div>
+          <Link to={`/edituser/${row._id}`} className="btn btn-primary">Edit</Link>
+          {row.status === "Active" ? (
+            <button onClick={(e) => handleDeactivate(row._id)} className="btn btn-danger ml-2">Deactivate</button>
+          ) : (
+            <button onClick={(e) => handleActivate(row._id)} className="btn btn-success ml-2">Activate</button>
+          )}
+        </div>
+      ),
+    },
+  ];
+
+  const customStyles = {
+    headRow: {
+      style: {
+        backgroundColor: '#f2f2f2',
+      },
+    },
+  };
+
+  const filteredData = data.filter(item =>
+    item.firstname.toLowerCase().includes(searchText.toLowerCase()) ||
+    item.lastname.toLowerCase().includes(searchText.toLowerCase()) ||
+    item.email.toLowerCase().includes(searchText.toLowerCase()) ||
+    item.mobile.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   
     return (
@@ -45,7 +184,7 @@ const ViewUser =() =>{
                     
                 </div>
                   
-                <table className="table table-hover"  id="example_table" style={{ width: "100%" }}>
+                {/* <table className="table table-hover"  id="example_table" style={{ width: "100%" }}>
                       <thead>
                         <tr>
                           <th>Name</th>
@@ -71,6 +210,12 @@ const ViewUser =() =>{
 
                                 <td>
                                 <Link to={`/edituser/${d._id}`} className="btn btn-primary">Edit</Link>
+
+                                {d.status === "Active" ? (
+                               <button onClick={(e) => handleDeactivate(d._id)} className="btn btn-danger ml-3">Deactivate</button>
+                                  ) : (
+                                   <button onClick={(e) => handleActivate(d._id)} className="btn btn-success ml-3">Activate</button>
+                                 )}
                                   
                                 </td>
 
@@ -79,7 +224,26 @@ const ViewUser =() =>{
                         ))
                     }
                       </tbody>
-                    </table>
+                    </table> */}
+                   <DataTable
+      columns={columns}
+      data={filteredData}
+      pagination
+      paginationPerPage={10}
+      paginationRowsPerPageOptions={[10, 25, 50, 100]}
+      paginationTotalRows={data.length}
+      onChangePage={page => console.log(page)}
+      onChangeRowsPerPage={(currentRowsPerPage, currentPage) => console.log(currentRowsPerPage, currentPage)}
+      subHeader
+      subHeaderComponent={
+        <input
+          type="text"
+          placeholder="Search..."
+          onChange={(e) => setSearchText(e.target.value)}
+          value={searchText}
+        />
+      }
+    />
                   </div>
                 </div>
               </div>

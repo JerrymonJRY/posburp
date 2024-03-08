@@ -88,30 +88,40 @@ import EditSupplier from './Components/Supplier/editSupplier';
 import AddRole from './Components/Roles/addRole';
 import ViewRole from './Components/Roles/viewRole';
 import EditRole from './Components/Roles/editRole';
+import LoadingSpinner from './Components/layouts/loadspinner';
 function App() {
 
   //const navigate = useNavigate();
-  
+  const [loading, setLoading] = useState(true);
 
   const Spinner = () => {
     return <div>Loading...</div>;
   };
 
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      setLoading(false); // Set loading to false after a delay
+    }, 2000); // Simulating a 2-second loading delay
+
+    return () => clearTimeout(delay); // Cleanup function to clear the timeout
+  }, []);
+
   return (
     
   <BrowserRouter>
+
  
   <Suspense fallback={<Spinner />}>
+  {loading ? (
+        <LoadingSpinner />
+      ) : (
     <Routes>
+   
    
                  <Route path='/' element={<Login />} />
                  <Route path='/forgotpassword' element={<Forgotpassword />}></Route>
 
-                 <Route path='/dashboard' element={
-                  <RequireToken>
-                    <Dashboard />
-                  </RequireToken>
-                  }></Route>
+                 <Route path='/dashboard' element={<RequireToken><Dashboard /></RequireToken>}></Route>
 
     
               <Route exact path="/dashboard" element={<Dashboard />} />
@@ -149,20 +159,7 @@ function App() {
               <Route path='/addWaiter' element={<RequireToken><AddWaiter /></RequireToken>}></Route>
               <Route path='/viewWaiter' element={<RequireToken><ViewWaiter /></RequireToken>}></Route>
               <Route path='/editWaiter/:id' element={<RequireToken><EditWaiter /></RequireToken>}></Route>
-              {/* <Route
-      path="/pos"
-      element={
-        isOpeningBalanceComplete ? (
-          <RequireToken>
-            <Pos />
-          </RequireToken>
-        ) : (
-          <RequireToken>
-            <OpenningBalance />
-          </RequireToken>
-        )
-      }
-    /> */}
+             
 
               <Route path='/pos' element={<RequireToken><Pos /></RequireToken>}></Route>
               <Route path='/openningbalance' element={<RequireToken><OpenningBalance /></RequireToken>}></Route>
@@ -239,8 +236,9 @@ function App() {
      
    
     </Routes>
+      )}
     </Suspense>
-  
+    
   </BrowserRouter>
 
 

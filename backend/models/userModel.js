@@ -44,6 +44,14 @@ var userSchema = new mongoose.Schema({
     },
     shiftacess:{ type: String, default: 'null'},
   status: { type: String, default: 'Active' },
+  basicSalary:{type:String,default: 'null'},
+  otherAllowance:{type:String,default: 'null'},
+  netSalary:{type:String,default: 'null'},
+  joiningdate:{type: String,default: 'null'},
+  contactperson:{type: String,default: 'null'},
+  contactnumber:{type: String,default: 'null'},
+  address:{type: String,default: 'null'}
+
 });
 
 userSchema.pre("save",async function (next){

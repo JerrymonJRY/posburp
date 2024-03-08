@@ -6,10 +6,58 @@ import Footer from '../layouts/Footer';
 import axios from "axios";
 import { redirect, useNavigate,Link } from "react-router-dom";
 import apiConfig from '../layouts/base_url';
+import Swal from 'sweetalert2';
 const AddUser =() =>{
 
   const [confirmPassword, setConfirmPassword] = useState('');
   const [userrole,setUserRole] =useState('');
+  const [basicSalary, setBasicSalary] = useState('');
+  const [otherAllowance, setOtherAllowance] = useState('');
+  const [netSalary, setNetSalary] = useState('');
+
+
+  // const handleBasicSalaryChange = (event) => {
+  //   const value = event.target.value;
+  //   setBasicSalary(value);
+  //   calculateNetSalary(value, otherAllowance);
+  // };
+  const handleBasicSalaryChange = (event) => {
+    const value = event.target.value;
+    setBasicSalary(value);
+    calculateNetSalary(value, values.otherAllowance); // Calculate net salary based on updated basic salary
+    setValues((prevValues) => ({
+      ...prevValues,
+      basicSalary: value, // Update basicSalary field in the values object
+    }));
+  };
+
+  // Function to handle changes in other allowance input
+  // const handleOtherAllowanceChange = (event) => {
+  //   const value = event.target.value;
+  //   setOtherAllowance(value);
+  //   calculateNetSalary(basicSalary, value);
+  // };
+  const handleOtherAllowanceChange = (event) => {
+    const value = event.target.value;
+    setOtherAllowance(value);
+    calculateNetSalary(values.basicSalary, value); // Calculate net salary based on updated other allowance
+    setValues((prevValues) => ({
+      ...prevValues,
+      otherAllowance: value, // Update otherAllowance field in the values object
+    }));
+  };
+
+  // Function to calculate net salary
+  const calculateNetSalary = (basic, allowance) => {
+    const basicValue = parseFloat(basic);
+    const allowanceValue = parseFloat(allowance);
+    const total = basicValue + allowanceValue || basicValue;
+    setNetSalary(total.toFixed(2));
+    setValues((prevValues) => ({
+      ...prevValues,
+      netSalary: total.toFixed(2), // Update netSalary field in the values object
+    }));
+  };
 
     const [values,setValues] = useState({
 
@@ -19,7 +67,15 @@ const AddUser =() =>{
         mobile:'',
         password:'',
        
-        userrole: ''
+        userrole: '',
+        basicSalary: '',
+        otherAllowance: '',
+        netSalary:'',
+        joiningdate:'',
+        contactperson:'',
+        contactnumber:'',
+        address:''
+
        
 
     })
@@ -46,26 +102,34 @@ const AddUser =() =>{
     
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
-    const handleSubmit =(event) =>{
-
-        event.preventDefault();
-        const validationErrors = validateForm(values);
-        if (Object.keys(validationErrors).length === 0) {
-        axios.post(`${apiConfig.baseURL}/api/user/register`,values)
-        .then(res =>{
-
+    const handleSubmit = (event) => {
+      event.preventDefault();
+      const validationErrors = validateForm(values);
+      if (Object.keys(validationErrors).length === 0) {
+        axios.post(`${apiConfig.baseURL}/api/user/register`, values)
+          .then(res => {
             console.log(res);
-            navigate('/viewuser');
-        })
-        .catch(err =>console.log(err));
-      }
-      else {
+            Swal.fire({
+              icon: 'success',
+              title: 'Success!',
+              text: 'User registered successfully!',
+            }).then(() => {
+              navigate('/viewuser');
+            });
+          })
+          .catch(err => {
+            console.log(err);
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'Something went wrong! Please try again.',
+            });
+          });
+      } else {
         // Set validation errors
         setErrors(validationErrors);
       }
-
-
-    }
+    };
 
     const validateForm = (data) => {
       let errors = {};
@@ -201,6 +265,78 @@ const AddUser =() =>{
     {errors.userrole && <span className="error">{errors.userrole}</span>}
                         </div>
                       </div>
+
+
+<div className='form-group row'>
+    <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Joining Date</label>
+    <div className='col-sm-9'>
+        <input type='date' className='form-control'  onChange={e =>setValues({...values, joiningdate: e.target.value})}  name='joiningdate' />
+    </div>
+</div>
+
+
+<div className='form-group row'>
+        <label htmlFor="basicSalary" className="col-sm-3 col-form-label">Basic Salary</label>
+        <div className='col-sm-9'>
+          <input 
+            id="basicSalary"
+            type='text' 
+            className='form-control' 
+            name='basicSalary'
+            value={basicSalary} 
+            onChange={handleBasicSalaryChange} 
+          />
+        </div>
+      </div>
+
+      <div className='form-group row'>
+        <label htmlFor="otherAllowance" className="col-sm-3 col-form-label">Other Allowance</label>
+        <div className='col-sm-9'>
+          <input 
+            id="otherAllowance"
+            type='text' 
+            className='form-control' 
+            name='otherAllowance'
+            value={otherAllowance} 
+            onChange={handleOtherAllowanceChange} 
+          />
+        </div>
+      </div>
+
+      <div className='form-group row'>
+        <label htmlFor="netSalary" className="col-sm-3 col-form-label">Net Salary</label>
+        <div className='col-sm-9'>
+          <input 
+            id="netSalary"
+            type='text' 
+            className='form-control' 
+            name='netSalary'
+            value={netSalary} 
+            readOnly 
+          />
+        </div>
+      </div>
+
+<div className='form-group row'>
+    <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Emergency Contact Person Name</label>
+    <div className='col-sm-9'>
+        <input type='text' className='form-control' onChange={e =>setValues({...values, contactperson: e.target.value})} name='contactperson' />
+    </div>
+</div>
+
+<div className='form-group row'>
+    <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Emergency Contact Number</label>
+    <div className='col-sm-9'>
+        <input type='text' className='form-control' onChange={e =>setValues({...values, contactnumber: e.target.value})}  name='contactnumber' />
+    </div>
+</div>
+
+<div className='form-group row'>
+    <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Address</label>
+    <div className='col-sm-9'>
+        <input type='text' className='form-control' onChange={e =>setValues({...values, address: e.target.value})}  name='address' />
+    </div>
+</div>
 
 
 

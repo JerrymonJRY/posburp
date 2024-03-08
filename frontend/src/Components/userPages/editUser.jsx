@@ -16,6 +16,13 @@ const EditUser =() =>{
   const [email,setEmail] =useState('');
   const [mobile,setMobile] =useState('');
   const [userrole,setUserRole] =useState('');
+  const [basicSalary, setBasicSalary] = useState('');
+  const [otherAllowance, setOtherAllowance] = useState('');
+  const [netSalary, setNetSalary] = useState('');
+  const [joiningdate, setJoiningdate] = useState('');
+  const [contactperson, setContactperson] = useState('');
+  const [contactnumber, setContactnumber] = useState('');
+  const [address, setAddress] = useState('');
 
     
   const navigate = useNavigate();
@@ -26,15 +33,38 @@ const EditUser =() =>{
     { value: 'Cashier', label: 'Cashier' },
     { value: 'Delivery', label: 'Delivery' },
     { value: 'Waiter', label: 'Waiter' },
+    { value: 'Cleaners', label: 'Cleaners' },
+    { value: 'Chef', label: 'Chef' },
+    { value: 'Security', label: 'Security' },
+    { value: 'Valet Driver', label: 'Valet Driver' },
 
-   
-   
   ];
 
   const handleUserRole = (event) => {
     setUserRole(event.target.value);
   //  alert({svat});
    }
+
+   const handleBasicSalaryChange = (event) => {
+    const value = event.target.value;
+    setBasicSalary(value);
+    calculateNetSalary(value, otherAllowance);
+  };
+
+  // Function to handle changes in other allowance input
+  const handleOtherAllowanceChange = (event) => {
+    const value = event.target.value;
+    setOtherAllowance(value);
+    calculateNetSalary(basicSalary, value);
+  };
+
+  // Function to calculate net salary
+  const calculateNetSalary = (basic, allowance) => {
+    const basicValue = parseFloat(basic);
+    const allowanceValue = parseFloat(allowance);
+    const total = basicValue + allowanceValue || basicValue; 
+    setNetSalary(total.toFixed(2)); 
+  };
 
    
    useEffect( ()=>{
@@ -46,6 +76,13 @@ const EditUser =() =>{
       setEmail(res.data.email)
       setMobile(res.data.mobile)
       setUserRole(res.data.userrole)
+      setBasicSalary(res.data.basicSalary)
+      setOtherAllowance(res.data.otherAllowance)
+      setNetSalary(res.data.netSalary)
+      setJoiningdate(res.data.joiningdate)
+      setContactperson(res.data.contactperson)
+      setContactnumber(res.data.contactnumber)
+      setAddress(res.data.address)
     
 })
     .catch(err =>console.log(err));
@@ -64,13 +101,23 @@ const EditUser =() =>{
     formData.append("mobile", mobile);
     formData.append("userrole", userrole);
 
+    formData.append("joiningdate", joiningdate);
+    formData.append("basicSalary", basicSalary);
+    formData.append("otherAllowance", otherAllowance);
+    formData.append("netSalary", netSalary);
+    formData.append("contactperson", contactperson);
+
+    formData.append("contactnumber", contactnumber);
+    formData.append("address", address);
+   
+
     const config = {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     };
 
-    console.log(formData);
+    // console.log("basicSalary:", basicSalary);
 
     axios
     .put(
@@ -167,7 +214,79 @@ const EditUser =() =>{
                       </div>
 
 
+                  
+<div className='form-group row'>
+    <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Joining Date</label>
+    <div className='col-sm-9'>
+        <input type='date' className='form-control'  value={joiningdate} onChange={(e)=>setJoiningdate(e.target.value)}  name='joiningdate' />
+    </div>
+</div>
 
+
+<div className='form-group row'>
+        <label htmlFor="basicSalary" className="col-sm-3 col-form-label">Basic Salary</label>
+        <div className='col-sm-9'>
+          <input 
+            id="basicSalary"
+            type='text' 
+            className='form-control' 
+            value={basicSalary} 
+            name='basicSalary'
+            onChange={handleBasicSalaryChange} 
+          />
+        </div>
+      </div>
+
+      <div className='form-group row'>
+        <label htmlFor="otherAllowance" className="col-sm-3 col-form-label">Other Allowance</label>
+        <div className='col-sm-9'>
+          <input 
+            id="otherAllowance"
+            type='text' 
+            className='form-control' 
+            value={otherAllowance} 
+            name='otherAllowance'
+            onChange={handleOtherAllowanceChange} 
+          />
+        </div>
+      </div>
+
+      <div className='form-group row'>
+        <label htmlFor="netSalary" className="col-sm-3 col-form-label">Net Salary</label>
+        <div className='col-sm-9'>
+          <input 
+            id="netSalary"
+            type='text' 
+            className='form-control' 
+            value={netSalary} 
+            name='netSalary'
+            readOnly 
+          />
+        </div>
+      </div>
+
+      
+
+      <div className='form-group row'>
+    <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Emergency Contact Person Name</label>
+    <div className='col-sm-9'>
+        <input type='text' className='form-control' value={contactperson} onChange={(e)=>setContactperson(e.target.value)} name='contactperson' />
+    </div>
+</div>
+
+<div className='form-group row'>
+    <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Emergency Contact Number</label>
+    <div className='col-sm-9'>
+        <input type='text' className='form-control' value={contactnumber} onChange={(e)=>setContactnumber(e.target.value)}  name='contactnumber' />
+    </div>
+</div>
+
+<div className='form-group row'>
+    <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Address</label>
+    <div className='col-sm-9'>
+        <input type='text' className='form-control' value={address} onChange={(e)=>setAddress(e.target.value)}  name='address' />
+    </div>
+</div>
 
                     
                     

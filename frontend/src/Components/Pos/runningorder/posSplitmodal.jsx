@@ -140,10 +140,7 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
 
 
           total += item.quantity * item.price;
-         
-        });
-
-        const vatPercentValue = 5;
+          const vatPercentValue = 5;
         const vatAmounts = (total * vatPercentValue) / 100;
         
         // Declare subtotal before the forEach loop
@@ -164,6 +161,10 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
 
       // Set the overall total price state
       setOverallTotalPrice(overallTotalWithVAT);
+         
+        });
+
+        
   
        
   
@@ -195,7 +196,7 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
 
   };
 
-  const handleSubmit =(event) =>{
+  const handleSubmit = (event, index) => {
 
     event.preventDefault();
     console.log(foodtextInputs);
@@ -293,7 +294,7 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
                         className={`col-md-6 card-container ${selectedCard === index ? 'selected-card' : ''}`}
                         key={index}
                         onClick={() => handleCardClick(index)}
-                      ><form onSubmit={handleSubmit}>
+                      > <form onSubmit={(event) => handleSubmit(event, index)}>
                         <div key={index} className="card">
                           <div className="">
                             <div className="card-header">
