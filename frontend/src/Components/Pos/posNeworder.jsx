@@ -71,24 +71,17 @@ const PosNewOrder = () => {
     const fetchData = async () => {
       try {
         const id = localStorage.getItem('_id');
-
         if (!id) {
-          // Handle the case when storeid is not available in localStorage
-          console.error('Store ID not found in localStorage');
+           console.error('Store ID not found in localStorage');
           return;
         }
-
-        //const response = await axios.get(`${apiConfig.baseURL}/api/pos/getShiftAccess?storeid=${storeid}`);
-       const response = await axios.get(`${apiConfig.baseURL}/api/pos/getShiftAccess`, {
+        const response = await axios.get(`${apiConfig.baseURL}/api/pos/getShiftAccess`, {
           params: {
             id: id,
           },
         });
-       // console.log(response.data);
        const shiftdata = response.data;
-
-        // Assuming response.data contains the shiftAccess data
-        setShiftAccess(shiftdata.shiftacess);
+       setShiftAccess(shiftdata.shiftacess);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }

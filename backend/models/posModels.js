@@ -21,9 +21,7 @@ ordernumber:{type:String},
     salesprice: String,
     quantity: String,
 
-  }] 
-    
-  ,
+  }],
   total:{type:String},
   grandTotal:{type:String},
   vatAmount:{type:String},

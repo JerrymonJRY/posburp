@@ -20,7 +20,7 @@ const {getposCategory,
 
 const {updatePosorder} =require('../controller/posUpdateController')
 const {getAllPos,completePaymeny,paidorders,cancelorders,runningorders} =require('../controller/posneworderController')
-const {runningOrder,getKot,getedit,getSplit,getMerge} =require('../controller/posrunningorderController')
+const {runningOrder,getKot,getedit,getSplit,getMerge,updateSplit} =require('../controller/posrunningorderController')
 const {todayDelivery} =require('../controller/posdeliveryController')
 const {posinvoiceReport} =require('../controller/posinvoiceReportController')
 const {closingbalance,closeShift,getShiftAccess,closingCancelOrder,posclosingbalance} = require('../controller/closingbalanceController');
@@ -61,6 +61,7 @@ router.get('/paidorders',paidorders);
 router.get('/cancelorders',cancelorders);
 router.get('/runningorders',runningorders);
 router.get('/posclosingbalance',posclosingbalance);
+router.put('/updateSplits/:id',updateSplit);
 
 
 

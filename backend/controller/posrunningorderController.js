@@ -10,6 +10,7 @@ const Delivery =require('../models/deliveryModel');
 const OrderTable =require('../models/ordertableModel');
 const Payment =require('../models/paymentModel');
 const Transaction =require('../models/acctransactionModel')
+const Splitorder =require('../models/splitorderModel');
 
 
 const runningOrder =asyncHandler(async(req,res) =>{
@@ -443,5 +444,121 @@ const getMerge =asyncHandler(async(req,res) =>{
 
 
 
+  const updateSplit = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { cart,addedby,shiftstoken,shiftAccess,opentoken } = req.body;
 
-  module.exports = {runningOrder,getKot,getedit,getSplit,getMerge}
+    const existingEntry = await Pos.findById(id);
+    const existingCart = existingEntry.cart;
+
+    const updates = []; // Array to store updates to be applied
+    let foodtotal = 0;
+
+    cart.forEach(updatedItem => {
+        const { foodmenuId: updatedFoodmenuId, quantity: updatedQuantity,salesprice:updateSales } = updatedItem;
+
+        const existingItem = existingCart.find(item => item.foodmenuId.toString() === updatedFoodmenuId.toString());
+
+        if (existingItem) {
+            const { _id: existingItemId } = existingItem;
+
+            const foodqty = existingItem.quantity - updatedQuantity
+
+          
+
+            const parsedUpdatedQuantity = parseInt(foodqty);
+            updates.push({
+                    updateOne: {
+                        filter: { "cart._id": existingItemId },
+                        update: { $set: { "cart.$.quantity": parsedUpdatedQuantity } }
+                    }
+                });
+
+                foodtotal += updatedQuantity * updateSales;
+          
+        }
+
+});
+ if (updates.length > 0) {
+      
+        await Pos.bulkWrite(updates);
+    }
+    const sequence = await Splitorder.findOne({}).sort("-splitnumber"); 
+    let nextIdNumber = "SPI10001";
+    if (sequence && sequence.splitnumber) {
+      const lastIdNumber = sequence.splitnumber;
+      const numericPart = lastIdNumber.substring(3); // Adjust the starting index
+      const nextNumericValue = parseInt(numericPart, 10) + 1;
+      nextIdNumber = `SPI${nextNumericValue.toString().padStart(5, "0")}`;
+    }
+
+    // Check if the ID number already exists
+    const exists = await Payment.findOne({ splitnumber: nextIdNumber });
+
+    if (exists) {
+      return res.status(400).json({ error: "ID number already exists" });
+    }
+
+    const splitpayment = new Splitorder({
+      splitnumber: nextIdNumber,
+      orderId: id,
+      cart: cart,
+      addedby:addedby,
+      shiftstoken:shiftstoken,
+      opentoken:opentoken,
+    });
+
+    const finaldata = await splitpayment.save();
+
+
+    const trans = await Transaction.findOne({}).sort("-transnumber");
+
+    let transIdnumber = "TR10001";
+
+    if (trans && trans.transnumber) {
+      const lastIdNumber = trans.transnumber;
+      const numericPart = lastIdNumber.substring(2);
+      const nextNumericValue = parseInt(numericPart, 10) + 1;
+      transIdnumber = `TR${nextNumericValue.toString().padStart(5, "0")}`;
+    }
+
+    const exist = await Transaction.findOne({ transnumber: transIdnumber });
+
+    if (exist) {
+      return res.status(400).json({ error: "ID number already exists" });
+    }
+
+    let transtype = "Credit";
+    let transmode = "Food Bill";
+    let transtatus = "Paid";
+
+    const newEntry = new Transaction({
+      accountsid: finaldata._id,
+      transnumber: transIdnumber,
+      transmode: transmode,
+      grandTotal:foodtotal,
+      transtype: transtype,
+      shiftstoken:shiftstoken,
+      opentoken:opentoken,
+      transtatus:transtatus,
+    });
+    await newEntry.save();
+
+
+   
+    res.json({ success: true, message: "Quantities updated successfully" });
+});
+
+
+
+
+
+
+   
+
+ 
+
+
+
+
+  module.exports = {runningOrder,getKot,getedit,getSplit,getMerge,updateSplit}

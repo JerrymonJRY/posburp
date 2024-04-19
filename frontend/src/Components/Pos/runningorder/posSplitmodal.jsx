@@ -4,6 +4,7 @@ import axios from "axios";
 import { redirect, useNavigate, Link } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
+import apiConfig from '../../layouts/base_url';
 const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitModal }) => {
 
 
@@ -16,17 +17,50 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
   const [overallvat, setOverallVat] = useState(0);
   const [overallsubtotal, setOverallSubtotal] = useState(0);
 
-  // const totalGrandTotal = Array.isArray(splitdata)
-  //   ? splitdata.reduce((total, order) => {
 
-  //     const orderTotal = order.cart.reduce((orderTotal, cartItem) => {
-  //       const itemQuantity = parseFloat(cartItem.quantity);
-  //       return !isNaN(itemQuantity) ? orderTotal + itemQuantity : orderTotal;
-  //     }, 0);
+  const [addedby, setuserid] = useState("");
+  const [shiftstoken, setShiftstoken] = useState('');
+  const [shiftAccess, setShiftAccess] = useState('');
 
-  //     return total + orderTotal;
-  //   }, 0)
-  //   : 0;
+
+  useEffect(() => {
+    const storeid = localStorage.getItem("_id");
+    const storetoken = localStorage.getItem('shifttoken');
+    const storeaccess = localStorage.getItem('shiftacess');
+    setuserid(storeid);
+    setShiftstoken(storetoken);
+    }, []);
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const id = localStorage.getItem('_id');
+          if (!id) {
+             console.error('Store ID not found in localStorage');
+            return;
+          }
+          const response = await axios.get(`${apiConfig.baseURL}/api/pos/getShiftAccess`, {
+            params: {
+              id: id,
+            },
+          });
+         const shiftdata = response.data;
+         setShiftAccess(shiftdata.shiftacess);
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
+      };
+  
+      fetchData();
+    }, []);
+
+
+  if (!splitdata) {
+    return null; 
+  }
+
+  const splitDataId = splitdata.map(data => data._id);
+  const idsAsString = splitDataId.join(", ");
 
   const totalGrandTotals = Array.isArray(splitdata)
     ? splitdata.reduce((total, order) => {
@@ -56,49 +90,8 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
     setSelectedCard(index);
   };
 
-  // const handleQuantityDecrease = (orderIndex, cartItemIndex) => {
-  //   if (selectedCard !== null && selectedSplitValue > 0) {
-  //     const updatedSplitData = [...splitdata];
-  //     const order = updatedSplitData[orderIndex];
 
-  //     // if (selectedCard === selectedCard) {
-  //       const cartItem = order.cart[cartItemIndex];
-      
-  //       if (cartItem.quantity > 0) {
-  //         cartItem.quantity = Math.max(0, cartItem.quantity - 1);
-  //         const updatedFoodTextInputs = {...foodtextInputs};
-  //         const price = cartItem.salesprice;
-  //         console.log(order);
-  //         // console.info({up: updatedFoodTextInputs[selectedCard].reduce(items => items.foodmenuname == order.cart[cartItemIndex].menuItemDetails.foodmenuname)})
-  //       // updatedFoodTextInputs[selectedCard] = updatedFoodTextInputs[selectedCard] ? [...updatedFoodTextInputs[selectedCard],order.cart[cartItemIndex]] : [order.cart[cartItemIndex]]
-  //       updatedFoodTextInputs[selectedCard] = !updatedFoodTextInputs[selectedCard] ? [{foodmenuname: order.cart[cartItemIndex].menuItemDetails.foodmenuname, quantity: 1}] : updatedFoodTextInputs[selectedCard].filter(items => items.foodmenuname == order.cart[cartItemIndex].menuItemDetails.foodmenuname).length > 0 ?
-  //        updatedFoodTextInputs[selectedCard].map(items => {
-  //         if (items.foodmenuname == order.cart[cartItemIndex].menuItemDetails.foodmenuname) {
-  //           return {...items, quantity: parseInt(items.quantity) + 1}
-            
-         
-  //         } else {
-  //           return items
-  //         }
-  //       }): [...updatedFoodTextInputs[selectedCard], {foodmenuname: order.cart[cartItemIndex].menuItemDetails.foodmenuname, quantity: 1,price:order.cart[cartItemIndex].menuItemDetails.salesprice}]
-  //       // updatedFoodTextInputs[selectedCard] = updatedFoodTextInputs[selectedCard].find((item) => item.foodmenuname == order.cart[cartItemIndex].menuItemDetails.foodmenuname).length > 0 ? updatedFoodTextInputs[selectedCard] : [...updatedFoodTextInputs[selectedCard], {foodmenuname: order.cart[cartItemIndex].menuItemDetails.foodmenuname, quantity: 1}]
-  //       setFoodTextInputs(updatedFoodTextInputs);
-  //       setSplitData(updatedSplitData)
-  //       }
 
-  //       // const updatedTextInputs = [...textInputs];
-  //       // updatedTextInputs[cartItemIndex] = Math.max(0, updatedTextInputs[cartItemIndex] - 1);
-  //       // setTextInputs(updatedTextInputs);
-
-  //       // const updatedFoodTextInputs = [...foodtextInputs];
-  //       // updatedFoodTextInputs[cartItemIndex] = Math.max(0, updatedFoodTextInputs[cartItemIndex] - 1);
-  //       // setFoodTextInputs(updatedFoodTextInputs);
-        
-  //       // setSplitData(updatedSplitData);
-        
-  //     // }
-  //   }
-  // };
   const handleQuantityDecrease = (orderIndex, cartItemIndex) => {
     if (selectedCard !== null && selectedSplitValue > 0) {
       const updatedSplitData = [...splitdata];
@@ -113,6 +106,8 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
         if (!updatedFoodTextInputs[selectedCard]) {
           updatedFoodTextInputs[selectedCard] = [];
         }
+
+       
   
         const existingItem = updatedFoodTextInputs[selectedCard].find(
           (item) => item.foodmenuname === cartItem.menuItemDetails.foodmenuname
@@ -121,12 +116,23 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
         if (existingItem) {
           existingItem.quantity += 1;
           existingItem.totalPrice = existingItem.quantity * cartItem.salesprice;
+          
+
+
+
         } else {
+         
           updatedFoodTextInputs[selectedCard].push({
+
+            foodmenuId: cartItem.foodmenuId,
             foodmenuname: cartItem.menuItemDetails.foodmenuname,
             quantity: 1,
-            price: cartItem.menuItemDetails.salesprice,
+            salesprice: cartItem.menuItemDetails.salesprice,
             totalPrice: cartItem.menuItemDetails.salesprice,
+            
+          
+
+
           });
         }
   
@@ -143,12 +149,12 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
           const vatPercentValue = 5;
         const vatAmounts = (total * vatPercentValue) / 100;
         
-        // Declare subtotal before the forEach loop
+       
         let subtotal = 0;
   
-        updatedFoodTextInputs[selectedCard].forEach((item) => {
+        // updatedFoodTextInputs[selectedCard].forEach((item) => {
           subtotal += item.quantity * item.price;
-        });
+        // });
 
         const subtotals =subtotal - vatAmounts;
   
@@ -177,7 +183,7 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
   
 
 
-  console.log(foodtextInputs);
+
 
 
 
@@ -195,27 +201,58 @@ const PosSplitModal = ({ splitdata, setSplitData, showSplitModal, setShowSplitMo
     setShowSplitModal(false);
 
   };
-
   const handleSubmit = (event, index) => {
-
     event.preventDefault();
-    console.log(foodtextInputs);
+  
 
- if (!foodtextInputs) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Cart is empty',
-        text: 'Please add items to your cart before placing an order.',
-      });
-    }  else {
+    if (Object.keys(foodtextInputs).length === 0) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Cart is empty',
+            text: 'Please add items to your cart before placing an order.',
+        });
+    } else {
+      
+        const cart = foodtextInputs[index];
+        console.log(cart);
 
+
+
+        try {
+
+          const loadid =idsAsString;
+          const cart = foodtextInputs[index];
+          var posData = new FormData();
+          for (let i = 0; i < cart.length; i++) {
+            posData.append(`cart[${i}].foodmenuId`, cart[i].foodmenuId);
+            posData.append(`cart[${i}].foodmenuname`, cart[i].foodmenuname);
+            posData.append(`cart[${i}].salesprice`, cart[i].salesprice);
+            posData.append(`cart[${i}].quantity`, cart[i].quantity);
+
+          }
+          posData.append('addedby', addedby);
+          posData.append('shiftstoken',shiftstoken);
+          posData.append('opentoken',shiftAccess);
+          const config = { headers: { 'Content-Type': 'application/json' } };
+
+          axios
+          .put(`${apiConfig.baseURL}/api/pos/updatesplits/${loadid}`, posData, config)
+          
+
+        
+         
+      } catch (error) {
+         
+      }
+
+
+       
     }
-
-   
-  }
+}
 
 
-  console.log(selectedCard);
+
+
 
   return (
     <div>
