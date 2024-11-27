@@ -370,7 +370,72 @@ const updateFoodMenuStatus = async (req, res) => {
   }
 };
 
+const deActivatefoodmenu = async (req, res) => {
+  const { id } =req.params;
+
+    try
+    {
+      let status = "1";
+      const updateResult = await Foodmenu.updateOne(
+        { _id: id },
+        {
+          $set: {
+            status: status,
+
+          },
+        }
+      );
+
+        res.json(updateResult);
+    }
+    catch(error)
+    {
+        throw new Error(error);
+    }
+
+};
 
 
 
-module.exports = {getfoodCategory,getingredients,getvat,creatFoodmenu,getallfoods,editfoodmenu,updateFoodmenu,exportfoodmenu,importFoodmenu,updateFoodMenuStatus};
+
+const activatefoodmenu =asyncHandler(async(req,res) =>{
+
+  const { id } =req.params;
+
+  try
+  {
+    let status = "0";
+    const updateResult = await Foodmenu.updateOne(
+      { _id: id },
+      {
+        $set: {
+          status: status,
+
+        },
+      }
+    );
+
+      res.json(updateResult);
+  }
+  catch(error)
+  {
+      throw new Error(error);
+  }
+})
+
+
+
+
+module.exports = {getfoodCategory,
+  getingredients,
+  getvat,
+  creatFoodmenu,
+  getallfoods,
+  editfoodmenu,
+  updateFoodmenu,
+  exportfoodmenu,
+  importFoodmenu,
+  updateFoodMenuStatus,
+  deActivatefoodmenu,
+  activatefoodmenu
+};

@@ -64,41 +64,15 @@ const Sidebar = () => {
 
           <Link className="nav-link" to="/dashboard"> <span className="menu-title">Dashboard</span> <i className="mdi mdi-home menu-icon"></i></Link>
         </li>
-        {/* <li className="nav-item">
-          <a className="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-            <span className="menu-title">Food Category</span>
-            <i className="menu-arrow"></i>
-            <i className="mdi mdi-crosshairs-gps menu-icon"></i>
-          </a>
-          <div className="collapse" id="ui-basic">
-            <ul className="nav flex-column sub-menu">
-           
-            <li className="nav-item"> <Link className=" nav-link" to="/addfoodcategory"> Add Food Category</Link> </li>
-              <li className="nav-item"> <Link className=" nav-link" to="/viewfoodcategory"> View Food Category</Link></li>
-            </ul>
-          </div>
-        </li> */}
-        {/* <li className="nav-item">
-          <a className="nav-link" data-bs-toggle="collapse" href="#ui-ingred" aria-expanded="false" aria-controls="ui-ingred">
-            <span className="menu-title">Purchase</span>
-            <i className="menu-arrow"></i>
-            <i className="mdi mdi-contacts menu-icon"></i>
-          </a>
-          <div className="collapse" id="ui-ingred">
-            <ul className="nav flex-column sub-menu">
-            <li className="nav-item"> <Link className=" nav-link" to="/addingredient"> Add Food Ingredient</Link> </li>
-              <li className="nav-item"> <a className="nav-link" href="pages/ui-features/typography.html">View Ingredient </a></li>
-            </ul>
-          </div>
-        </li> */}
+
 
         {(userRole === 'Admin' || userRole === 'SuperAdmin') ?
 
           <>
-          
 
-           
-            {  isOpeningBalanceComplete ? ( 
+
+
+            {  isOpeningBalanceComplete ? (
               <li className="nav-item">
                 <Link className="nav-link" to="/pos"> <span className="menu-title">POS</span> <i className="mdi mdi-contacts menu-icon"></i></Link>
 
@@ -220,7 +194,7 @@ const Sidebar = () => {
               </a>
               <div className="collapse" id="general-human">
                 <ul className="nav flex-column sub-menu">
-                  
+
                 <li className="nav-item"><Link className=" nav-link" to="/viewuser"> User</Link> </li>
                   <li className="nav-item"> <Link className="nav-link" to="/dailveryReport">Attendance</Link></li>
                   <li className="nav-item"> <Link className="nav-link" to="/customerReport">Payrol</Link></li>
@@ -240,7 +214,7 @@ const Sidebar = () => {
 
             <>
 
-            {  isOpeningBalanceComplete ? ( 
+            {  isOpeningBalanceComplete ? (
               <li className="nav-item">
                 <Link className="nav-link" to="/pos"> <span className="menu-title">POS</span> <i className="mdi mdi-contacts menu-icon"></i></Link>
 
@@ -359,11 +333,11 @@ const Sidebar = () => {
 
 
 
-            :(userRole === 'Cashier') ? 
-            
+            :(userRole === 'Cashier') ?
+
             <>
-              
-            {  isOpeningBalanceComplete ? ( 
+
+            {  isOpeningBalanceComplete ? (
               <li className="nav-item">
                 <Link className="nav-link" to="/pos"> <span className="menu-title">POS</span> <i className="mdi mdi-contacts menu-icon"></i></Link>
 
@@ -420,7 +394,7 @@ const Sidebar = () => {
 
 
             </>
-            
+
             :null}
 
 
@@ -440,12 +414,7 @@ const Sidebar = () => {
 
 
 
-        {/*  <li className="nav-item">
-          <a className="nav-link" href="pages/tables/basic-table.html">
-            <span className="menu-title">Tables</span>
-            <i className="mdi mdi-table-large menu-icon"></i>
-          </a>
-        </li> */}
+
 
       </ul>
     </nav>

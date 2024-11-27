@@ -30,33 +30,23 @@ const ViewFoodMenu =() =>{
 
 
 
-
 const confirmDeactivate = (id) => {
-
-  const handleDeactivate = async () => {
-    // Your deactivate logic goes here
-  };
-
-  toast.info(
-    <div style={{ width: "280px", textAlign: "center", padding: "15px" }}> {/* Increased width */}
-      <p style={{ fontSize: "14px", fontWeight: "bold", marginBottom: "15px" }}>
-        Do You Want Deactivate The Food Menu
+  // Show confirmation toast with Yes and No buttons
+  const toastId = toast.info(
+    <div style={{ textAlign: 'center' }}>
+      <p style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '10px' }}>
+        Are you sure you want to deactivate this food menu item?
       </p>
       <div className="d-flex justify-content-center gap-3">
         <button
           className="btn btn-danger btn-sm"
-          style={{ width: "80px" }}
-          onClick={() => {
-            handleDeactivate();
-            toast.dismiss(); // Dismiss the toast after clicking Yes
-          }}
+          onClick={() => handleDeactivate(id, toastId)} // Pass the toastId
         >
           Yes
         </button>
         <button
           className="btn btn-secondary btn-sm"
-          style={{ width: "80px" }}
-          onClick={() => toast.dismiss()} // Dismiss the toast without deactivating
+          onClick={() => toast.dismiss(toastId)} // Dismiss the toast if user clicks No
         >
           No
         </button>
@@ -64,115 +54,130 @@ const confirmDeactivate = (id) => {
     </div>,
     {
       position: "top-center",
-      autoClose: false, // Prevent auto close for confirmation toast
-      closeOnClick: false,
-      draggable: false,
-      style: {
-        width: '400px', // Apply custom width to the Toastify container
-      },
-    }
-  );
-}
-
-
-const confirmActivate =(id) =>{
-
-    const handleActivate = async () =>{
-
-    };
-
-    toast.info(
-      <div style={{ width: "280px", textAlign: "center", padding: "15px" }}> {/* Increased width */}
-        <p style={{ fontSize: "14px", fontWeight: "bold", marginBottom: "15px" }}>
-          Do You Want Activate The Food Menu
-        </p>
-        <div className="d-flex justify-content-center gap-3">
-          <button
-            className="btn btn-danger btn-sm"
-            style={{ width: "80px" }}
-            onClick={() => {
-              handleActivate();
-              toast.dismiss(); // Dismiss the toast after clicking Yes
-            }}
-          >
-            Yes
-          </button>
-          <button
-            className="btn btn-secondary btn-sm"
-            style={{ width: "80px" }}
-            onClick={() => toast.dismiss()} // Dismiss the toast without deactivating
-          >
-            No
-          </button>
-        </div>
-      </div>,
-      {
-        position: "top-center",
-        autoClose: false, // Prevent auto close for confirmation toast
-        closeOnClick: false,
-        draggable: false,
-        style: {
-          width: '400px', // Apply custom width to the Toastify container
-        },
-      }
-    );
-}
-
-
-const confirmDelete = (id) => {
-  const handleDelete = async () => {
-    try {
-      await axios.delete(`${apiConfig.baseURL}/api/foodmenu/deletefoodCategory/${id}`);
-      const updatedData = foodmenus.filter((item) => item._id !== id);
-      setData(updatedData);
-      setFilteredData(updatedData);
-      toast.success("Food Menu deleted successfully!", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to delete food category!", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-    }
-  };
-
-  // Custom confirmation toast
-  toast.info(
-    <div style={{ width: "280px", textAlign: "center", padding: "15px" }}>
-      <p style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "15px" }}>
-        Are you sure you want to delete this food category?
-      </p>
-      <div className="d-flex justify-content-center gap-3">
-        <button
-          className="btn btn-danger btn-sm"
-          style={{ width: "80px" }}
-          onClick={() => {
-            handleDelete();
-            toast.dismiss(); // Dismiss the toast after clicking Yes
-          }}
-        >
-          Yes
-        </button>
-        <button
-          className="btn btn-secondary btn-sm"
-          style={{ width: "80px" }}
-          onClick={() => toast.dismiss()} // Dismiss the toast without deleting
-        >
-          No
-        </button>
-      </div>
-    </div>,
-    {
-      position: "top-center",
-      autoClose: false, // Prevent auto close for confirmation toast
-      closeOnClick: false,
-      draggable: false,
+      autoClose: false, // Prevent auto-close
+      closeOnClick: false, // Disable close on click
+      draggable: false, // Disable dragging
+      style: { width: '350px' }, // Custom width
     }
   );
 };
+
+const handleDeactivate = (id, toastId) => {
+  axios
+    .put(`${apiConfig.baseURL}/api/foodmenu/deactivatefoodmenu/${id}`)
+    .then((res) => {
+      // Dismiss the confirmation toast
+      toast.dismiss(toastId);
+
+      // Show success notification using react-toastify
+      toast.success("Food menu item has been deactivated successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+
+      // Update the frontend state after deactivation
+      const updatedData = foodmenus.filter((item) => item._id !== id);
+      setFoodmenu(updatedData);
+      setFilteredData(updatedData);
+    })
+    .catch((err) => {
+      console.error(err);
+
+      // Show error notification if the API call fails
+      toast.error("Failed to deactivate food menu item!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    });
+};
+
+
+// Deactivation handler function
+
+const confirmActivate = (id) => {
+  // Show confirmation toast with Yes and No buttons
+  const toastId = toast.info(
+    <div style={{ textAlign: 'center' }}>
+      <p style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '10px' }}>
+        Are you sure you want to deactivate this food menu item?
+      </p>
+      <div className="d-flex justify-content-center gap-3">
+        <button
+          className="btn btn-danger btn-sm"
+          onClick={() => handleActivate(id, toastId)} // Pass the toastId
+        >
+          Yes
+        </button>
+        <button
+          className="btn btn-secondary btn-sm"
+          onClick={() => toast.dismiss(toastId)} // Dismiss the toast if user clicks No
+        >
+          No
+        </button>
+      </div>
+    </div>,
+    {
+      position: "top-center",
+      autoClose: false, // Prevent auto-close
+      closeOnClick: false, // Disable close on click
+      draggable: false, // Disable dragging
+      style: { width: '350px' }, // Custom width
+    }
+  );
+};
+
+
+
+
+    const handleActivate = (id, toastId) =>{
+      axios
+      .put(`${apiConfig.baseURL}/api/foodmenu/activatefoodmenu/${id}`)
+      .then((res) => {
+        // Dismiss the confirmation toast
+        toast.dismiss(toastId);
+
+        // Show success notification using react-toastify
+        toast.success("Food menu item has been Activated successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+
+        // Update the frontend state after deactivation
+        const updatedData = foodmenus.filter((item) => item._id !== id);
+        setFoodmenu(updatedData);
+        setFilteredData(updatedData);
+      })
+      .catch((err) => {
+        console.error(err);
+
+        // Show error notification if the API call fails
+        toast.error("Failed to Activate food menu item!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      });
+    };
+
+
+
+
+
 
 
   const handleExportCsv = async () => {

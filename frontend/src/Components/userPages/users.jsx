@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 const ViewUser =() =>{
 
 
-    
+
   const [data , setData] =useState([]);
   const [searchText, setSearchText] = useState('');
   const navigate = useNavigate();
@@ -167,7 +167,7 @@ const ViewUser =() =>{
     item.mobile.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  
+
     return (
         <div className="container-scroller">
         <Header />
@@ -181,9 +181,9 @@ const ViewUser =() =>{
                     <h4 className="card-title">Users</h4>
                     <div className="d-flex justify-content-end">
                     <Link to="/adduser" className="btn btn-success">Add +</Link>
-                    
+
                 </div>
-                  
+
                 {/* <table className="table table-hover"  id="example_table" style={{ width: "100%" }}>
                       <thead>
                         <tr>
@@ -191,7 +191,7 @@ const ViewUser =() =>{
                           <th>Email</th>
                         <th>Mobile</th>
                         <th>Action</th>
-                       
+
                         </tr>
                       </thead>
                       <tbody>
@@ -203,7 +203,7 @@ const ViewUser =() =>{
                                 <td>
                                     {d.email}
                                 </td>
-                               
+
                                 <td>
                                 {d.mobile}
                                 </td>
@@ -216,7 +216,7 @@ const ViewUser =() =>{
                                   ) : (
                                    <button onClick={(e) => handleActivate(d._id)} className="btn btn-success ml-3">Activate</button>
                                  )}
-                                  
+
                                 </td>
 
                             </tr>

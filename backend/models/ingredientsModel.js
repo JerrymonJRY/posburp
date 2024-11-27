@@ -6,15 +6,15 @@ var ingredientsSchema = new mongoose.Schema({
         type:String,
         required:true,
         unique:true,
-      
+
     },
     categoryId:
         {
             type: mongoose.Schema.ObjectId,
             ref: "Category",
           },
-    
-    
+
+
     unitId:
         {
             type: mongoose.Schema.ObjectId,
@@ -23,15 +23,19 @@ var ingredientsSchema = new mongoose.Schema({
 
     purchaseprice:{
         type:String,
-        
+
     },
     alertquantity:{
         type:String,
-        
+
     },
     description:{
         type:String,
-      
+
+    },
+    status: {
+        type: Number,
+        default: 0, // Set the default value of status to 0
     },
 });
 

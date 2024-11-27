@@ -4,7 +4,18 @@ const multer = require('multer');
 const storage = multer.memoryStorage(); // Using memory storage for simplicity, adjust as needed
 //const uploadCSV = multer({ storage: storage });
 const CsvParser =require('json2csv');
-const {getfoodCategory,getingredients,getvat,creatFoodmenu,getallfoods,editfoodmenu,updateFoodmenu,exportfoodmenu,importFoodmenu,updateFoodMenuStatus} =require('../controller/foodmenuController');
+const {getfoodCategory,
+  getingredients,
+  getvat,
+  creatFoodmenu,
+  getallfoods,
+  editfoodmenu,
+  updateFoodmenu,
+  exportfoodmenu,
+  importFoodmenu,
+  updateFoodMenuStatus,
+  deActivatefoodmenu,
+  activatefoodmenu} =require('../controller/foodmenuController');
 
 
 const imgconfig = multer.diskStorage({
@@ -61,6 +72,8 @@ router.get('/getallfoodmenu',getallfoods);
 router.get('/editfoodmenu/:id',editfoodmenu);
 router.put('/updatefoodmenu/:id',upload.single("photo"),updateFoodmenu);
 router.get('/exportfoodmenu',exportfoodmenu);
-router.post('/importfoodmenu',uploadCSV.single("csvFile"),importFoodmenu),
+router.post('/importfoodmenu',uploadCSV.single("csvFile"),importFoodmenu);
 router.put('/updateAllStatus', updateFoodMenuStatus);
+router.put('/deactivatefoodmenu/:id',deActivatefoodmenu);
+router.put('/activatefoodmenu/:id',activatefoodmenu);
 module.exports =router;
