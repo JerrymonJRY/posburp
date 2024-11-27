@@ -15,7 +15,7 @@ const createUser =asyncHandler(async(req,res) =>{
         res.json(newUser);
     }
     else{
-       
+
         throw new Error("User Already Exist");
 
     }
@@ -26,13 +26,13 @@ const loginUserController =asyncHandler(async(req,res) =>{
 
     const { email,password} =req.body;
     const findUser =await User.findOne({email});
-   
+
     if(findUser && (await findUser.isPasswordMatched(password)))
     {
         const refreshToken = await generateRefreshToken(findUser?._id);
         const currentDateTime = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
         const shiftToken = `${findUser?.firstname}-${findUser?.lastname}-${currentDateTime}`;
-      
+
         const updateuser = await User.findByIdAndUpdate(
             findUser.id,
             {
@@ -56,7 +56,7 @@ const loginUserController =asyncHandler(async(req,res) =>{
             shifttoken: shiftToken,
             userrole:findUser?.userrole,
             shiftacess:findUser?.shiftacess,
-            
+
 
 
 
@@ -98,7 +98,7 @@ const dashboard =asyncHandler(async(req,res)=>{
  // const token =req.cookies.token;
  // console.log(token);
 
-    
+
 })
 
 
@@ -117,7 +117,7 @@ const logout = asyncHandler(async (req, res) => {
     }
     await User.findOneAndUpdate(refreshToken, {
       refreshToken: "",
-     
+
     });
     res.clearCookie("refreshToken", {
       httpOnly: true,
@@ -139,13 +139,13 @@ const logout = asyncHandler(async (req, res) => {
   const editUser =asyncHandler(async(req,res) =>{
 
     const { id } =req.params;
-   
+
     //console.log(id);
     try
     {
          const getuser =await User.findById(id);
          res.json(getuser);
-   
+
     }catch(error)
     {
      throw new Error(error);
@@ -155,11 +155,11 @@ const logout = asyncHandler(async (req, res) => {
 
   const updateUser = asyncHandler(async (req, res) => {
     const { id } = req.params;
-  
+
     try
     {
         const updateUser =await User.findByIdAndUpdate(id,{
-          
+
           firstname:req?.body?.firstname,
           lastname:req?.body?.lastname,
           email:req?.body?.email,
@@ -172,14 +172,14 @@ const logout = asyncHandler(async (req, res) => {
           contactperson:req?.body?.contactperson,
           contactnumber:req?.body?.contactnumber,
           address:req?.body?.address,
-          
-  
+
+
         },
         {
             new:true,
         }
         );
-  
+
         res.json(updateUser);
     } catch (error) {
       // Handle errors appropriately (e.g., logging, sending error response)
@@ -202,18 +202,18 @@ const logout = asyncHandler(async (req, res) => {
         {
           $set: {
             status: status,
-          
+
           },
         }
       );
-  
+
         res.json(updateResult);
     }
     catch(error)
     {
         throw new Error(error);
     }
-    
+
 
   });
 
@@ -231,11 +231,11 @@ const logout = asyncHandler(async (req, res) => {
         {
           $set: {
             status: status,
-          
+
           },
         }
       );
-  
+
         res.json(updateResult);
     }
     catch(error)
@@ -244,7 +244,7 @@ const logout = asyncHandler(async (req, res) => {
     }
 
   });
-  
+
 
 
 
@@ -254,12 +254,12 @@ const logout = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(userId);
 
-       
+
         if (!user || !(await user.isPasswordMatched(currentPassword))) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
-      
+
         user.password = newPassword;
         await user.save();
 
@@ -296,7 +296,7 @@ const forgotpassword =asyncHandler(async(req,res)=>{
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
   }
-  
+
 });
 
 
@@ -308,8 +308,8 @@ const transporter = nodemailer.createTransport({
   secure: false,
   requireTLS: true,
   auth: {
-    user: 'jerry@trans-emirates.com', 
-    pass: 'Gh875#q@', 
+    user: 'jerry@trans-emirates.com',
+    pass: 'Gh875#q@',
   },
   tls: {
       ciphers: 'SSLv3',
@@ -320,13 +320,13 @@ const transporter = nodemailer.createTransport({
 const sendPasswordResetEmail = async (email, token) => {
   // Define email options
   const mailOptions = {
-      from: 'jerry@trans-emirates.com', 
-      to: email, 
-      subject: 'Password Reset', 
-      html: `<p>Click <a href="http://localhost:3000/reset-password/${token}">here</a> to reset your password</p>`, 
+      from: 'jerry@trans-emirates.com',
+      to: email,
+      subject: 'Password Reset',
+      html: `<p>Click <a href="http://localhost:3000/reset-password/${token}">here</a> to reset your password</p>`,
   };
 
-  
+
   await transporter.sendMail(mailOptions);
 };
 

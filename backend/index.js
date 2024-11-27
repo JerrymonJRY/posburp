@@ -67,7 +67,25 @@ app.listen(PORT, () => {
 //   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Include OPTIONS if you're handling preflight requests
 //   allowedHeaders: ['Content-Type'],
 // }));
-app.use(cors());
+
+  app.use(cors({ origin: 'https://posburp.vercel.app' }));
+const allowedOrigins = ['https://posburp.vercel.app/'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Check if the origin is in the allowedOrigins array or if it's not defined (e.g., a same-origin request)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Include OPTIONS if you're handling preflight requests
+  allowedHeaders: ['Content-Type'],
+}));
+
+
+//app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

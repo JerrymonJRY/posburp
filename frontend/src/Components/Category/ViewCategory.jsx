@@ -13,15 +13,15 @@ const ViewCategory =() =>{
     const navigate = useNavigate();
 
 
-   
+
     useEffect( ()=>{
 
-    
+
 
         axios.get(`${apiConfig.baseURL}/api/category/allcategory`)
         .then((res) => {
           setData(res.data);
-  
+
           // Initialize DataTables after data is loaded
           $(document).ready(function () {
             $('#example_table').DataTable();
@@ -38,7 +38,7 @@ const ViewCategory =() =>{
             axios.delete(`${apiConfig.baseURL}/api/category/deletecategory/${id}`)
             .then(res =>{
 
-               
+
                 //navigate('/viewfoodcategory');
                 console.log(res);
                 window.location.reload();
@@ -60,7 +60,7 @@ const ViewCategory =() =>{
                     <div className="d-flex justify-content-end">
                     <Link to="/addingredientfoodcategory" className="btn btn-success">Add +</Link>
                 </div><br />
-                  
+
                 <table className="table table-hover" id="example_table" style={{ width: '100%' }}>
                       <thead>
                         <tr>
@@ -80,10 +80,10 @@ const ViewCategory =() =>{
                                 <td>
                                     {d.description}
                                 </td>
-                               
+
                                 <td>
-                                    <Link to={`/editingrdientfoodcategory/${d._id}`} className="btn btn-primary">Edit</Link>
-                                    <button onClick={  (e)=>handleDelete(d._id)} className="btn btn-danger">Delete</button>
+                                    <Link to={`/editingrdientfoodcategory/${d._id}`} className="btn btn-primary btn-sm">Edit</Link>
+                                    <button onClick={  (e)=>handleDelete(d._id)} className="btn btn-danger btn-sm">Delete</button>
                                 </td>
 
                             </tr>

@@ -46,7 +46,12 @@ var foodmenuSchema = new mongoose.Schema({
     photo: {
         type: String, default: null,
 
-    }
+    },
+    status: {
+        type: Number,
+        default: 0, // Set the default value of status to 0
+    },
+
 
 });
 

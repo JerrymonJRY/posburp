@@ -7,31 +7,173 @@ import Footer from '../layouts/Footer';
 import axios from "axios";
 import { redirect, useNavigate,Link } from "react-router-dom";
 import apiConfig from '../layouts/base_url';
+import DataTable from "react-data-table-component";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ViewFoodMenu =() =>{
 
   const [foodmenus, setFoodmenu] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchText, setSearchText] = useState('');
 
 
-
-  useEffect( ()=>{
-
-    axios.get(`${apiConfig.baseURL}/api/foodmenu/getallfoodmenu`)
-    .then((res) => {
-      setFoodmenu(res.data);
-
-      // Initialize DataTables after data is loaded
-      $(document).ready(function () {
-        $('#example_table').DataTable();
-      });
-    })
-    .catch((err) => console.log(err));
+  useEffect(() => {
+    axios
+    .get(`${apiConfig.baseURL}/api/foodmenu/getallfoodmenu`)
+        .then((res) => {
+          setFoodmenu(res.data);
+            setFilteredData(res.data); // Initialize filtered data
+        })
+        .catch((err) => console.log(err));
 }, []);
 
 
-  const handleDelete =(id) =>
-  {
-  }
+
+
+const confirmDeactivate = (id) => {
+
+  const handleDeactivate = async () => {
+    // Your deactivate logic goes here
+  };
+
+  toast.info(
+    <div style={{ width: "280px", textAlign: "center", padding: "15px" }}> {/* Increased width */}
+      <p style={{ fontSize: "14px", fontWeight: "bold", marginBottom: "15px" }}>
+        Do You Want Deactivate The Food Menu
+      </p>
+      <div className="d-flex justify-content-center gap-3">
+        <button
+          className="btn btn-danger btn-sm"
+          style={{ width: "80px" }}
+          onClick={() => {
+            handleDeactivate();
+            toast.dismiss(); // Dismiss the toast after clicking Yes
+          }}
+        >
+          Yes
+        </button>
+        <button
+          className="btn btn-secondary btn-sm"
+          style={{ width: "80px" }}
+          onClick={() => toast.dismiss()} // Dismiss the toast without deactivating
+        >
+          No
+        </button>
+      </div>
+    </div>,
+    {
+      position: "top-center",
+      autoClose: false, // Prevent auto close for confirmation toast
+      closeOnClick: false,
+      draggable: false,
+      style: {
+        width: '400px', // Apply custom width to the Toastify container
+      },
+    }
+  );
+}
+
+
+const confirmActivate =(id) =>{
+
+    const handleActivate = async () =>{
+
+    };
+
+    toast.info(
+      <div style={{ width: "280px", textAlign: "center", padding: "15px" }}> {/* Increased width */}
+        <p style={{ fontSize: "14px", fontWeight: "bold", marginBottom: "15px" }}>
+          Do You Want Activate The Food Menu
+        </p>
+        <div className="d-flex justify-content-center gap-3">
+          <button
+            className="btn btn-danger btn-sm"
+            style={{ width: "80px" }}
+            onClick={() => {
+              handleActivate();
+              toast.dismiss(); // Dismiss the toast after clicking Yes
+            }}
+          >
+            Yes
+          </button>
+          <button
+            className="btn btn-secondary btn-sm"
+            style={{ width: "80px" }}
+            onClick={() => toast.dismiss()} // Dismiss the toast without deactivating
+          >
+            No
+          </button>
+        </div>
+      </div>,
+      {
+        position: "top-center",
+        autoClose: false, // Prevent auto close for confirmation toast
+        closeOnClick: false,
+        draggable: false,
+        style: {
+          width: '400px', // Apply custom width to the Toastify container
+        },
+      }
+    );
+}
+
+
+const confirmDelete = (id) => {
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`${apiConfig.baseURL}/api/foodmenu/deletefoodCategory/${id}`);
+      const updatedData = foodmenus.filter((item) => item._id !== id);
+      setData(updatedData);
+      setFilteredData(updatedData);
+      toast.success("Food Menu deleted successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to delete food category!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
+  };
+
+  // Custom confirmation toast
+  toast.info(
+    <div style={{ width: "280px", textAlign: "center", padding: "15px" }}>
+      <p style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "15px" }}>
+        Are you sure you want to delete this food category?
+      </p>
+      <div className="d-flex justify-content-center gap-3">
+        <button
+          className="btn btn-danger btn-sm"
+          style={{ width: "80px" }}
+          onClick={() => {
+            handleDelete();
+            toast.dismiss(); // Dismiss the toast after clicking Yes
+          }}
+        >
+          Yes
+        </button>
+        <button
+          className="btn btn-secondary btn-sm"
+          style={{ width: "80px" }}
+          onClick={() => toast.dismiss()} // Dismiss the toast without deleting
+        >
+          No
+        </button>
+      </div>
+    </div>,
+    {
+      position: "top-center",
+      autoClose: false, // Prevent auto close for confirmation toast
+      closeOnClick: false,
+      draggable: false,
+    }
+  );
+};
+
 
   const handleExportCsv = async () => {
     try {
@@ -53,6 +195,61 @@ const ViewFoodMenu =() =>{
       // Handle the error as needed
     }
   };
+
+  const handleSearch = (e) => {
+    const value = e.target.value.toLowerCase();
+    setSearchText(value);
+    const filtered = foodmenus.filter(
+        (item) =>
+            item.foodmenuname.toLowerCase().includes(value) ||
+            item.foodcategory.foodcategoryname.toLowerCase().includes(value)||
+            item.salesprice.toLowerCase().includes(value)
+    );
+    setFilteredData(filtered);
+};
+
+
+const columns = [
+  {
+      name: 'Sl No',
+      cell: (row, index) => index + 1,
+      width: '80px',
+  },
+  {
+      name: 'Food Menu Name',
+      selector: row => row.foodmenuname,
+      sortable: true,
+  },
+  {
+      name: 'Food Category Name',
+      selector: row => row.foodcategory.foodcategoryname,
+  },
+  {
+    name: 'Sales Price',
+    selector: row => row.salesprice,
+},
+  {
+      name: 'Action',
+      cell: row => (
+          <>
+
+<Link to={`/editfoodmenu/${row._id}`} className="btn btn-primary btn-sm mr-2">
+                  <i className="fa fa-pencil" aria-hidden="true"></i>
+              </Link>
+              {row.status === 0 ? (
+                  <button onClick={() => confirmDeactivate(row._id)} className="btn btn-success btn-sm">
+                      <i className="fa fa-thumbs-up" aria-hidden="true"></i>
+                  </button>
+              ) : (
+                  <button onClick={() => confirmActivate(row._id)} className="btn btn-danger btn-sm">
+                      <i className="fa fa-thumbs-down" aria-hidden="true"></i>
+                  </button>
+              )}
+          </>
+      ),
+  },
+];
+
 
 
     return (
@@ -79,53 +276,25 @@ const ViewFoodMenu =() =>{
   Import Foodmenu Csv
 </Link>
                 </div>
-                  
-                <table className="table table-hover"  id="example_table" style={{ width: "100%" }}>
-                      <thead>
-                        <tr>
-                          <th>Food Name</th>
-                          <th>Food Category</th>
-                        <th>Sales Price</th>
-                        <th>Vat</th>
-                        <th>Photo</th>
-                        <th>Action</th>
-                        </tr>
-                      </thead>
-                   <tbody>
-                   {
-                        foodmenus.map((order) => (
 
-                            <tr >
-                                <td>
-                                    {order.foodmenuname}
-                                </td>
-                                <td>
-                                    {order.foodcategory.foodcategoryname}
-                                </td>
-                                <td>
-                                    {order.salesprice}
-                                </td>
-                                <td>
-                                    {order.vat.vatname}
-                                </td>
-                                <td>
-                                    {order.image}
-                                </td>
+                <input
+                                      type="text"
+                                      placeholder="Search..."
+                                      value={searchText}
+                                      onChange={handleSearch}
+                                      className="form-control mb-3"
+                                  />
+
+                                  <DataTable
+                                      columns={columns}
+                                      data={filteredData}
+                                      pagination
+                                      highlightOnHover
+                                      responsive
+                                  />
 
 
-                              
-                               
-                                <td>
-                                <Link to={`/editfoodmenu/${order._id}`} className="btn btn-primary">Edit</Link>
-                                    <button onClick={  (e)=>handleDelete(order._id)} className="btn btn-danger">Delete</button>
-                                </td>
 
-                            </tr>
-
-                        ))
-                    }
-                   </tbody>
-                    </table>
                   </div>
                 </div>
               </div>
@@ -133,6 +302,11 @@ const ViewFoodMenu =() =>{
                     <Footer />
             </div>
         </div>
+        <ToastContainer
+  style={{ width: '400px', marginLeft: 'auto', marginRight: 'auto' }} // Adjust width here
+  position="top-center"
+  autoClose={5000}
+/>
     </div>
     )
 }

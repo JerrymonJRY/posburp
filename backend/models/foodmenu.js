@@ -9,21 +9,21 @@ const foodmenuSchema = new mongoose.Schema({
         index:true,
         default: "",
 
-       
+
     },
     foodcategoryId:{
-    
+
             type:String,
             ref: "Foodcategory",
-          
-    
+
+
     },
 
 foodingredientId: [{type:String,}],
-   
+
     salesprice:{
         type:String,
-      
+
     },
     vatId:{
         type: String,
@@ -32,15 +32,19 @@ foodingredientId: [{type:String,}],
     description:
     {
         type:String,
-        
+
     },
     vegitem:{
         type:String,
     },
+    status: {
+        type: Number,
+        default: 0, // Set the default value of status to 0
+    },
 
 
-   
-    
+
+
 });
 
 

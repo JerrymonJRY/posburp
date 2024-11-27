@@ -6,12 +6,12 @@ var userSchema = new mongoose.Schema({
     firstname:{
         type:String,
         required:true,
-    
+
     },
     lastname:{
         type:String,
         required:true,
-    
+
     },
     email:{
         type:String,
@@ -29,7 +29,7 @@ var userSchema = new mongoose.Schema({
     },
     userrole:{
        type:String
-       
+
     },
     password:{
         type:String,
@@ -40,7 +40,7 @@ var userSchema = new mongoose.Schema({
       },
       shifttoken:{
         type: String,
-        
+
     },
     shiftacess:{ type: String, default: 'null'},
   status: { type: String, default: 'Active' },

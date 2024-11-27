@@ -4,7 +4,7 @@ const multer = require('multer');
 const storage = multer.memoryStorage(); // Using memory storage for simplicity, adjust as needed
 //const uploadCSV = multer({ storage: storage });
 const CsvParser =require('json2csv');
-const {getfoodCategory,getingredients,getvat,creatFoodmenu,getallfoods,editfoodmenu,updateFoodmenu,exportfoodmenu,importFoodmenu} =require('../controller/foodmenuController');
+const {getfoodCategory,getingredients,getvat,creatFoodmenu,getallfoods,editfoodmenu,updateFoodmenu,exportfoodmenu,importFoodmenu,updateFoodMenuStatus} =require('../controller/foodmenuController');
 
 
 const imgconfig = multer.diskStorage({
@@ -15,8 +15,8 @@ const imgconfig = multer.diskStorage({
         callback(null,`imgae-${Date.now()}. ${file.originalname}`)
     }
   })
-  
-  
+
+
   // img filter
   const isImage = (req,file,callback)=>{
     if(file.mimetype.startsWith("image")){
@@ -42,7 +42,7 @@ const imgconfig = multer.diskStorage({
       callback(new Error("Only CSV files are allowed"));
     }
   };
-  
+
   const upload = multer({
     storage:imgconfig,
     fileFilter:isImage
@@ -62,5 +62,5 @@ router.get('/editfoodmenu/:id',editfoodmenu);
 router.put('/updatefoodmenu/:id',upload.single("photo"),updateFoodmenu);
 router.get('/exportfoodmenu',exportfoodmenu);
 router.post('/importfoodmenu',uploadCSV.single("csvFile"),importFoodmenu),
-
+router.put('/updateAllStatus', updateFoodMenuStatus);
 module.exports =router;

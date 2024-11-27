@@ -66,7 +66,7 @@ const getvat =asyncHandler(async(req,res) =>{
 //       res.json(newFoodcategory);
 //   }
 //   else{
-     
+
 //       throw new Error("Foodmenu Name Already Exist");
 
 //   }
@@ -77,7 +77,7 @@ const getvat =asyncHandler(async(req,res) =>{
 
 
 
-const creatFoodmenu =asyncHandler(async(req,res) =>{ 
+const creatFoodmenu =asyncHandler(async(req,res) =>{
 
   const {filename} = req.file;
   const {foodmenuname,foodcategoryId,vatId,salesprice,description,vegitem,beverage,bar,foodingredientId} = req.body;
@@ -91,7 +91,7 @@ const creatFoodmenu =asyncHandler(async(req,res) =>{
       //Create a new User
       // const newFoodcategory =Foodmenu.create(req.body);
       // res.json(newFoodcategory);
-      
+
       const foodmenu = new Foodmenu({
         foodmenuname:foodmenuname,
         foodcategoryId:foodcategoryId,
@@ -103,7 +103,7 @@ const creatFoodmenu =asyncHandler(async(req,res) =>{
         bar:bar,
         foodingredientId:foodingredientId,
         photo:filename,
-      
+
     });
 
     const finaldata = await foodmenu.save();
@@ -115,12 +115,12 @@ const creatFoodmenu =asyncHandler(async(req,res) =>{
 }
   }
   else{
-     
+
       throw new Error("Foodmenu Name Already Exist");
 
   }
 
-  
+
 });
 
 
@@ -154,7 +154,7 @@ const getallfoods =asyncHandler(async(req,res) =>{
       },
     ]);
     const base64Data = "data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWN...";
-   
+
     res.json(foodmenu);
   } catch (error) {
     console.error(error);
@@ -166,28 +166,28 @@ const getallfoods =asyncHandler(async(req,res) =>{
 
 const editfoodmenu =asyncHandler(async(req,res) =>{
   const { id } =req.params;
-   
+
   //console.log(id);
   try
   {
        const getcat =await Foodmenu.findById(id);
        res.json(getcat);
- 
+
   }catch(error)
   {
    throw new Error(error);
   }
 });
 
-const updateFoodmenu =asyncHandler(async(req,res) =>{ 
+const updateFoodmenu =asyncHandler(async(req,res) =>{
 
   const { id } = req.params;
 
   const { filename } = req.file || {};
   const {foodmenuname,foodcategoryId,vatId,salesprice,description,vegitem,beverage,bar,foodingredientId} = req.body;
-  
+
   // const upload = multer({ storage }).single("photo");
- 
+
 
     try{
       const existingFoodmenu = await Foodmenu.findById(id);
@@ -195,7 +195,7 @@ const updateFoodmenu =asyncHandler(async(req,res) =>{
       if (!existingFoodmenu) {
         return res.status(404).json({ status: 404, error: 'Foodmenu not found' });
       }
-  
+
       // Update the food menu fields
       existingFoodmenu.foodmenuname = foodmenuname;
       existingFoodmenu.foodcategoryId = foodcategoryId;
@@ -210,24 +210,24 @@ const updateFoodmenu =asyncHandler(async(req,res) =>{
      if (filename) {
       existingFoodmenu.photo = filename;
     }
-  
+
       // Save the updated food menu
       const updatedFoodmenu = await existingFoodmenu.save();
-  
-      res.json(updatedFoodmenu);
-      
-      
-      
-   
 
-   
+      res.json(updatedFoodmenu);
+
+
+
+
+
+
   }
   catch (error) {
     res.status(401).json({status:401,error})
 }
- 
 
-  
+
+
 });
 
 
@@ -281,12 +281,12 @@ const exportfoodmenu = asyncHandler(async (req, res) => {
       'Photo',
     ];
     const csvParser = new CsvParser({ csvFields });
-    
+
     // Use 'csvParser.parse()' instead of 'csvParser.push()'
     const csvData = csvParser.parse(foods);
 
     res.setHeader('Content-Type', 'text/csv');
-    res.setHeader('Content-Disposition', 'attachment; filename=foodmenu.csv'); 
+    res.setHeader('Content-Disposition', 'attachment; filename=foodmenu.csv');
 
     // Send the CSV data in the response
     res.status(200).send(csvData);
@@ -350,7 +350,27 @@ const importFoodmenu = asyncHandler(async (req, res) => {
 });
 
 
+const updateFoodMenuStatus = async (req, res) => {
+  try {
+    // Update all documents that do not have a status field
+    const result = await Foodmenu.updateMany(
+      { status: { $exists: false } }, // Check if the status field does not exist
+      { $set: { status: 0 } }         // Set the default value 0 for status
+    );
+
+    // If no documents were updated
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ message: "No documents were updated." });
+    }
+
+    res.status(200).json({ message: "All documents updated successfully!" });
+  } catch (err) {
+    console.error("Error updating documents:", err);
+    res.status(500).json({ message: "Server error, please try again later." });
+  }
+};
 
 
 
-module.exports = {getfoodCategory,getingredients,getvat,creatFoodmenu,getallfoods,editfoodmenu,updateFoodmenu,exportfoodmenu,importFoodmenu};
+
+module.exports = {getfoodCategory,getingredients,getvat,creatFoodmenu,getallfoods,editfoodmenu,updateFoodmenu,exportfoodmenu,importFoodmenu,updateFoodMenuStatus};

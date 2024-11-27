@@ -93,7 +93,7 @@ useEffect(() => {
                     <h4 className="font-weight-normal mb-3">Today Orders <i className="mdi mdi-chart-line mdi-24px float-right"></i>
                     </h4>
                     <h2 className="mb-5">{ todayordercount }</h2>
-                   
+
                   </div>
                 </div>
               </div>
@@ -104,7 +104,7 @@ useEffect(() => {
                     <h4 className="font-weight-normal mb-3">Today Sales <i className="mdi mdi-bookmark-outline mdi-24px float-right"></i>
                     </h4>
                     <h2 className="mb-5">{todaypaidcount}</h2>
-                   
+
                   </div>
                 </div>
               </div>
@@ -115,7 +115,7 @@ useEffect(() => {
                     <h4 className="font-weight-normal mb-3">Total Orders <i className="mdi mdi-diamond mdi-24px float-right"></i>
                     </h4>
                     <h2 className="mb-5">{totalordercount}</h2>
-                   
+
                   </div>
                 </div>
               </div>
@@ -126,14 +126,14 @@ useEffect(() => {
                     <h4 className="font-weight-normal mb-3">Total Sales  <i className="mdi mdi-diamond mdi-24px float-right"></i>
                     </h4>
                     <h2 className="mb-5">{totalpaidamount}</h2>
-                   
+
                   </div>
                 </div>
               </div>
             </div>
          <DashboardGraph />
 
-           
+
 
           </div>
                     <Footer />
