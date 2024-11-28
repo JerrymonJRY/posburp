@@ -91,8 +91,8 @@ const ViewCategory =() =>{
     setSearchText(value);
     const filtered = data.filter(
         (item) =>
-            item.foodcategoryname.toLowerCase().includes(value) ||
-            item.description.toLowerCase().includes(value)
+            item.categoryname.toLowerCase().includes(value)
+
     );
     setFilteredData(filtered);
 };

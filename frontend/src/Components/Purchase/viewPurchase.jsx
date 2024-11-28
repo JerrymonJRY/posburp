@@ -6,25 +6,93 @@ import Footer from '../layouts/Footer';
 import axios from "axios";
 import { redirect, useNavigate,Link } from "react-router-dom";
 import apiConfig from '../layouts/base_url';
-
+import DataTable from "react-data-table-component";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ViewPurchase =() =>
 {
   const [data , setData] =useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchText, setSearchText] = useState('');
     const navigate = useNavigate();
-    useEffect( ()=>{
-  
-        axios.get(`${apiConfig.baseURL}/api/purchase/all`)
-        .then((res) => {
-          setData(res.data);
-  
-          // Initialize DataTables after data is loaded
-          $(document).ready(function () {
-            $('#example_table').DataTable();
-          });
-        })
-        .catch((err) => console.log(err));
-    }, []);
+
+
+    useEffect(() => {
+      axios.get(`${apiConfig.baseURL}/api/purchase/all`)
+          .then((res) => {
+              setData(res.data);
+              setFilteredData(res.data); // Initialize filtered data
+          })
+          .catch((err) => console.log(err));
+  }, []);
+
+  const handleSearch = (e) => {
+    const value = e.target.value.toLowerCase();
+    setSearchText(value);
+    const filtered = data.filter(
+        (item) =>
+            item.invoicenumber.toLowerCase().includes(value) ||
+            item.supplierDetails.suppliername.toLowerCase().includes(value) ||
+            item.invoiceDate.toLowerCase().includes(value)
+    );
+    setFilteredData(filtered);
+  };
+
+
+  const columns = [
+    {
+        name: 'Sl No',
+        cell: (row, index) => index + 1,
+        width: '80px',
+    },
+    {
+        name: 'Invoice Number',
+        selector: row => row.invoicenumber,
+        sortable: true,
+    },
+    {
+      name: 'Supplier Name',
+      selector: row => row.supplierDetails.suppliername,
+      sortable: true,
+  },
+  {
+    name: 'Date',
+    selector: row => row.invoiceDate,
+    sortable: true,
+  },
+  {
+    name: 'Paid Amount',
+    selector: row => row.paidAmount,
+    sortable: true,
+  },
+  {
+    name: 'Due Amount',
+    selector: row => row.dueAmount,
+    sortable: true,
+  },
+    {
+      name: 'Total Amount',
+      selector: row => row.grandTotal,
+      sortable: true,
+  },
+
+    {
+        name: 'Action',
+        cell: row => (
+            <>
+                <Link to={`/editPurchase/${row._id}`}  className="btn btn-primary btn-sm mr-2">
+                    <i className="fa fa-pencil" aria-hidden="true"></i>
+                </Link>
+                <button onClick={() => confirmDelete(row._id)} className="btn btn-danger btn-sm">
+                    <i className="fa fa-trash-o" aria-hidden="true"></i>
+                </button>
+            </>
+        ),
+    },
+  ];
+
+
     return (
         <div className="container-scroller">
         <Header />
@@ -39,54 +107,23 @@ const ViewPurchase =() =>
                     <div className="d-flex justify-content-end">
                     <Link to="/addPurchase" className="btn btn-success">Add +</Link>
                 </div>
-                  
-                <table className="table table-hover"  id="example_table" style={{ width: "100%" }}>
-                      <thead>
-                        <tr>
-                          <th>Invoice Number</th>
-                          <th>Supplier Name </th>
-                        <th>Date</th>
-                        <th>Paid Amount</th>
-                        <th>Due Amount</th>
-                        <th>Total Amount</th>
-                        <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                      {
-                        data.map((d,i) =>(
 
-                            <tr key={i}>
-                                <td>
-                                    {d.invoicenumber}
-                                </td>
-                                <td>
-                                    {d.supplierDetails.suppliername}
-                                </td>
-                                <td>
-                                    {d.invoiceDate}
-                                </td>
-                                <td>
-                                    {d.paidAmount}
-                                </td>
-                                <td>
-                                    {d.dueAmount}
-                                </td>
-                                <td>
-                                    {d.grandTotal}
-                                </td>
-                               
-                                <td>
-                                <Link to={`/editPurchase/${d._id}`} className="btn btn-primary">Edit</Link>
-                                    <button onClick={  (e)=>handleDelete(d._id)} className="btn btn-danger">Delete</button>
-                                </td>
 
-                            </tr>
+                <input
+                                      type="text"
+                                      placeholder="Search..."
+                                      value={searchText}
+                                      onChange={handleSearch}
+                                      className="form-control mb-3"
+                                  />
 
-                        ))
-                    }
-                      </tbody>
-                    </table>
+                                  <DataTable
+                                      columns={columns}
+                                      data={filteredData}
+                                      pagination
+                                      highlightOnHover
+                                      responsive
+                                  />
                   </div>
                 </div>
               </div>
@@ -94,6 +131,7 @@ const ViewPurchase =() =>
                     <Footer />
             </div>
         </div>
+        <ToastContainer />
     </div>
     )
 }

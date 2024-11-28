@@ -6,24 +6,90 @@ import Footer from '../layouts/Footer';
 import axios from "axios";
 import { redirect, useNavigate,Link } from "react-router-dom";
 import apiConfig from '../layouts/base_url';
-
+import DataTable from "react-data-table-component";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const ViewSupplier =() =>
 {
     const [data , setData] =useState([]);
+    const [filteredData, setFilteredData] = useState([]);
+    const [searchText, setSearchText] = useState('');
     const navigate = useNavigate();
-    useEffect( ()=>{
-  
-        axios.get(`${apiConfig.baseURL}/api/supplier/allSupplier`)
-        .then((res) => {
-          setData(res.data);
-  
-          // Initialize DataTables after data is loaded
-          $(document).ready(function () {
-            $('#example_table').DataTable();
-          });
-        })
-        .catch((err) => console.log(err));
-    }, []);
+
+    useEffect(() => {
+      axios.get(`${apiConfig.baseURL}/api/supplier/allSupplier`)
+          .then((res) => {
+              setData(res.data);
+              setFilteredData(res.data); // Initialize filtered data
+          })
+          .catch((err) => console.log(err));
+  }, []);
+
+
+const handleSearch = (e) => {
+  const value = e.target.value.toLowerCase();
+  setSearchText(value);
+  const filtered = data.filter(
+      (item) =>
+          item.suppliername.toLowerCase().includes(value) ||
+          item.suppliermobile.toLowerCase().includes(value) ||
+          item.taxnumber.toLowerCase().includes(value) ||
+          item.licensenumber.toLowerCase().includes(value) ||
+          item.supplieraddress.toLowerCase().includes(value)
+  );
+  setFilteredData(filtered);
+};
+
+
+const columns = [
+  {
+      name: 'Sl No',
+      cell: (row, index) => index + 1,
+      width: '80px',
+  },
+  {
+      name: 'Supplier Name',
+      selector: row => row.suppliername,
+      sortable: true,
+  },
+  {
+    name: 'Supplier Mobile',
+    selector: row => row.suppliermobile,
+    sortable: true,
+},
+{
+  name: 'Tax Number',
+  selector: row => row.taxnumber,
+  sortable: true,
+},
+{
+  name: 'License Number',
+  selector: row => row.licensenumber,
+  sortable: true,
+},
+  {
+    name: 'Address',
+    selector: row => row.supplieraddress,
+    sortable: true,
+},
+
+  {
+      name: 'Action',
+      cell: row => (
+          <>
+              <Link to={`/editSupplier/${row._id}`}  className="btn btn-primary btn-sm mr-2">
+                  <i className="fa fa-pencil" aria-hidden="true"></i>
+              </Link>
+              <button onClick={() => confirmDelete(row._id)} className="btn btn-danger btn-sm">
+                  <i className="fa fa-trash-o" aria-hidden="true"></i>
+              </button>
+          </>
+      ),
+  },
+];
+
+
+
     return (
         <div className="container-scroller">
         <Header />
@@ -38,50 +104,22 @@ const ViewSupplier =() =>
                     <div className="d-flex justify-content-end">
                     <Link to="/addSupplier" className="btn btn-success">Add +</Link>
                 </div>
-                  
-                <table className="table table-hover"  id="example_table" style={{ width: "100%" }}>
-                      <thead>
-                        <tr>
-                          <th>Supplier Name</th>
-                          <th>Supplier Mobile </th>
-                        <th>Tax Number</th>
-                        <th>License Number</th>
-                        <th>Address</th>
-                        <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                      {
-                        data.map((d,i) =>(
 
-                            <tr key={i}>
-                                <td>
-                                    {d.suppliername}
-                                </td>
-                                <td>
-                                    {d.suppliermobile}
-                                </td>
-                                <td>
-                                    {d.taxnumber}
-                                </td>
-                                <td>
-                                    {d.licensenumber}
-                                </td>
-                                <td>
-                                    {d.supplieraddress}
-                                </td>
-                               
-                                <td>
-                                <Link to={`/editSupplier/${d._id}`} className="btn btn-primary">Edit</Link>
-                                    <button onClick={  (e)=>handleDelete(d._id)} className="btn btn-danger">Delete</button>
-                                </td>
+                <input
+                                      type="text"
+                                      placeholder="Search..."
+                                      value={searchText}
+                                      onChange={handleSearch}
+                                      className="form-control mb-3"
+                                  />
 
-                            </tr>
-
-                        ))
-                    }
-                      </tbody>
-                    </table>
+                                  <DataTable
+                                      columns={columns}
+                                      data={filteredData}
+                                      pagination
+                                      highlightOnHover
+                                      responsive
+                                  />
                   </div>
                 </div>
               </div>
@@ -89,6 +127,7 @@ const ViewSupplier =() =>
                     <Footer />
             </div>
         </div>
+        <ToastContainer />
     </div>
     )
 }

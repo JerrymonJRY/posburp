@@ -7,82 +7,131 @@ import axios from "axios";
 import { redirect, useNavigate,Link } from "react-router-dom";
 import Swal from 'sweetalert2';
 import apiConfig from '../layouts/base_url';
+import DataTable from "react-data-table-component";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const ViewVat =() =>{
 
 
   const [data , setData] =useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchText, setSearchText] = useState('');
   const navigate = useNavigate();
-  useEffect( ()=>{
-
-      axios.get(`${apiConfig.baseURL}/api/vat/allvat`)
-      .then((res) => {
-        setData(res.data);
-
-        // Initialize DataTables after data is loaded
-        $(document).ready(function () {
-          $('#example_table').DataTable();
-        });
-      })
-      .catch((err) => console.log(err));
-  }, []);
-
-  // const handleDelete =(id) =>
-  // {
-  //     const confirm =window.confirm('Are You Delete');
-  //     if(confirm)
-  //     {
-  //         axios.delete('http://localhost:5000/api/vat/deleteVat/'+id)
-  //         .then(res =>{
-
-             
-  //             navigate('/viewfoodcategory');
-  //             console.log(res);
-  //         }).catch(err =>console.log(err));
-  //     }
-  // }
 
 
+  useEffect(() => {
+    axios.get(`${apiConfig.baseURL}/api/vat/allvat`)
+        .then((res) => {
+            setData(res.data);
+            setFilteredData(res.data); // Initialize filtered data
+        })
+        .catch((err) => console.log(err));
+}, []);
 
-
-  const handleDelete = (id) => {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios.delete(`${apiConfig.baseURL}/api/vat/deleteVat/${id}`)
-          .then((res) => {
-            Swal.fire({
-              icon: 'success',
-              title: 'Deleted!',
-              text: 'Your file has been deleted.',
-              toast: true,
-              position: 'top-end',
-              showConfirmButton: false,
-              timer: 3000,
-              timerProgressBar: true,
-              didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
-              }
-            });
-            // Refresh data after successful delete
-            axios.get(`${apiConfig.baseURL}/api/vat/allvat`)
-              .then((response) => {
-                setData(response.data);
-              })
-              .catch((error) => console.error(error));
-          })
-          .catch((err) => console.log(err));
-      }
-    });
+const confirmDelete = (id) => {
+  const handleDelete = async () => {
+    try {
+      await  axios.delete(`${apiConfig.baseURL}/api/vat/deleteVat/${id}`)
+      const updatedData = data.filter((item) => item._id !== id);
+      setData(updatedData);
+      setFilteredData(updatedData);
+      toast.success("Ingredient Unit List Deleted successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to delete Ingredient Unit!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
   };
-  
+
+  // Custom confirmation toast
+  toast.info(
+    <div style={{ width: "289px", textAlign: "center", padding: "15px" }}>
+      <p style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "15px" }}>
+        Are you sure you want to delete this Ingredient Unit?
+      </p>
+      <div className="d-flex justify-content-center gap-3">
+        <button
+          className="btn btn-danger btn-sm"
+          style={{ width: "80px" }}
+          onClick={() => {
+            handleDelete();
+            toast.dismiss(); // Dismiss the toast after clicking Yes
+          }}
+        >
+          Yes
+        </button>
+        <button
+          className="btn btn-secondary btn-sm"
+          style={{ width: "80px" }}
+          onClick={() => toast.dismiss()} // Dismiss the toast without deleting
+        >
+          No
+        </button>
+      </div>
+    </div>,
+    {
+      position: "top-center",
+      autoClose: false, // Prevent auto close for confirmation toast
+      closeOnClick: false,
+      draggable: false,
+    }
+  );
+};
+
+
+const handleSearch = (e) => {
+  const value = e.target.value.toLowerCase();
+  setSearchText(value);
+  const filtered = data.filter(
+      (item) =>
+          item.vatname.toLowerCase().includes(value) ||
+          item.percentage.toLowerCase().includes(value)
+  );
+  setFilteredData(filtered);
+};
+
+const columns = [
+  {
+      name: 'Sl No',
+      cell: (row, index) => index + 1,
+      width: '80px',
+  },
+  {
+      name: 'Vat Name',
+      selector: row => row.vatname,
+      sortable: true,
+  },
+  {
+    name: 'Percentage',
+    selector: row => row.percentage,
+    sortable: true,
+},
+
+  {
+      name: 'Action',
+      cell: row => (
+          <>
+              <Link to={`/editVat/${row._id}`}  className="btn btn-primary btn-sm mr-2">
+                  <i className="fa fa-pencil" aria-hidden="true"></i>
+              </Link>
+              <button onClick={() => confirmDelete(row._id)} className="btn btn-danger btn-sm">
+                  <i className="fa fa-trash-o" aria-hidden="true"></i>
+              </button>
+          </>
+      ),
+  },
+];
+
+
+
+
+
+
 
     return (
         <div className="container-scroller">
@@ -98,38 +147,23 @@ const ViewVat =() =>{
                     <div className="d-flex justify-content-end">
                     <Link to="/addVat" className="btn btn-success">Add +</Link>
                 </div>
-                  
-                    <table className="table table-hover"  id="example_table" style={{ width: "100%" }}>
-                      <thead>
-                        <tr>
-                          <th>Vat Name</th>
-                          <th>Percentage</th>
-                        <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                      {
-                        data.map((d,i) =>(
 
-                            <tr key={i}>
-                                <td>
-                                    {d.vatname}
-                                </td>
-                                <td>
-                                    {d.percentage}
-                                </td>
-                               
-                                <td>
-                                <Link to={`/editVat/${d._id}`} className="btn btn-primary">Edit</Link>
-                                    <button onClick={  (e)=>handleDelete(d._id)} className="btn btn-danger">Delete</button>
-                                </td>
+                <input
+                                      type="text"
+                                      placeholder="Search..."
+                                      value={searchText}
+                                      onChange={handleSearch}
+                                      className="form-control mb-3"
+                                  />
 
-                            </tr>
+                                  <DataTable
+                                      columns={columns}
+                                      data={filteredData}
+                                      pagination
+                                      highlightOnHover
+                                      responsive
+                                  />
 
-                        ))
-                    }
-                      </tbody>
-                    </table>
                   </div>
                 </div>
               </div>
@@ -137,6 +171,7 @@ const ViewVat =() =>{
                     <Footer />
             </div>
         </div>
+        <ToastContainer />
     </div>
     );
 }

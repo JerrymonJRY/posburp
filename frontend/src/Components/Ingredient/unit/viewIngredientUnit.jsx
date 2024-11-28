@@ -89,8 +89,7 @@ const ViewIngredientUnit =() =>{
     setSearchText(value);
     const filtered = data.filter(
         (item) =>
-            item.foodcategoryname.toLowerCase().includes(value) ||
-            item.description.toLowerCase().includes(value)
+            item.unitname.toLowerCase().includes(value)
     );
     setFilteredData(filtered);
 };

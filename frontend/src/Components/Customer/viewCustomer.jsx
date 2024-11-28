@@ -89,8 +89,10 @@ const handleSearch = (e) => {
   setSearchText(value);
   const filtered = data.filter(
       (item) =>
-          item.foodcategoryname.toLowerCase().includes(value) ||
-          item.description.toLowerCase().includes(value)
+          item.customername.toLowerCase().includes(value) ||
+          item.customeremail.toLowerCase().includes(value) ||
+          item.customermobile.toLowerCase().includes(value) ||
+          item.customeraddress.toLowerCase().includes(value)
   );
   setFilteredData(filtered);
 };
