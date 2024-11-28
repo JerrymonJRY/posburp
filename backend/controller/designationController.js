@@ -10,15 +10,15 @@ const createDesignation =asyncHandler(async(req,res) =>{
     try
     {
         const newEntry = new Designation({
-           
-           
+
+
             designationname: designationname,
             addedby: addedby,
-           
+
           });
-      
+
           const finaldata = await newEntry.save();
-     
+
           res.json(finaldata);
     }
     catch (error) {
@@ -31,11 +31,11 @@ const getDesignation =asyncHandler(async(req,res) =>{
 
     try {
         const designation = await Designation.find().populate('addedby', 'firstname lastname');
-    
+
         if (!designation || designation.length === 0) {
           return res.status(404).json({ error: 'No designation found' });
         }
-    
+
         // Map expenses to include the user's full name
         // const expensesWithFullName = expenses.map((expense) => ({
         //   _id: expense._id,
@@ -43,7 +43,7 @@ const getDesignation =asyncHandler(async(req,res) =>{
         //   addedby: expense.addedby,
         //   fullName: expense.addedby.firstname + ' ' + expense.addedby.lastname,
         // }));
-    
+
         res.json(designation);
       } catch (error) {
         console.error(error);
@@ -56,7 +56,7 @@ const getDesignation =asyncHandler(async(req,res) =>{
 const editDesignation =asyncHandler(async(req,res) =>{
 
   const { id } =req.params;
- 
+
  //console.log(id);
  try
  {
@@ -72,15 +72,15 @@ const editDesignation =asyncHandler(async(req,res) =>{
 
 
 const updateDesignation =asyncHandler(async(req,res)=>{
-     
+
   const { id } =req.params;
- 
+
   try
   {
       const updateExpense =await Designation.findByIdAndUpdate(id,{
           designationname:req?.body?.designationname,
           addedby:req?.body?.addedby,
-        
+
 
       },
       {
