@@ -6,14 +6,18 @@ var ingredientunitSchema = new mongoose.Schema({
         type:String,
         required:true,
         unique:true,
-      
+
     },
     description:{
         type:String,
-       
-        
+
+
     },
-  
+    status: {
+        type: Number,
+        default: 0, // Set the default value of status to 0
+    },
+
 });
 
 //Export the model
