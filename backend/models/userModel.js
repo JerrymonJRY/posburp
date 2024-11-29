@@ -50,7 +50,9 @@ var userSchema = new mongoose.Schema({
   joiningdate:{type: String,default: 'null'},
   contactperson:{type: String,default: 'null'},
   contactnumber:{type: String,default: 'null'},
-  address:{type: String,default: 'null'}
+  address:{type: String,default: 'null'},
+
+
 
 });
 

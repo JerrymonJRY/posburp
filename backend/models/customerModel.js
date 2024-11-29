@@ -10,7 +10,7 @@ var customerSchema = new mongoose.Schema({
     },
     customeremail:{
         type:String,
-       
+
         unique:true,
     },
     customermobile:{
@@ -22,6 +22,11 @@ var customerSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
+    status: {
+        type: Number,
+        default: 0, // Set the default value of status to 0
+    },
+
 });
 
 //Export the model

@@ -10,10 +10,14 @@ var categorySchema = new mongoose.Schema({
     },
     description:{
         type:String,
-       
-       
+
+
     },
- 
+    status: {
+        type: Number,
+        default: 0, // Set the default value of status to 0
+    },
+
 });
 
 //Export the model

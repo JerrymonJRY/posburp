@@ -331,6 +331,27 @@ const sendPasswordResetEmail = async (email, token) => {
 };
 
 
+const updateUserStatus = async (req, res) => {
+  try {
+    // Update all documents that do not have a status field
+    const result = await Foodmenu.updateMany(
+      { status: { $exists: false } }, // Check if the status field does not exist
+      { $set: { status: 0 } }         // Set the default value 0 for status
+    );
+
+    // If no documents were updated
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ message: "No documents were updated." });
+    }
+
+    res.status(200).json({ message: "All documents updated successfully!" });
+  } catch (err) {
+    console.error("Error updating documents:", err);
+    res.status(500).json({ message: "Server error, please try again later." });
+  }
+};
+
+
 
 module.exports={ createUser,
   loginUserController,
