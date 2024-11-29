@@ -34,7 +34,8 @@ const {createFoodcategory,
     updatefoodCategory,
     deletefoodCategory,
     exportfoodcategory,
-    importFoodcategory
+    importFoodcategory,
+    updateFoodcategoryStatus
 } =require('../controller/foodcategoryController');
 
 
@@ -45,7 +46,8 @@ router.get('/getfoodcategory/:id',getfoodcategory);
 router.put('/updatefoodcategory/:id',updatefoodCategory);
 router.delete('/deletefoodCategory/:id',deletefoodCategory);
 router.get('/exportfoodcategory',exportfoodcategory);
-router.post('/importfoodcategory',uploadCSV.single("csvFile"),importFoodcategory),
+router.post('/importfoodcategory',uploadCSV.single("csvFile"),importFoodcategory);
+router.put('/updateStatus',updateFoodcategoryStatus);
 
 
 module.exports =router;

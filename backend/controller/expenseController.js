@@ -9,15 +9,15 @@ const createExpense =asyncHandler(async(req,res) =>{
     try
     {
         const newEntry = new Expense({
-           
-           
+
+
             expensename: expensename,
             addedby: addedby,
-           
+
           });
-      
+
           const finaldata = await newEntry.save();
-     
+
           res.json(finaldata);
     }
     catch (error) {
@@ -30,11 +30,11 @@ const getExpense =asyncHandler(async(req,res) =>{
 
     try {
         const expenses = await Expense.find().populate('addedby', 'firstname lastname');
-    
+
         if (!expenses || expenses.length === 0) {
           return res.status(404).json({ error: 'No expenses found' });
         }
-    
+
         // Map expenses to include the user's full name
         // const expensesWithFullName = expenses.map((expense) => ({
         //   _id: expense._id,
@@ -42,7 +42,7 @@ const getExpense =asyncHandler(async(req,res) =>{
         //   addedby: expense.addedby,
         //   fullName: expense.addedby.firstname + ' ' + expense.addedby.lastname,
         // }));
-    
+
         res.json(expenses);
       } catch (error) {
         console.error(error);
@@ -55,7 +55,7 @@ const getExpense =asyncHandler(async(req,res) =>{
 const editExpense =asyncHandler(async(req,res) =>{
 
   const { id } =req.params;
- 
+
  //console.log(id);
  try
  {
@@ -71,15 +71,15 @@ const editExpense =asyncHandler(async(req,res) =>{
 
 
 const updateExpense =asyncHandler(async(req,res)=>{
-     
+
   const { id } =req.params;
- 
+
   try
   {
       const updateExpense =await Expense.findByIdAndUpdate(id,{
           expensename:req?.body?.expensename,
           addedby:req?.body?.addedby,
-        
+
 
       },
       {
@@ -112,6 +112,34 @@ const deleteExpense = asyncHandler(async (req, res) => {
 });
 
 
+const updateExpenseStatus = async (req, res) => {
+  try {
+    // Update all documents that do not have a status field
+    const result = await Expense.updateMany(
+      { status: { $exists: false } }, // Check if the status field does not exist
+      { $set: { status: 0 } }         // Set the default value 0 for status
+    );
+
+    // If no documents were updated
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ message: "No documents were updated." });
+    }
+
+    res.status(200).json({ message: "All documents updated successfully!" });
+  } catch (err) {
+    console.error("Error updating documents:", err);
+    res.status(500).json({ message: "Server error, please try again later." });
+  }
+};
 
 
-module.exports ={createExpense,getExpense,editExpense,updateExpense,deleteExpense}
+
+
+
+module.exports ={createExpense,
+  getExpense,
+  editExpense,
+  updateExpense,
+  deleteExpense,
+  updateExpenseStatus
+}
