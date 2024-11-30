@@ -24,7 +24,7 @@ const EditUser =() =>{
   const [contactnumber, setContactnumber] = useState('');
   const [address, setAddress] = useState('');
 
-    
+
   const navigate = useNavigate();
 
   const UserRoles  = [
@@ -62,11 +62,11 @@ const EditUser =() =>{
   const calculateNetSalary = (basic, allowance) => {
     const basicValue = parseFloat(basic);
     const allowanceValue = parseFloat(allowance);
-    const total = basicValue + allowanceValue || basicValue; 
-    setNetSalary(total.toFixed(2)); 
+    const total = basicValue + allowanceValue || basicValue;
+    setNetSalary(total.toFixed(2));
   };
 
-   
+
    useEffect( ()=>{
 
     axios.get(`${apiConfig.baseURL}/api/user/edituser/${id}`)
@@ -83,7 +83,7 @@ const EditUser =() =>{
       setContactperson(res.data.contactperson)
       setContactnumber(res.data.contactnumber)
       setAddress(res.data.address)
-    
+
 })
     .catch(err =>console.log(err));
 
@@ -109,7 +109,7 @@ const EditUser =() =>{
 
     formData.append("contactnumber", contactnumber);
     formData.append("address", address);
-   
+
 
     const config = {
       headers: {
@@ -152,24 +152,24 @@ const EditUser =() =>{
               </nav>
             </div>
             <div className="row">
-       
+
               <div className="col-md-12 grid-margin stretch-card">
                 <div className="card">
                   <div className="card-body">
-                  
+
                     <form className="forms-sample" onSubmit={handleSubmit} >
                         <div className="row">
-                          
+
                             <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">First Name</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">First Name</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="firstname" value={firstname} onChange={(e)=>setFirstName(e.target.value)} id="exampleInputUsername2" placeholder="" />
-                        
+
                         </div>
                       </div>
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Last Name</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Last Name</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="lastname" value={lastname} onChange={(e)=>setLastName(e.target.value)} id="exampleInputUsername2"  placeholder="" />
 
@@ -178,25 +178,25 @@ const EditUser =() =>{
 
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Email</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Email</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="email" value={email} onChange={(e)=>setEmail(e.target.value)} id="exampleInputUsername2"  placeholder="" />
-                         
+
                         </div>
                       </div>
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Mobile</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Mobile</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="mobile" value={mobile} onChange={(e)=>setMobile(e.target.value)} id="exampleInputUsername2"  placeholder="" />
-                         
+
                         </div>
                       </div>
 
-                    
 
 
-        
+
+
 
 <div className="form-group row">
                         <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">User Roles</label>
@@ -209,12 +209,12 @@ const EditUser =() =>{
         </option>
       ))}
     </select>
-  
+
                         </div>
                       </div>
 
 
-                  
+
 <div className='form-group row'>
     <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Joining Date</label>
     <div className='col-sm-9'>
@@ -226,13 +226,13 @@ const EditUser =() =>{
 <div className='form-group row'>
         <label htmlFor="basicSalary" className="col-sm-3 col-form-label">Basic Salary</label>
         <div className='col-sm-9'>
-          <input 
+          <input
             id="basicSalary"
-            type='text' 
-            className='form-control' 
-            value={basicSalary} 
+            type='text'
+            className='form-control'
+            value={basicSalary}
             name='basicSalary'
-            onChange={handleBasicSalaryChange} 
+            onChange={handleBasicSalaryChange}
           />
         </div>
       </div>
@@ -240,13 +240,13 @@ const EditUser =() =>{
       <div className='form-group row'>
         <label htmlFor="otherAllowance" className="col-sm-3 col-form-label">Other Allowance</label>
         <div className='col-sm-9'>
-          <input 
+          <input
             id="otherAllowance"
-            type='text' 
-            className='form-control' 
-            value={otherAllowance} 
+            type='text'
+            className='form-control'
+            value={otherAllowance}
             name='otherAllowance'
-            onChange={handleOtherAllowanceChange} 
+            onChange={handleOtherAllowanceChange}
           />
         </div>
       </div>
@@ -254,18 +254,18 @@ const EditUser =() =>{
       <div className='form-group row'>
         <label htmlFor="netSalary" className="col-sm-3 col-form-label">Net Salary</label>
         <div className='col-sm-9'>
-          <input 
+          <input
             id="netSalary"
-            type='text' 
-            className='form-control' 
-            value={netSalary} 
+            type='text'
+            className='form-control'
+            value={netSalary}
             name='netSalary'
-            readOnly 
+            readOnly
           />
         </div>
       </div>
 
-      
+
 
       <div className='form-group row'>
     <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Emergency Contact Person Name</label>
@@ -288,22 +288,22 @@ const EditUser =() =>{
     </div>
 </div>
 
-                    
-                    
-                           
-                      
+
+
+
+
                         </div>
-                   
+
                       <button type="submit" className="btn btn-gradient-primary me-2">Submit</button>
-                     
+
                     </form>
                   </div>
                 </div>
               </div>
- 
-   
 
-      
+
+
+
             </div>
           </div>
                     <Footer />

@@ -66,7 +66,7 @@ const AddUser =() =>{
         email:'',
         mobile:'',
         password:'',
-       
+
         userrole: '',
         basicSalary: '',
         otherAllowance: '',
@@ -76,7 +76,7 @@ const AddUser =() =>{
         contactnumber:'',
         address:''
 
-       
+
 
     })
 
@@ -91,15 +91,15 @@ const AddUser =() =>{
       { value: 'Security', label: 'Security' },
       { value: 'Valet Driver', label: 'Valet Driver' },
 
-     
-     
+
+
     ];
 
     const handleUserRole = (event) => {
       setUserRole(event.target.value);
     //  alert({svat});
      }
-    
+
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
     const handleSubmit = (event) => {
@@ -133,19 +133,19 @@ const AddUser =() =>{
 
     const validateForm = (data) => {
       let errors = {};
-  
+
       if (!data.firstname) {
         errors.firstname = "First Name is required";
       }
-      
+
       if (!data.lastname) {
         errors.lastname = "Last Name is required";
       }
-      
+
       if (!data.email) {
         errors.email = "Email is required";
       }
-      
+
       if (!data.mobile) {
         errors.mobile = "Mobile Number is required";
       }
@@ -158,13 +158,13 @@ const AddUser =() =>{
         errors.confirmPassword = "Passwords do not match";
       }
 
-      
+
   if (!data.userrole) {
     errors.userrole = "User Role is required";
   }
-  
-  
-     
+
+
+
       return errors;
     };
 
@@ -185,16 +185,16 @@ const AddUser =() =>{
               </nav>
             </div>
             <div className="row">
-       
+
               <div className="col-md-12 grid-margin stretch-card">
                 <div className="card">
                   <div className="card-body">
-                  
+
                     <form className="forms-sample" onSubmit={handleSubmit} >
                         <div className="row">
-                          
+
                             <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">First Name</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">First Name</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="firstname" id="exampleInputUsername2" onChange={e =>setValues({...values, firstname: e.target.value})} placeholder="" />
                           {errors.firstname && <span className="error">{errors.firstname}</span>}
@@ -202,7 +202,7 @@ const AddUser =() =>{
                       </div>
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Last Name</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Last Name</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="lastname" id="exampleInputUsername2" onChange={e =>setValues({...values, lastname: e.target.value})} placeholder="" />
                           {errors.lastname && <span className="error">{errors.lastname}</span>}
@@ -211,7 +211,7 @@ const AddUser =() =>{
 
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Email</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Email</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="email" id="exampleInputUsername2" onChange={e =>setValues({...values, email: e.target.value})} placeholder="" />
                           {errors.email && <span className="error">{errors.email}</span>}
@@ -219,7 +219,7 @@ const AddUser =() =>{
                       </div>
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Mobile</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Mobile</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="mobile" id="exampleInputUsername2" onChange={e =>setValues({...values, mobile: e.target.value})} placeholder="" />
                           {errors.mobile && <span className="error">{errors.mobile}</span>}
@@ -227,7 +227,7 @@ const AddUser =() =>{
                       </div>
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Password</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Password</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="password" id="exampleInputUsername2" onChange={e =>setValues({...values, password: e.target.value})} placeholder="" />
                           {errors.password && <span className="error">{errors.password}</span>}
@@ -236,7 +236,7 @@ const AddUser =() =>{
 
 
                       <div className="form-group row">
-  <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Confirm Password</label>
+  <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Confirm Password</label>
   <div className="col-sm-9">
     <input
       type="password"
@@ -278,13 +278,13 @@ const AddUser =() =>{
 <div className='form-group row'>
         <label htmlFor="basicSalary" className="col-sm-3 col-form-label">Basic Salary</label>
         <div className='col-sm-9'>
-          <input 
+          <input
             id="basicSalary"
-            type='text' 
-            className='form-control' 
+            type='text'
+            className='form-control'
             name='basicSalary'
-            value={basicSalary} 
-            onChange={handleBasicSalaryChange} 
+            value={basicSalary}
+            onChange={handleBasicSalaryChange}
           />
         </div>
       </div>
@@ -292,13 +292,13 @@ const AddUser =() =>{
       <div className='form-group row'>
         <label htmlFor="otherAllowance" className="col-sm-3 col-form-label">Other Allowance</label>
         <div className='col-sm-9'>
-          <input 
+          <input
             id="otherAllowance"
-            type='text' 
-            className='form-control' 
+            type='text'
+            className='form-control'
             name='otherAllowance'
-            value={otherAllowance} 
-            onChange={handleOtherAllowanceChange} 
+            value={otherAllowance}
+            onChange={handleOtherAllowanceChange}
           />
         </div>
       </div>
@@ -306,13 +306,13 @@ const AddUser =() =>{
       <div className='form-group row'>
         <label htmlFor="netSalary" className="col-sm-3 col-form-label">Net Salary</label>
         <div className='col-sm-9'>
-          <input 
+          <input
             id="netSalary"
-            type='text' 
-            className='form-control' 
+            type='text'
+            className='form-control'
             name='netSalary'
-            value={netSalary} 
-            readOnly 
+            value={netSalary}
+            readOnly
           />
         </div>
       </div>
@@ -341,22 +341,22 @@ const AddUser =() =>{
 
 
 
-                    
-                    
-                           
-                      
+
+
+
+
                         </div>
-                   
+
                       <button type="submit" className="btn btn-gradient-primary me-2">Submit</button>
-                     
+
                     </form>
                   </div>
                 </div>
               </div>
- 
-   
 
-      
+
+
+
             </div>
           </div>
                     <Footer />

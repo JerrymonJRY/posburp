@@ -132,9 +132,18 @@ const ViewFoodCategory = () => {
                   <Link to={`/editfoodcategory/${row._id}`} className="btn btn-primary btn-sm mr-2">
                       <i className="fa fa-pencil" aria-hidden="true"></i>
                   </Link>
-                  <button onClick={() => confirmDelete(row._id)} className="btn btn-danger btn-sm">
+                  {/* <button onClick={() => confirmDelete(row._id)} className="btn btn-danger btn-sm">
                       <i className="fa fa-trash-o" aria-hidden="true"></i>
+                  </button> */}
+                   {row.status === 0 ? (
+                  <button onClick={() => confirmDeactivate(row._id)} className="btn btn-success btn-sm">
+                      <i className="fa fa-thumbs-up" aria-hidden="true"></i>
                   </button>
+              ) : (
+                  <button onClick={() => confirmActivate(row._id)} className="btn btn-danger btn-sm">
+                      <i className="fa fa-thumbs-down" aria-hidden="true"></i>
+                  </button>
+              )}
               </>
           ),
       },

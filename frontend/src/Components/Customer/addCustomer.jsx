@@ -15,7 +15,7 @@ const AddCustomer =() =>{
         customeremail:'',
         customermobile:'',
         customeraddress:''
-       
+
 
     })
     const [errors, setErrors] = useState({});
@@ -43,7 +43,7 @@ const AddCustomer =() =>{
 
     const validateForm = (data) => {
       let errors = {};
-  
+
       if (!data.customername) {
         errors.customername = "Customer Name is required";
       }
@@ -58,8 +58,8 @@ const AddCustomer =() =>{
       } else if (!/^\d+$/.test(data.customermobile)) {
         errors.customermobile = "Enter Number Only";
       }
-  
-     
+
+
       return errors;
     };
 
@@ -80,16 +80,16 @@ const AddCustomer =() =>{
               </nav>
             </div>
             <div className="row">
-       
+
               <div className="col-md-12 grid-margin stretch-card">
                 <div className="card">
                   <div className="card-body">
-                  
+
                     <form className="forms-sample" onSubmit={handleSubmit} >
                         <div className="row">
-                          
+
                             <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Customer Name</label>
+                        <label htmlFor="customername" className="col-sm-3 col-form-label">Customer Name</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="customername" id="exampleInputUsername2" onChange={e =>setValues({...values, customername: e.target.value})} placeholder="Customer Name" />
                           {errors.customername && <span className="error">{errors.customername}</span>}
@@ -97,41 +97,41 @@ const AddCustomer =() =>{
                       </div>
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Customer Email</label>
+                        <label htmlFor="customeremail" className="col-sm-3 col-form-label">Customer Email</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="customeremail" id="exampleInputUsername2" onChange={e =>setValues({...values, customeremail: e.target.value})} placeholder="Customer Email" />
                           {errors.customeremail && <span className="error">{errors.customeremail}</span>}
                         </div>
                       </div>
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Customer Mobile</label>
+                        <label htmlFor="customermobile" className="col-sm-3 col-form-label">Customer Mobile</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="customermobile" id="exampleInputUsername2" onChange={e =>setValues({...values, customermobile: e.target.value})} placeholder="Customer Mobile" />
                           {errors.customermobile && <span className="error">{errors.customermobile}</span>}
                         </div>
                       </div>
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Customer Address</label>
+                        <label htmlFor="customeraddress" className="col-sm-3 col-form-label">Customer Address</label>
                         <div className="col-sm-9">
                          <textarea className='form-control' name='customeraddress' onChange={e =>setValues({...values, customeraddress: e.target.value})}></textarea>
                         </div>
                       </div>
-                      
-                    
-                           
-                      
+
+
+
+
                         </div>
-                   
+
                       <button type="submit" className="btn btn-gradient-primary me-2">Submit</button>
-                     
+
                     </form>
                   </div>
                 </div>
               </div>
- 
-   
 
-      
+
+
+
             </div>
           </div>
                     <Footer />

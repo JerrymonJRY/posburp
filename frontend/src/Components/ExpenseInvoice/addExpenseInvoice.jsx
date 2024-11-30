@@ -10,7 +10,7 @@ import Swal from "sweetalert2";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 const AddExpenseInvoice = () => {
-    
+
   const [addedby, setuserid] = useState("");
   const [expense, setExpense] = useState([]);
   const [selectedExpense, setSelectedExpense] = useState(null);
@@ -44,22 +44,22 @@ const AddExpenseInvoice = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-  
+
     const selectedExpenseValue = selectedExpense ? selectedExpense.value : null;
-  
+
     const formData = {
       expenseId: selectedExpenseValue,
       amount,
       date,
       addedby,
     };
-  
+
     const config = {
       headers: {
         'Content-Type': 'application/json',
       },
     };
-  
+
     axios
       .post(`${apiConfig.baseURL}/api/expenseinvoice/createInvoiceexpense`, formData, config)
       .then((res) => {
@@ -84,7 +84,7 @@ const AddExpenseInvoice = () => {
         });
       });
   };
-  
+
 
   return (
     <div className="container-scroller">
@@ -114,7 +114,7 @@ const AddExpenseInvoice = () => {
                       <div className="row">
                         <div className="form-group row">
                           <label
-                            for="exampleInputUsername2"
+                            htmlFor="exampleInputUsername2"
                             className="col-sm-3 col-form-label"
                           >
                             Expense Name
@@ -134,7 +134,7 @@ const AddExpenseInvoice = () => {
 
                         <div className="form-group row">
                           <label
-                            for="exampleInputUsername2"
+                            htmlFor="exampleInputUsername2"
                             className="col-sm-3 col-form-label"
                           >
                             Amount
@@ -154,7 +154,7 @@ const AddExpenseInvoice = () => {
 
                         <div className="form-group row">
                           <label
-                            for="exampleInputUsername2"
+                            htmlFor="exampleInputUsername2"
                             className="col-sm-3 col-form-label"
                           >
                             Date

@@ -14,7 +14,7 @@ const EditCategory =() =>{
     const [categoryname,setCategoryName] =useState()
     const [description,setDescription] =useState()
 
-  
+
     const navigate = useNavigate();
 
     useEffect( ()=>{
@@ -23,7 +23,7 @@ const EditCategory =() =>{
         .then(res => { console.log(res)
              setCategoryName(res.data.categoryname)
              setDescription(res.data.description)
-        
+
     })
         .catch(err =>console.log(err));
 
@@ -60,43 +60,43 @@ const EditCategory =() =>{
               </nav>
             </div>
             <div className="row">
-       
+
               <div className="col-md-12 grid-margin stretch-card">
                 <div className="card">
                   <div className="card-body">
-                  
+
                     <form className="forms-sample" onSubmit={handleSubmit} >
                         <div className="row">
-                          
+
                             <div className="form-group row">
-                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Food Category</label>
+                        <label htmlFor="categoryname" className="col-sm-3 col-form-label">Food Category</label>
                         <div className="col-sm-9">
                           <input type="text" value={categoryname} onChange={(e)=>setCategoryName(e.target.value)} className="form-control"  name="categoryname" id="exampleInputUsername2"  placeholder="Food Description" />
                         </div>
                       </div>
 
                       <div className="form-group row">
-                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Food Description</label>
+                        <label htmlFor="description" className="col-sm-3 col-form-label">Food Description</label>
                         <div className="col-sm-9">
                           <input type="text" value={description} onChange={(e)=>setDescription(e.target.value)} className="form-control"  name="description" id="exampleInputUsername2" placeholder="Food Category" />
                         </div>
                       </div>
-                      
-                    
-                           
-                      
+
+
+
+
                         </div>
-                   
+
                       <button type="submit" className="btn btn-gradient-primary me-2">Submit</button>
-                     
+
                     </form>
                   </div>
                 </div>
               </div>
- 
-   
 
-      
+
+
+
             </div>
           </div>
                     <Footer />

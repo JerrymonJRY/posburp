@@ -15,7 +15,7 @@ const EditWaiter =() =>{
     const [mobile,setMobile] =useState()
     const [description,setDescription] =useState()
 
-  
+
     const navigate = useNavigate();
 
     useEffect( ()=>{
@@ -28,7 +28,7 @@ const EditWaiter =() =>{
             setDescription(res.data.description)
 
 
-        
+
     })
         .catch(err =>console.log(err));
 
@@ -53,7 +53,7 @@ const EditWaiter =() =>{
         .put(`${apiConfig.baseURL}/api/waiter/updatewaiter/${id}`,{waitername,designation,mobile,description})
         .then((res) => {
           console.log(res);
-  
+
           // Display success message using SweetAlert2
           Swal.fire({
             icon: 'success',
@@ -76,7 +76,7 @@ const EditWaiter =() =>{
         });
     }
 
-   
+
     return (
         <div className="container-scroller">
         <Header />
@@ -94,14 +94,14 @@ const EditWaiter =() =>{
               </nav>
             </div>
             <div className="row">
-       
+
               <div className="col-md-12 grid-margin stretch-card">
                 <div className="card">
                   <div className="card-body">
-                  
+
                     <form className="forms-sample" onSubmit={handleSubmit} >
                         <div className="row">
-                          
+
                             <div className="form-group row">
                         <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Waiter Name</label>
                         <div className="col-sm-9">
@@ -127,22 +127,22 @@ const EditWaiter =() =>{
                           <input type="text" className="form-control" name="percentage" id="exampleInputUsername2" value={description} onChange={(e)=>setDescription(e.target.value)}  />
                         </div>
                       </div>
-                      
-                    
-                           
-                      
+
+
+
+
                         </div>
-                   
+
                       <button type="submit" className="btn btn-gradient-primary me-2">Submit</button>
-                     
+
                     </form>
                   </div>
                 </div>
               </div>
- 
-   
 
-      
+
+
+
             </div>
           </div>
                     <Footer />

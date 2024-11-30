@@ -64,20 +64,20 @@ const EditExpenseInvoice = () => {
     event.preventDefault();
 
     const selectedExpenseValue = selectedExpense ? selectedExpense.value : null;
-  
+
     const formData = {
       expenseId: selectedExpenseValue,
       amount,
       date,
       addedby,
     };
-  
+
     const config = {
       headers: {
         'Content-Type': 'application/json',
       },
     };
-  
+
     axios
       .put(`${apiConfig.baseURL}/api/expenseinvoice/updateexpensiveinvoice/${id}`, formData, config)
       .then((res) => {
@@ -101,10 +101,10 @@ const EditExpenseInvoice = () => {
           confirmButtonText: 'OK',
         });
       });
-  
+
 
   };
-  
+
 
   return (
     <div className="container-scroller">
@@ -134,7 +134,7 @@ const EditExpenseInvoice = () => {
                       <div className="row">
                         <div className="form-group row">
                           <label
-                            for="exampleInputUsername2"
+                            htmlFor="exampleInputUsername2"
                             className="col-sm-3 col-form-label"
                           >
                             Expense Name
@@ -154,7 +154,7 @@ const EditExpenseInvoice = () => {
 
                         <div className="form-group row">
                           <label
-                            for="exampleInputUsername2"
+                            htmlFor="exampleInputUsername2"
                             className="col-sm-3 col-form-label"
                           >
                             Amount
@@ -174,7 +174,7 @@ const EditExpenseInvoice = () => {
 
                         <div className="form-group row">
                           <label
-                            for="exampleInputUsername2"
+                            htmlFor="exampleInputUsername2"
                             className="col-sm-3 col-form-label"
                           >
                             Date

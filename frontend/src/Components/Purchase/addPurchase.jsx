@@ -59,13 +59,13 @@ const AddPurchase =() =>
       }
       const handleIngredient = (selectedOption) => {
         setSelectIngredient(selectedOption);
-    
+
         if (selectedOption) {
           // Check if the ingredient is already in the cart
           const existingIngredient = cart.find((item) => item.value === selectedOption.value);
-    
+
           if (existingIngredient) {
-           
+
             Swal.fire({
               icon: 'warning',
               title: 'Warning',
@@ -73,15 +73,15 @@ const AddPurchase =() =>
               confirmButtonText: 'OK'
             });
           } else {
-          
+
             setCart((prevCart) => [...prevCart, { ...selectedOption, quantity: 1 }]);
           }
-    
+
           // Reset the selected ingredient after adding to the cart
           setSelectIngredient(null);
         }
       };
-    
+
 
       const handleQuantityChange = (index, event) => {
         const { value } = event.target;
@@ -96,7 +96,7 @@ const AddPurchase =() =>
         return cart.reduce((total, item) => total + item.purchaseprice * item.quantity, 0);
       };
 
-    
+
   const calculateTotal = (quantity, purchaseprice) => {
     return quantity * purchaseprice;
   };
@@ -105,7 +105,7 @@ const AddPurchase =() =>
         const { value } = event.target;
         const purchasePrice = cart[index].purchaseprice;
         const newQuantity = value / purchasePrice;
-    
+
         setCart((prevCart) =>
           prevCart.map((item, i) =>
             i === index ? { ...item, quantity: newQuantity } : item
@@ -128,11 +128,11 @@ const AddPurchase =() =>
         const { value } = event.target;
         setPaidAmount(parseFloat(value) || 0);
       };
-    
+
       const calculateDueAmount = () => {
         return calculateGrandTotal() - paidAmount;
       };
-    
+
       const handleSupplierChange = (selectOption) => {
         setSelectedSupplier(selectOption);
         // You can access the selected supplier's ID using selectedOption.value
@@ -167,9 +167,9 @@ const AddPurchase =() =>
         dueAmount:calculateDueAmount(),
         supplierId: selectSupplier ? selectSupplier.value : null,
         suppliername:selectSupplier ? selectSupplier.label : null,
-        invoiceDate: invoiceDate, 
+        invoiceDate: invoiceDate,
       };
-      
+
       const config = {
         headers: {
           'Content-Type': 'application/json',
@@ -214,28 +214,28 @@ const AddPurchase =() =>
               </nav>
             </div>
             <div className="row">
-       
+
               <div className="col-md-12 grid-margin stretch-card">
                 <div className="card">
                   <div className="card-body">
-                  
+
                     <form className="forms-sample"  >
                         <div className='row'>
-                           
+
                             <div className='col-md-4'>
                                  <div class="form-group">
-                                     <label for="exampleInputUsername1">Supplier Name</label>
+                                     <label htmlFor="exampleInputUsername1">Supplier Name</label>
                                      <Select
                                       options={options}
                                       value={selectSupplier}
                                       onChange={handleSupplierChange}
                                       placeholder="Select a supplier" />
-                                      
+
                                 </div>
                             </div>
                             <div className='col-md-4'>
                                  <div class="form-group">
-                                     <label for="exampleInputUsername1">Invoice Date</label>
+                                     <label htmlFor="exampleInputUsername1">Invoice Date</label>
                                      <input
                                      type="date"
                                      className="form-control"
@@ -250,15 +250,15 @@ const AddPurchase =() =>
                         <div className="row">
                         <div className='col-md-4'>
                                  <div class="form-group">
-                                     <label for="exampleInputUsername1">Ingredients</label>
+                                     <label htmlFor="exampleInputUsername1">Ingredients</label>
                                      <Select
                                       options={ingredient}
-                                      placeholder="Select a Ingredients" 
+                                      placeholder="Select a Ingredients"
                                       isSearchable
                                       onChange={handleIngredient}
                                     onClick={() => addProductToCart(ingredient)}
                                       />
-                                    
+
                                 </div>
                             </div>
                             <table className="table ">
@@ -295,11 +295,11 @@ const AddPurchase =() =>
                   className="form-control"
                   value={selectedIngredient.date}
                   onChange={(e) => handleDateChange(index, e)}
-                 
+
                 />
               </td>
               <td>{calculateTotal(selectedIngredient.quantity, selectedIngredient.purchaseprice)}</td>
-              
+
               <td>
                 <button type="button" className='btn btn-danger btn-sm' onClick={() => handleRemoveItem(index)}>
                   X
@@ -331,17 +331,17 @@ const AddPurchase =() =>
         </tfoot>
       </table>
                           </div>
-                   
+
                       <button type="submit" onClick={handleSubmit} className="btn btn-gradient-primary me-2">Submit</button>
-                     
+
                     </form>
                   </div>
                 </div>
               </div>
- 
-   
 
-      
+
+
+
             </div>
           </div>
                     <Footer />

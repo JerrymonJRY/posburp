@@ -14,25 +14,25 @@ const AddDesignation =() =>{
     useEffect(() => {
 
         const storeid = localStorage.getItem('_id');
-   
+
         //console.log('Stored ID:', storeid);
         setuserid(storeid);
           }, []);
 
           const [designationname,setDesignationName] =useState('');
-          
+
         console.log(addedby);
-  
-  
+
+
     const navigate = useNavigate();
     const handleSubmit =(e) =>{
         e.preventDefault();
-    
+
         var formData = new FormData();
         formData.append('designationname', designationname);
         formData.append('addedby', addedby);
-        
-    
+
+
         const config = {
             headers: {
               'Content-Type': 'application/json',
@@ -40,19 +40,19 @@ const AddDesignation =() =>{
           };
 
           console.log(formData);
-    
+
           axios
           .post(`${apiConfig.baseURL}/api/designation/designationCreate`, formData, config)
            .then(res => {
               console.log(res);
-             
+
               navigate("/viewDesignation");
             })
             .catch(err => console.log(err));
-      
-    
+
+
        }
-    
+
 
 
 
@@ -74,39 +74,39 @@ const AddDesignation =() =>{
               </nav>
             </div>
             <div className="row">
-       
+
               <div className="col-md-12 grid-margin stretch-card">
                 <div className="card">
                   <div className="card-body">
-                  
+
                     <form className="forms-sample" onSubmit={handleSubmit} >
                         <div className="row">
-                          
+
                             <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Expense Name</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Expense Name</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="designationname" id="exampleInputUsername2" value={designationname} onChange={(e) => {setDesignationName(e.target.value)}} placeholder="Expense Name" />
-                        
+
                         </div>
                       </div>
 
-                    
-                      
-                    
-                           
-                      
+
+
+
+
+
                         </div>
-                   
+
                       <button type="submit" className="btn btn-gradient-primary me-2">Submit</button>
-                     
+
                     </form>
                   </div>
                 </div>
               </div>
- 
-   
 
-      
+
+
+
             </div>
           </div>
                     <Footer />

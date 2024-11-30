@@ -16,23 +16,23 @@ const AddCategory =() =>{
 
         categoryname :'',
         description:'',
-       
+
 
     })
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
     const handleSubmit = (event) => {
       const validationErrors = validateForm(values);
-  
+
       event.preventDefault();
-  
+
       if (Object.keys(validationErrors).length === 0) {
         axios
           .post(`${apiConfig.baseURL}/api/category/createcategory`, values)
           .then((res) => {
             console.log(res);
             navigate('/viewingredientfoodcategory');
-            
+
             // Display Toastify success message
             toast.success('Category created successfully!', {
               position: toast.POSITION.TOP_RIGHT,
@@ -48,12 +48,12 @@ const AddCategory =() =>{
 
     const validateForm = (data) => {
       let errors = {};
-  
+
       if (!data.categoryname) {
         errors.categoryname = "Category Name is required";
       }
-  
-     
+
+
       return errors;
     };
     return (
@@ -73,45 +73,59 @@ const AddCategory =() =>{
               </nav>
             </div>
             <div className="row">
-       
+
               <div className="col-md-12 grid-margin stretch-card">
                 <div className="card">
                   <div className="card-body">
-                  
+
                     <form className="forms-sample" onSubmit={handleSubmit}>
                         <div className="row">
-                          
-                            <div className="form-group row">
-                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Food Category</label>
-                        <div className="col-sm-9">
-                          <input type="text" className="form-control" name="categoryname" id="exampleInputUsername2" onChange={e =>setValues({...values, categoryname: e.target.value})} placeholder="" />
-                          {errors.categoryname && <span className="error">{errors.categoryname}</span>}
-                        </div>
-                      
-                      </div>
+
+                        <div className="form-group row">
+  <label htmlFor="categoryname" className="col-sm-3 col-form-label">
+    Food Category
+  </label>
+  <div className="col-sm-9">
+    <input
+      type="text"
+      className="form-control"
+      name="categoryname"
+      id="categoryname"
+      value={values.categoryname || ""}
+      onChange={(e) =>
+        setValues({ ...values, categoryname: e.target.value })
+      }
+      placeholder="Enter food category"
+    />
+    {errors.categoryname && (
+      <span className="error">{errors.categoryname}</span>
+    )}
+  </div>
+</div>
+
 
                       <div className="form-group row">
-                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Food Description</label>
+                        <label htmlFor="description" className="col-sm-3 col-form-label">Food Description</label>
                         <div className="col-sm-9">
-                          <input type="text" className="form-control" name="description" id="exampleInputUsername2" onChange={e =>setValues({...values, description: e.target.value})} placeholder="" />
+                          <input type="text" className="form-control" name="description" id="description" onChange={e =>setValues({...values, description: e.target.value})} placeholder="" />
                         </div>
                       </div>
-                      
-                    
-                           
-                      
+
+
+
+
                         </div>
-                   
+
                       <button type="submit" className="btn btn-gradient-primary me-2">Submit</button>
-                     
+
                     </form>
                   </div>
                 </div>
               </div>
- 
-   
 
-      
+
+
+
             </div>
           </div>
                     <Footer />

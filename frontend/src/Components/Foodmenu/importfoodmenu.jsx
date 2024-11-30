@@ -17,23 +17,23 @@ const ImportFoodmenu = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     // Add your API endpoint here
-  
+
     const formData = new FormData();
     formData.append("csvFile", file);
-  
+
     const config = {
       headers: {
         "Content-Type": "multipart/form-data"
       }
     };
-  
+
     try {
       const response = await axios.post(`${apiConfig.baseURL}/api/foodmenu/importfoodmenu`, formData, config);
-  
+
       const { importedFoodmenu, duplicateFoodmenu } = response.data;
-  
+
       if (importedFoodmenu) {
         // Show success message with SweetAlert2 and redirect
         Swal.fire({
@@ -53,11 +53,11 @@ const ImportFoodmenu = () => {
       } else {
         // Handle other cases as needed
       }
-  
+
     } catch (error) {
       // Handle error, you can customize this based on your API response
       console.error(error);
-  
+
       // Show error message with SweetAlert2
       Swal.fire({
         icon: 'error',
@@ -66,7 +66,7 @@ const ImportFoodmenu = () => {
       });
     }
   };
-  
+
 
   const handleDownloadSample = async () => {
     try {
@@ -116,7 +116,7 @@ const ImportFoodmenu = () => {
                       <div className="row">
                         <div className="form-group row">
                           <label
-                            for="exampleInputUsername2"
+                            htmlFor="exampleInputUsername2"
                             className="col-sm-3 col-form-label"
                           >
                             Import Foodmenu
@@ -134,7 +134,7 @@ const ImportFoodmenu = () => {
                         </div>
 
                         <div className="col-sm-3">
-                         
+
                         </div>
                         <div className="col-sm-9">
                         <button

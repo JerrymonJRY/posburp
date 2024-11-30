@@ -13,7 +13,7 @@ const AddVat =() =>{
 
         vatname :'',
         percentage:'',
-       
+
 
     })
     const [errors, setErrors] = useState({});
@@ -23,7 +23,7 @@ const AddVat =() =>{
     const handleSubmit = (event) => {
       event.preventDefault();
       const validationErrors = validateForm(values);
-    
+
       if (Object.keys(validationErrors).length === 0) {
         axios.post(`${apiConfig.baseURL}/api/vat/createvat`, values)
           .then((res) => {
@@ -53,7 +53,7 @@ const AddVat =() =>{
 
     const validateForm = (data) => {
       let errors = {};
-  
+
       if (!data.vatname) {
         errors.vatname = "Vat Name is required";
       }
@@ -61,8 +61,8 @@ const AddVat =() =>{
       if (!data.percentage) {
         errors.percentage = "Vat Percentage is required";
       }
-  
-     
+
+
       return errors;
     };
 
@@ -83,16 +83,16 @@ const AddVat =() =>{
               </nav>
             </div>
             <div className="row">
-       
+
               <div className="col-md-12 grid-margin stretch-card">
                 <div className="card">
                   <div className="card-body">
-                  
+
                     <form className="forms-sample" onSubmit={handleSubmit} >
                         <div className="row">
-                          
+
                             <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Vat Name</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Vat Name</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="vatname" id="exampleInputUsername2" onChange={e =>setValues({...values, vatname: e.target.value})} placeholder="Vat Name" />
                           {errors.vatname && <span className="error">{errors.vatname}</span>}
@@ -100,28 +100,28 @@ const AddVat =() =>{
                       </div>
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Percentage</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Percentage</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="percentage" id="exampleInputUsername2" onChange={e =>setValues({...values, percentage: e.target.value})} placeholder="Percentage" />
                           {errors.percentage && <span className="error">{errors.percentage}</span>}
                         </div>
                       </div>
-                      
-                    
-                           
-                      
+
+
+
+
                         </div>
-                   
+
                       <button type="submit" className="btn btn-gradient-primary me-2">Submit</button>
-                     
+
                     </form>
                   </div>
                 </div>
               </div>
- 
-   
 
-      
+
+
+
             </div>
           </div>
                     <Footer />

@@ -14,7 +14,7 @@ const EditCustomer =() =>{
     const [customermobile,setCustomermobile] =useState()
     const [customeraddress,setCustomeraddress] =useState()
 
-  
+
     const navigate = useNavigate();
 
     useEffect( ()=>{
@@ -25,7 +25,7 @@ const EditCustomer =() =>{
             setCustomeremail(res.data.customeremail)
             setCustomermobile(res.data.customermobile)
             setCustomeraddress(res.data.customeraddress)
-        
+
     })
         .catch(err =>console.log(err));
 
@@ -44,7 +44,7 @@ const EditCustomer =() =>{
         .catch(err =>console.log(err));
     }
 
-   
+
     return (
         <div className="container-scroller">
         <Header />
@@ -62,23 +62,23 @@ const EditCustomer =() =>{
               </nav>
             </div>
             <div className="row">
-       
+
               <div className="col-md-12 grid-margin stretch-card">
                 <div className="card">
                   <div className="card-body">
-                  
+
                     <form className="forms-sample" onSubmit={handleSubmit} >
                         <div className="row">
-                          
+
                             <div className="form-group row">
-                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Customer Name</label>
+                        <label htmlFor="customername" className="col-sm-3 col-form-label">Customer Name</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="customername" id="exampleInputUsername2" value={customername} onChange={(e)=>setCustomername(e.target.value)} placeholder="Customer Name" />
                         </div>
                       </div>
 
                       <div className="form-group row">
-                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Customer Email</label>
+                        <label htmlFor="customeremail" className="col-sm-3 col-form-label">Customer Email</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="customeremail" id="exampleInputUsername2" value={customeremail} onChange={(e)=>setCustomeremail(e.target.value)} placeholder="Customer Email" />
                         </div>
@@ -86,33 +86,33 @@ const EditCustomer =() =>{
 
 
                       <div className="form-group row">
-                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Customer Mobile</label>
+                        <label htmlFor="customermobile" className="col-sm-3 col-form-label">Customer Mobile</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="customermobile" id="exampleInputUsername2" value={customermobile} onChange={(e)=>setCustomermobile(e.target.value)} placeholder="Customer Email" />
                         </div>
                       </div>
-                      
+
                       <div className="form-group row">
-                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Customer Address</label>
+                        <label htmlFor="customeraddress" className="col-sm-3 col-form-label">Customer Address</label>
                         <div className="col-sm-9">
                         <textarea className='form-control' name='customeraddress'value={customeraddress} onChange={(e)=>setCustomeraddress(e.target.value)}></textarea>
                         </div>
                       </div>
-                    
-                           
-                      
+
+
+
                         </div>
-                   
+
                       <button type="submit" className="btn btn-gradient-primary me-2">Submit</button>
-                     
+
                     </form>
                   </div>
                 </div>
               </div>
- 
-   
 
-      
+
+
+
             </div>
           </div>
                     <Footer />

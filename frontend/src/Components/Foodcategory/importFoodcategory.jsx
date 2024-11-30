@@ -107,7 +107,7 @@ const ImportFoodCategory = () => {
                                             <div className="row">
                                                 <div className="form-group row">
                                                     <label
-                                                        for="exampleInputUsername2"
+                                                        htmlFor="exampleInputUsername2"
                                                         className="col-sm-3 col-form-label"
                                                     >
                                                         Import Food Category

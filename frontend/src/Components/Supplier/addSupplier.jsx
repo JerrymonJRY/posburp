@@ -17,9 +17,9 @@ const AddSupplier =() =>
         taxnumber:'',
         licensenumber:'',
         supplieraddress:'',
-        
 
-       
+
+
 
     })
     const [errors, setErrors] = useState({});
@@ -28,7 +28,7 @@ const AddSupplier =() =>
     const handleSubmit = (event) => {
       event.preventDefault();
       const validationErrors = validateForm(values);
-    
+
       if (Object.keys(validationErrors).length === 0) {
         axios.post(`${apiConfig.baseURL}/api/supplier/createsupplier`, values)
           .then((res) => {
@@ -58,7 +58,7 @@ const AddSupplier =() =>
 
     const validateForm = (data) => {
       let errors = {};
-  
+
       if (!data.suppliername) {
         errors.suppliername = "Supplier Name is required";
       }
@@ -72,8 +72,8 @@ const AddSupplier =() =>
       } else if (!/^\d+$/.test(data.suppliermobile)) {
         errors.mobile = "Only numbers are allowed in the mobile number field";
       }
-  
-     
+
+
       return errors;
     };
     return (
@@ -93,16 +93,16 @@ const AddSupplier =() =>
               </nav>
             </div>
             <div className="row">
-       
+
               <div className="col-md-12 grid-margin stretch-card">
                 <div className="card">
                   <div className="card-body">
-                  
+
                     <form className="forms-sample" onSubmit={handleSubmit} >
                         <div className="row">
-                          
+
                             <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Supplier Name</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Supplier Name</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="suppliername" id="exampleInputUsername2" onChange={e =>setValues({...values, suppliername: e.target.value})} placeholder="Supplier Name" />
                           {errors.suppliername && <span className="error">{errors.suppliername}</span>}
@@ -110,7 +110,7 @@ const AddSupplier =() =>
                       </div>
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Supplier Email</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Supplier Email</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="supplieremail" id="exampleInputUsername2" onChange={e =>setValues({...values, supplieremail: e.target.value})} placeholder="Supplier Email" />
                           {errors.supplieremail && <span className="error">{errors.supplieremail}</span>}
@@ -118,7 +118,7 @@ const AddSupplier =() =>
                       </div>
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label"> Number</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label"> Number</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="suppliermobile" id="exampleInputUsername2" onChange={e =>setValues({...values, suppliermobile: e.target.value})} placeholder="Mobile Number" />
                           {errors.suppliermobile && <span className="error">{errors.suppliermobile}</span>}
@@ -126,42 +126,42 @@ const AddSupplier =() =>
                       </div>
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Tax Number</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Tax Number</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="taxnumber" id="exampleInputUsername2" onChange={e =>setValues({...values, taxnumber: e.target.value})} placeholder="Tax Number" />
                         </div>
                       </div>
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">License Number</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">License Number</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="licensenumber" id="exampleInputUsername2" onChange={e =>setValues({...values, licensenumber: e.target.value})} placeholder="License Number" />
                         </div>
                       </div>
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Address</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Address</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="supplieraddress" id="exampleInputUsername2" onChange={e =>setValues({...values, supplieraddress: e.target.value})} placeholder="Address" />
                         </div>
                       </div>
-                      
-                      
-                    
-                           
-                      
+
+
+
+
+
                         </div>
-                   
+
                       <button type="submit" className="btn btn-gradient-primary me-2">Submit</button>
-                     
+
                     </form>
                   </div>
                 </div>
               </div>
- 
-   
 
-      
+
+
+
             </div>
           </div>
                     <Footer />

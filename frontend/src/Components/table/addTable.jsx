@@ -13,7 +13,7 @@ const AddTable =() =>{
         Position:'',
         seatcapacity :'',
         description:'',
-       
+
 
     })
     const [errors, setErrors] = useState({});
@@ -38,7 +38,7 @@ const AddTable =() =>{
     }
     const validateForm = (data) => {
       let errors = {};
-  
+
       if (!data.tablename) {
         errors.tablename = "Table Name is required";
       }
@@ -52,8 +52,8 @@ const AddTable =() =>{
       } else if (!/^\d+$/.test(data.seatcapacity)) {
         errors.seatcapacity = "Only numbers are allowed in the Seat Capacity";
       }
-  
-     
+
+
       return errors;
     };
     return (
@@ -73,16 +73,16 @@ const AddTable =() =>{
               </nav>
             </div>
             <div className="row">
-       
+
               <div className="col-md-12 grid-margin stretch-card">
                 <div className="card">
                   <div className="card-body">
-                  
+
                     <form className="forms-sample" onSubmit={handleSubmit} >
                         <div className="row">
-                          
+
                             <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Table Name</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Table Name</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="tablename" id="exampleInputUsername2" onChange={e =>setValues({...values, tablename: e.target.value})} placeholder="Enter Table Tame" />
                           {errors.tablename && <span className="error">{errors.tablename}</span>}
@@ -90,7 +90,7 @@ const AddTable =() =>{
                       </div>
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Position</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Position</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="Position" id="exampleInputUsername2" onChange={e =>setValues({...values, Position: e.target.value})} placeholder="Enter Posistion" />
                           {errors.Position && <span className="error">{errors.Position}</span>}
@@ -98,7 +98,7 @@ const AddTable =() =>{
                       </div>
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Seat Capacity</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Seat Capacity</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="seatcapacity" id="exampleInputUsername2" onChange={e =>setValues({...values, seatcapacity: e.target.value})} placeholder="Enter Seat Capacity" />
                           {errors.seatcapacity && <span className="error">{errors.seatcapacity}</span>}
@@ -106,27 +106,27 @@ const AddTable =() =>{
                       </div>
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Description</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Description</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="Position" id="exampleInputUsername2" onChange={e =>setValues({...values, description: e.target.value})} placeholder="Enter Description" />
                         </div>
                       </div>
-                      
-                    
-                           
-                      
+
+
+
+
                         </div>
-                   
+
                       <button type="submit" className="btn btn-gradient-primary me-2">Submit</button>
-                     
+
                     </form>
                   </div>
                 </div>
               </div>
- 
-   
 
-      
+
+
+
             </div>
           </div>
                     <Footer />

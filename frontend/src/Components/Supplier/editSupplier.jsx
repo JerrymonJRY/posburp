@@ -18,7 +18,7 @@ const EditSupplier =() =>
     const [licensenumber,setLicenseNumber] =useState()
     const [supplieraddress,setSupplierAddress] =useState()
 
-  
+
     useEffect( ()=>{
 
       axios.get(`${apiConfig.baseURL}/api/supplier/getSupplier/${id}`)
@@ -27,16 +27,16 @@ const EditSupplier =() =>
         setSupplierEmail(res.data.supplieremail)
         setSupplierMobile(res.data.suppliermobile)
         setTaxNumber(res.data.taxnumber)
-      
+
         setLicenseNumber(res.data.licensenumber)
         setSupplierAddress(res.data.supplieraddress)
-      
-      
+
+
   })
       .catch(err =>console.log(err));
 
   },[])
-   
+
 
 
 
@@ -91,75 +91,75 @@ const EditSupplier =() =>
               </nav>
             </div>
             <div className="row">
-       
+
               <div className="col-md-12 grid-margin stretch-card">
                 <div className="card">
                   <div className="card-body">
-                  
+
                     <form className="forms-sample" onSubmit={handleSubmit} >
                         <div className="row">
-                          
+
                             <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Supplier Name</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Supplier Name</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="suppliername" id="exampleInputUsername2" value={suppliername} onChange={(e)=>setSupplierName(e.target.value)} placeholder="Supplier Name" />
-                         
+
                         </div>
                       </div>
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Supplier Email</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Supplier Email</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="supplieremail" id="exampleInputUsername2" value={supplieremail} onChange={(e)=>setSupplierEmail(e.target.value)} placeholder="Supplier Email" />
-                         
+
                         </div>
                       </div>
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label"> Number</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label"> Number</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="suppliermobile" id="exampleInputUsername2" value={suppliermobile} onChange={(e)=>setSupplierMobile(e.target.value)} placeholder="Mobile Number" />
-                         
+
                         </div>
                       </div>
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Tax Number</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Tax Number</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="taxnumber" id="exampleInputUsername2" value={taxnumber} onChange={(e)=>setTaxNumber(e.target.value)} placeholder="Tax Number" />
                         </div>
                       </div>
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">License Number</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">License Number</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="licensenumber" id="exampleInputUsername2" value={licensenumber} onChange={(e)=>setLicenseNumber(e.target.value)} placeholder="License Number" />
                         </div>
                       </div>
 
                       <div className="form-group row">
-                        <label for="exampleInputUsername2" className="col-sm-3 col-form-label">Address</label>
+                        <label htmlFor="exampleInputUsername2" className="col-sm-3 col-form-label">Address</label>
                         <div className="col-sm-9">
                           <input type="text" className="form-control" name="supplieraddress" id="exampleInputUsername2" value={supplieraddress} onChange={(e)=>setSupplierAddress(e.target.value)} placeholder="Address" />
                         </div>
                       </div>
-                      
-                      
-                    
-                           
-                      
+
+
+
+
+
                         </div>
-                   
+
                       <button type="submit" className="btn btn-gradient-primary me-2">Submit</button>
-                     
+
                     </form>
                   </div>
                 </div>
               </div>
- 
-   
 
-      
+
+
+
             </div>
           </div>
                     <Footer />
