@@ -11,16 +11,20 @@ var tableSchema = new mongoose.Schema({
     Position :{
         type:String,
         required:true,
-       
+
     },
     seatcapacity:{
         type:String,
         required:true,
-       
+
     },
     description:{
         type:String,
         required:true,
+    },
+    status: {
+        type: Number,
+        default: 0, // Set the default value of status to 0
     },
 });
 

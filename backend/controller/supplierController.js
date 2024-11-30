@@ -6,7 +6,7 @@ const createSupplier =asyncHandler(async(req,res) =>{
     const suppliername =req.body.suppliername;
     const suppliermobile =req.body.suppliermobile;
     const taxnumber =req.body.taxtnumber;
-    const findSupplier =await Supplier.findOne({ 
+    const findSupplier =await Supplier.findOne({
         suppliername:suppliername,
         suppliermobile:suppliermobile,
         taxnumber:taxnumber });
@@ -17,7 +17,7 @@ const createSupplier =asyncHandler(async(req,res) =>{
         res.json(newTable);
     }
     else{
-       
+
         throw new Error("Supplier Details Already Exist");
 
     }
@@ -48,14 +48,14 @@ const updateSupplier =asyncHandler(async(req,res) =>{
             licensenumber:req?.body?.licensenumber,
             supplieraddress:req?.body?.supplieraddress
 
-            
-    
+
+
           },
           {
               new:true,
           }
           );
-    
+
           res.json(updateSupplier);
     }catch(error)
     {
@@ -68,18 +68,45 @@ const updateSupplier =asyncHandler(async(req,res) =>{
 const getSupplier =asyncHandler(async(req,res) =>{
 
     const { id } =req.params;
-   
+
    //console.log(id);
    try
    {
         const getsupplier =await Supplier.findById(id);
         res.json(getsupplier);
-  
+
    }catch(error)
    {
     throw new Error(error);
    }
-  
+
   });
 
-module.exports ={createSupplier,viewSupplier,updateSupplier,getSupplier};
+
+  const updateSupplierStatus = async (req, res) => {
+    try {
+      // Update all documents that do not have a status field
+      const result = await Supplier.updateMany(
+        { status: { $exists: false } }, // Check if the status field does not exist
+        { $set: { status: 0 } }         // Set the default value 0 for status
+      );
+
+      // If no documents were updated
+      if (result.modifiedCount === 0) {
+        return res.status(404).json({ message: "No documents were updated." });
+      }
+
+      res.status(200).json({ message: "All documents updated successfully!" });
+    } catch (err) {
+      console.error("Error updating documents:", err);
+      res.status(500).json({ message: "Server error, please try again later." });
+    }
+  };
+
+module.exports ={
+    createSupplier,
+    viewSupplier,
+    updateSupplier,
+    getSupplier,
+    updateSupplierStatus
+};

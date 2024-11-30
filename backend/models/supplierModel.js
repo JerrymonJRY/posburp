@@ -20,15 +20,19 @@ var supplierSchema = new mongoose.Schema({
     },
     supplieraddress:{
         type:String,
-       
+
     },
     taxnumber:{
         type:String,
-       
+
     },
     licensenumber:{
         type:String,
-       
+
+    },
+    status: {
+        type: Number,
+        default: 0, // Set the default value of status to 0
     },
 });
 
